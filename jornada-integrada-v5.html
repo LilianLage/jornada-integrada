@@ -761,8 +761,9 @@ button,input,select,textarea{font-family:inherit;}
       <div class="pc pg" data-g="l" onclick="openEdit('mdm')"><div class="pc-nm">MDM – Dados Mestres</div><div class="pc-sq">André Carvalhais</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Aceleração urgente</div><span class="pb">Habilitador</span></div></div>
     </div>
     <div class="kc obra" id="kc-obra">
-      <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">6</div></div>
-      <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM + Nova EAP</div><div class="pc-sq">Ana Flávia · André R. · André C.</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 119M</span></div></div>
+      <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">7</div></div>
+      <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM</div><div class="pc-sq">André R. · André C.</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('novaeap')"><div class="pc-nm">Nova EAP</div><div class="pc-sq">Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Acompanhar</div><span class="pb">Habilitadora</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('obra360')"><div class="pc-nm">Obra 360</div><div class="pc-sq">Higor</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 69M</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('prateleira')"><div class="pc-nm">Prateleira MO + Catracas</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M</span></div></div>
       <div class="pc pv" data-g="l" onclick="openEdit('smp')"><div class="pc-nm">SMP Digital</div><div class="pc-sq">Júlia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Piloto em andamento</div><span class="pb">R$ 23M</span></div></div>
@@ -1146,9 +1147,9 @@ const PRODS = {
     rd:{done:['Piloto metais · Saneamento · PDM/códigos'],doing:['Acab. Elétricos · Argamassa · Concreto (2T26)'],todo:['Aço · Esquadrias · PEX (3T26)']}
   },
   ecopam: {
-    nm:'ECO-PAM + Nova EAP', etapa:'obra', gestor:'l', po:'Ana Flávia · André R. · André C.', status:'so', pot:'R$ 106M',
+    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 106M',
     pot_alav:{'spot':40,'seq_mo':44,'hc':22},
-    desc:'Rollout 100% concluído (22 cidades). Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM).',
+    desc:'Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM). Rollout 100% concluído (22 cidades).',
     ambicoes:['du','vp'], alavancas:['spot','seq_mo','hc'],
     riscos:[{nm:'Instabilidade técnica e alto volume de erros',desc:'Redesenho de arquitetura em curso. Perda de tração no rollout. Impacto no desligamento do sistema legado.',lvl:'alto'}],
     notas:['Prioridade jun/26: estabilização + aceleração MDM'],
@@ -1157,6 +1158,16 @@ const PRODS = {
                 {lbl:'% obras com uso ativo ECO (mar-mai/26)',atual:71,meta:'100%',real:'71%',c:'v'},
                 {lbl:'40% compras via PAM até dez/26 (80% notáveis)',atual:7,meta:'40%',real:'2,7%',c:'o'}]}],
     rd:{done:['Rollout 22 cidades · Migração arquitetura ECO'],doing:['Op. assistida pós rollout · Refatoração painel'],todo:['Gestão Acessos · Integr. Obra 360 (2S/26)']}
+  },
+  novaeap: {
+    nm:'Nova EAP', etapa:'obra', gestor:'l', po:'Ana Flávia', status:'sg', pot:'Habilitadora',
+    pot_alav:{},
+    desc:'Nova Estrutura Analítica do Projeto. Produto habilitador que estrutura a base de dados e governança de custos para ECO-PAM e toda a esteira de produção.',
+    ambicoes:['du','vp'], alavancas:['spot','seq_mo','hc'],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:['Definição de escopo (2T26)'],todo:['Implementação (3T26)','Integração ECO-PAM (4T26)']}
   },
   obra360: {
     nm:'Obra 360', etapa:'obra', gestor:'m', po:'Higor', status:'sv', pot:'R$ 69M',
@@ -1298,7 +1309,7 @@ const KPI_DATA = {
     {ic:'📐',ttl:'Compilador BIM',desc:'Automação BIM · levantamento de quantitativos',badge:'Pré-Obra',bc:'ko'},
     {ic:'🧱',ttl:'Sistema LEGO',desc:'Catálogo de peças padronizadas',badge:'Pré-Obra',bc:'ko'},
     {ic:'🗂️',ttl:'MDM – Dados Mestres',desc:'GMs · base de dados para toda a esteira',badge:'Pré-Obra',bc:'kg'},
-    {ic:'💰',ttl:'ECO-PAM + Nova EAP',desc:'Custos (ECO) + Abastecimento MRP (PAM)',badge:'Obra',bc:'kv'},
+    {ic:'💰',ttl:'ECO-PAM',desc:'Custos (ECO) + Abastecimento MRP (PAM)',badge:'Obra',bc:'kv'},
     {ic:'🏗️',ttl:'Obra 360',desc:'Visão integrada · Jornada Materiais · Medições',badge:'Obra',bc:'kv'},
     {ic:'👷',ttl:'Prateleira MO + Catracas',desc:'Sequenciamento MO · Controle de acesso',badge:'Obra',bc:'kv'},
     {ic:'🤖',ttl:'IA – Zé da Obra',desc:'Assistente IA via WhatsApp · 200h/mês eliminadas',badge:'Obra',bc:'kv'},
@@ -2005,13 +2016,23 @@ const RDMAP = {
     ],
     '3T': [
       {txt:'Gestão de Acessos ECO', s:'todo'},
-      {txt:'Envio dados background SAP', s:'todo'},
       {txt:'Integração Obra 360', s:'todo'},
+      {txt:'Integração SLA (OTIF + Estoque)', s:'todo'},
     ],
     '4T': [
       {txt:'Planejamento compras indiretos auto', s:'todo'},
-      {txt:'Integração SLA (OTIF + Estoque)', s:'todo'},
     ],
+  },
+  novaeap: {
+    '1T': [],
+    'ABR': [],
+    'MAI': [{txt:'Definição de escopo Nova EAP', s:'doing'}],
+    'JUN': [{txt:'Estrutura analítica v1 validada', s:'todo'}],
+    '3T': [
+      {txt:'Implementação Nova EAP', s:'todo'},
+      {txt:'Integração com ECO-PAM', s:'todo'},
+    ],
+    '4T': [{txt:'Nova EAP operacional', s:'todo'}],
   },
   obra360: {
     '1T': [
@@ -2585,6 +2606,7 @@ function renderProdRows(filterAlavanca) {
     {key:'compilador',pot:40,etapa:'pre'},
     {key:'lego',pot:7,etapa:'pre'},
     {key:'ecopam',pot:106,etapa:'obra'},
+    {key:'novaeap',pot:0,etapa:'obra'},
     {key:'obra360',pot:69,etapa:'obra'},
     {key:'prateleira',pot:55,etapa:'obra'},
     {key:'smp',pot:23,etapa:'obra'},
@@ -2909,6 +2931,11 @@ const KR_DATA = {
       {r:[0,30,60,85,100,null,null,null,null,null,null,null],o:[20,40,60,80,100,100,100,100,100,100,100,100],p:[null,null,null,null,100,null,null,null,null,null,null,null]},
       {r:[0,25,45,60,71,null,null,null,null,null,null,null],o:[10,20,35,50,60,70,80,85,90,95,98,100],p:[null,null,null,null,71,75,null,null,null,null,null,null]},
       {r:[0,0,0,1,3,null,null,null,null,null,null,null],o:[2,5,8,12,18,25,32,38,42,45,48,50],p:[null,null,null,null,3,5,null,null,null,null,null,null]},
+    ],
+  ],
+  novaeap: [
+    [
+      {r:[null,null,null,null,0,null,null,null,null,null,null,null],o:[0,0,0,0,5,15,30,50,70,85,95,100],p:[null,null,null,null,0,10,null,null,null,null,null,null]},
     ],
   ],
   obra360: [
