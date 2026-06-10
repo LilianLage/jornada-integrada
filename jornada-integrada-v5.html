@@ -654,10 +654,15 @@ button,input,select,textarea{font-family:inherit;}
         rdSnap.forEach(d => {
           if (window.RDMAP) window.RDMAP[d.id] = d.data();
         });
-        // Load KR_DATA overrides
+        // Load KR_DATA overrides (stored flat, need to unflatten)
         const krSnap = await getDocs(collection(db, 'kr_data'));
         krSnap.forEach(d => {
-          if (window.KR_DATA) window.KR_DATA[d.id] = d.data().data;
+          if (window.KR_DATA && window.KR_DATA[d.id]) {
+            // unflattenKRData is in main script, accessible via window
+            if (typeof unflattenKRData === 'function') {
+              window.KR_DATA[d.id] = unflattenKRData(d.data(), window.KR_DATA[d.id]);
+            }
+          }
         });
         if (window.setSyncStatus) window.setSyncStatus('ok');
         // Rebuild active tab
@@ -3316,7 +3321,8 @@ function setSyncStatus(state) {
   document.getElementById('sync-status').style.color = s.c;
 }
 // Expose to window so Firebase module can call it
-window.setSyncStatus = setSyncStatus;
+window.setSyncStatus    = setSyncStatus;
+window.unflattenKRData  = unflattenKRData;
 
 async function fbSave(collName, docId, data) {
   // Wait up to 3s for Firebase module to be ready
@@ -3355,9 +3361,34 @@ function fbSaveRdmap(key) {
 }
 
 // Save KR_DATA entry for a product
+// Firestore doesn't support nested arrays — flatten to object
+function flattenKRData(data) {
+  const flat = {};
+  data.forEach((okr, oi) => {
+    okr.forEach((kr, ki) => {
+      flat[`o${oi}_k${ki}_r`] = kr.r.map(v => v === null ? -1 : v);
+      flat[`o${oi}_k${ki}_o`] = kr.o.map(v => v === null ? -1 : v);
+      flat[`o${oi}_k${ki}_p`] = kr.p.map(v => v === null ? -1 : v);
+    });
+  });
+  return flat;
+}
+
+function unflattenKRData(flat, template) {
+  // Rebuild nested structure from flat Firestore doc using template for shape
+  return template.map((okr, oi) =>
+    okr.map((kr, ki) => ({
+      r: (flat[`o${oi}_k${ki}_r`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
+      o: (flat[`o${oi}_k${ki}_o`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
+      p: (flat[`o${oi}_k${ki}_p`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
+    }))
+  );
+}
+
 function fbSaveKRData(key) {
   if (!KR_DATA[key]) return;
-  fbSave('kr_data', key, { data: JSON.parse(JSON.stringify(KR_DATA[key])) });
+  const flat = flattenKRData(KR_DATA[key]);
+  fbSave('kr_data', key, flat);
 }
 
 </script>
