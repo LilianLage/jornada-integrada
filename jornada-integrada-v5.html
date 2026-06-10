@@ -3110,17 +3110,22 @@ function buildBarChart(key, oi, ki) {
             const v = ctx.dataset.data[ctx.dataIndex];
             if (v === null || v === undefined) return false;
             if (ctx.dataset.label === 'Meta (100%)') return false;
+            // Hide Orçado labels to reduce clutter — tooltip still shows it
+            if (ctx.dataset.label === 'Orçado') return false;
+            // For projection line, only show non-null future points
+            if (ctx.dataset.type === 'line') return v !== null;
             return true;
           },
-          color: ctx => ctx.dataset.type === 'line' ? '#793F98' :
-                        ctx.dataset.label === 'Orçado' ? 'rgba(0,107,63,.6)' : '#003d22',
+          color: ctx => ctx.dataset.type === 'line' ? '#793F98' : '#003d22',
           font: { family: 'Plus Jakarta Sans', size: 9, weight: 'bold' },
           formatter: v => v !== null ? v + '%' : '',
-          anchor: ctx => ctx.dataset.type === 'line' ? 'center' : 'end',
-          align:  ctx => ctx.dataset.type === 'line' ? 'top' : 'top',
-          offset: 3,
-          padding: { top:1, bottom:1, left:2, right:2 },
-          backgroundColor: ctx => ctx.dataset.type === 'line' ? 'rgba(121,63,152,.07)' : null,
+          // Bars: label above; line: label above point
+          anchor: 'end',
+          align:  'end',
+          offset: 2,
+          clamp: true,
+          padding: { top:1, bottom:1, left:3, right:3 },
+          backgroundColor: ctx => ctx.dataset.type === 'line' ? 'rgba(121,63,152,.1)' : 'rgba(255,255,255,.85)',
           borderRadius: 3,
         },
         legend: {
@@ -3140,10 +3145,12 @@ function buildBarChart(key, oi, ki) {
       },
       scales: {
         y: {
-          min:0, max:110,
-          ticks:{callback:v=>v<=100?v+'%':'', font:{size:9}},
+          min:0,
+          // max auto-scales to highest value — no forced 100%
+          ticks:{display:false},   // hide vertical axis labels
           grid:{color:'#f1f5f9'},
-          title:{display:true,text:'Progresso (%)',font:{size:9},color:'#94a3b8'}
+          title:{display:false},
+          border:{display:false},
         },
         x: {
           ticks:{
