@@ -1667,7 +1667,7 @@ function buildValor(){
   const valorChips = document.getElementById('valor-prod-chips');
   if (valorChips && !valorChips.dataset.built) {
     valorChips.dataset.built = '1';
-    const prodKeys = ['sincroniza','nexus','compilador','lego','ecopam','obra360','prateleira','smp','ze','daeans'];
+    const prodKeys = ['sincroniza','nexus','simurb','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans'];
     prodKeys.forEach(k => {
       const p = PRODS[k];
       const chip = document.createElement('div');
@@ -2640,6 +2640,7 @@ function renderProdRows(filterAlavanca) {
     {key:'simurb',pot:0,etapa:'est'},
     {key:'compilador',pot:40,etapa:'pre'},
     {key:'lego',pot:7,etapa:'pre'},
+    {key:'mdm',pot:0,etapa:'pre'},
     {key:'ecopam',pot:106,etapa:'obra'},
     {key:'novaeap',pot:0,etapa:'obra'},
     {key:'obra360',pot:69,etapa:'obra'},
