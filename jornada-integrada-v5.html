@@ -710,7 +710,7 @@ button,input,select,textarea{font-family:inherit;}
   <div class="kpis">
     <div class="kpi ko" onclick="showKpi('andamento')">
       <div class="kpi-lbl">Produtos & Processos</div>
-      <div class="kpi-val o">11</div>
+      <div class="kpi-val o">12</div>
       <div class="kpi-sub">Em andamento · 2T26 · 2 gestores</div>
     </div>
     <div class="kpi ko" onclick="showKpi('riscos')">
@@ -750,9 +750,10 @@ button,input,select,textarea{font-family:inherit;}
 
   <div class="kb" id="kb-wrap">
     <div class="kc est" id="kc-est">
-      <div class="kc-hd"><div class="kc-ttl">📈 Estratégia</div><div class="kc-n" id="cnt-est">2</div></div>
+      <div class="kc-hd"><div class="kc-ttl">📈 Estratégia</div><div class="kc-n" id="cnt-est">3</div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('sincroniza')"><div class="pc-nm">Sincroniza</div><div class="pc-sq">Érika</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 79M</span></div></div>
-      <div class="pc pv" data-g="m" onclick="openEdit('nexus')"><div class="pc-nm">Nexus + GCron</div><div class="pc-sq">Athaenar</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 34M</span></div></div>
+      <div class="pc pv" data-g="m" onclick="openEdit('nexus')"><div class="pc-nm">Nexus + GCron</div><div class="pc-sq">Athaenar</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">Habilitador</span></div></div>
+      <div class="pc pv" data-g="m" onclick="openEdit('simurb')"><div class="pc-nm">SIMURB</div><div class="pc-sq">Brenda</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">Habilitador</span></div></div>
     </div>
     <div class="kc pre" id="kc-pre">
       <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">3</div></div>
@@ -784,7 +785,7 @@ button,input,select,textarea{font-family:inherit;}
   <div class="kpis" style="margin-bottom:16px">
     <div class="kpi ko" onclick="showKpi('andamento')">
       <div class="kpi-lbl">Produtos & Processos</div>
-      <div class="kpi-val o">11</div>
+      <div class="kpi-val o">12</div>
       <div class="kpi-sub">Em andamento · 2T26 · 2 gestores</div>
     </div>
     <div class="kpi ko" onclick="showKpi('riscos')">
@@ -1100,14 +1101,25 @@ const PRODS = {
     rd:{done:['Rollout MO/Fôrma 100% · Calculadora ECO-FIN'],doing:['Simulador VPL · Integração Project'],todo:['Integr. Nexus · MRV Terrenos · RCCP (3T26)']}
   },
   nexus: {
-    nm:'Nexus + GCron', etapa:'est', gestor:'m', po:'Athaenar', status:'sv', pot:'R$ 34M',
-    pot_alav:{'orca':20,'rccp':14},
+    nm:'Nexus + GCron', etapa:'est', gestor:'m', po:'Athaenar', status:'sv', pot:'Habilitador',
+    pot_alav:{},
     desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
     ambicoes:['du','gc'], alavancas:['orca','rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Aprimorar acuracidade e velocidade do processo orçamentário',
            krs:[{lbl:'Simulações ativas na plataforma',atual:80,meta:'—',real:'118',c:'v'},
                 {lbl:'Obras utilizando o Nexus',atual:71,meta:'—',real:'71',c:'v'}]}],
+    rd:{done:['Nova versão PRD 18/05 · Dimensões Produtos'],doing:['Melhorias GCron · Parede Modular'],todo:['Machine Learning (3T26)']}
+  },
+  simurb: {
+    nm:'SIMURB', etapa:'est', gestor:'m', po:'Brenda', status:'sv', pot:'Habilitador',
+    pot_alav:{},
+    desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
+    ambicoes:['du','gc'], alavancas:['orca','rccp'],
+    riscos:[],notas:[],
+    okrs:[{ttl:'Aprimorar acuracidade e velocidade do processo orçamentário',
+           krs:[{lbl:'Simulações ativas na plataforma',atual:80,meta:'—',real:'118',c:'v'},
+                {lbl:'Obras utilizando o SIMURB',atual:71,meta:'—',real:'71',c:'v'}]}],
     rd:{done:['Nova versão PRD 18/05 · Dimensões Produtos'],doing:['Melhorias GCron · Parede Modular'],todo:['Machine Learning (3T26)']}
   },
   compilador: {
@@ -1315,7 +1327,7 @@ const KPI_DATA = {
     {ic:'🤖',ttl:'IA – Zé da Obra',desc:'Assistente IA via WhatsApp · 200h/mês eliminadas',badge:'Obra',bc:'kv'},
     {ic:'🤖',ttl:'IA – DAEane',desc:'Prospecção e qualificação de fornecedores MO',badge:'Obra',bc:'kv'},
   ]},
-  andamento:{ttl:'11 Produtos & Processos em andamento · 2T26',items:[
+  andamento:{ttl:'12 Produtos & Processos em andamento · 2T26',items:[
     {ic:'📈',ttl:'Sincroniza',desc:'Simulador VPL com RO · Eliminação planilha Sequenciamento',badge:'No prazo',bc:'kv'},
     {ic:'📐',ttl:'Compilador BIM',desc:'Elétrica piloto · Estrutural no fluxo de validação',badge:'Atenção',bc:'ko'},
     {ic:'🧱',ttl:'Sistema LEGO',desc:'Tipologia Modular + Conceito · Integração Nexus',badge:'Atenção',bc:'ko'},
@@ -1925,6 +1937,28 @@ const RDMAP = {
       {txt:'Aprimoramento de predições ML', s:'todo'},
     ],
     '4T': [{txt:'Machine Learning para predições', s:'todo'}],
+  },
+  simurb: {
+    '1T': [
+      {txt:'Dimensões de Produtos', s:'done'},
+      {txt:'Sincronização OE para IB e Vigilância', s:'done'},
+    ],
+    'ABR': [{txt:'Nova versão PRD 18/05', s:'done'}],
+    'MAI': [
+      {txt:'Melhorias GCron (desvios predecessores)', s:'doing'},
+      {txt:'Parede Modular', s:'doing'},
+    ],
+    'JUN': [
+      {txt:'Simulador GCron para obras menores', s:'todo'},
+      {txt:'Memorando de Simulações p/ SRI', s:'todo'},
+    ],
+    '3T': [
+      {txt:'Remotagem de simulações por BI', s:'todo'},
+      {txt:'Aprovisionamento de produções ML', s:'todo'},
+    ],
+    '4T': [
+      {txt:'Machine Learning para predições', s:'todo'},
+    ],
   },
   compilador: {
     '1T': [
@@ -2602,7 +2636,8 @@ function clearAlavancaFilter() {
 function renderProdRows(filterAlavanca) {
   const prodData = [
     {key:'sincroniza',pot:79,etapa:'est'},
-    {key:'nexus',pot:34,etapa:'est'},
+    {key:'nexus',pot:0,etapa:'est'},
+    {key:'simurb',pot:0,etapa:'est'},
     {key:'compilador',pot:40,etapa:'pre'},
     {key:'lego',pot:7,etapa:'pre'},
     {key:'ecopam',pot:106,etapa:'obra'},
@@ -2642,8 +2677,11 @@ function renderProdRows(filterAlavanca) {
     const displayPot = (filterAlavanca && matchesFilter && p.pot_alav && p.pot_alav[filterAlavanca])
       ? p.pot_alav[filterAlavanca]
       : pot;
+    const isHabilitador = !p.pot || p.pot === 'Habilitador' || p.pot === 'Habilitadora' || pot === 0;
     const potLabel = (filterAlavanca && matchesFilter && p.pot_alav && p.pot_alav[filterAlavanca])
       ? `R$ ${p.pot_alav[filterAlavanca]}M <span style="font-size:9px;opacity:.6">(${ALAVANCAS[filterAlavanca]||filterAlavanca})</span>`
+      : isHabilitador
+      ? `<span style="color:var(--a1);font-weight:800">Habilitador</span>`
       : `R$ ${pot}M`;
 
     // ── OKR blocks (full rich text)
@@ -2902,6 +2940,12 @@ const KR_DATA = {
     ],
   ],
   nexus: [
+    [
+      {r:[0,30,55,70,80,null,null,null,null,null,null,null],o:[10,20,30,45,55,65,70,75,80,85,90,100],p:[null,null,null,null,80,null,null,null,null,null,null,null]},
+      {r:[0,25,45,60,71,null,null,null,null,null,null,null],o:[10,20,35,50,60,70,75,80,85,90,95,100],p:[null,null,null,null,71,null,null,null,null,null,null,null]},
+    ],
+  ],
+  simurb: [
     [
       {r:[0,30,55,70,80,null,null,null,null,null,null,null],o:[10,20,30,45,55,65,70,75,80,85,90,100],p:[null,null,null,null,80,null,null,null,null,null,null,null]},
       {r:[0,25,45,60,71,null,null,null,null,null,null,null],o:[10,20,35,50,60,70,75,80,85,90,95,100],p:[null,null,null,null,71,null,null,null,null,null,null,null]},
