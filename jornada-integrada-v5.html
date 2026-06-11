@@ -695,6 +695,27 @@ button,input,select,textarea{font-family:inherit;}
       <span id="sync-icon">☁</span><span id="sync-text">Conectando...</span>
     </div>
     <div class="hd-pill">Potencial total UH <b>R$ 3,5k→14,2k</b></div>
+    <!-- ⋮ menu -->
+    <div style="position:relative" id="hd-menu-wrap">
+      <button onclick="toggleHdMenu()" style="background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;font-size:18px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1" title="Mais opções">⋮</button>
+      <div id="hd-menu" style="display:none;position:absolute;right:0;top:42px;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1.5px solid var(--bd);min-width:220px;z-index:999;overflow:hidden">
+        <div style="padding:8px 14px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bd)">Exportar dados</div>
+        <div onclick="exportJSON()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
+          <span style="font-size:16px">📦</span>
+          <div><div>Exportar JSON completo</div><div style="font-size:9px;color:var(--t3);font-weight:400">Backup completo · pode reimportar</div></div>
+        </div>
+        <div onclick="exportCSV()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;border-top:1px solid var(--bd);transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
+          <span style="font-size:16px">📊</span>
+          <div><div>Exportar CSV simplificado</div><div style="font-size:9px;color:var(--t3);font-weight:400">Para Excel · produtos, status, KRs</div></div>
+        </div>
+        <div style="border-top:1px solid var(--bd)"></div>
+        <div onclick="importJSON()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
+          <span style="font-size:16px">📥</span>
+          <div><div>Importar JSON</div><div style="font-size:9px;color:var(--t3);font-weight:400">Restaurar um backup anterior</div></div>
+        </div>
+        <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="handleImportFile(this)">
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2515,9 +2536,36 @@ function renderRdmap() {
   // ── Build all columns for a product row ──
   function buildRowCells(prodKey, p) {
     const cells = [];
+    // Helper: get all marcos for a quarter (from quarter key + all month keys)
+    function getQMarcos(prodKey, qKey) {
+      const months = Q_MONTH_MAP[qKey] || [];
+      const all = [...(RDMAP[prodKey]&&RDMAP[prodKey][qKey]||[])];
+      months.forEach(m => { if(RDMAP[prodKey]&&RDMAP[prodKey][m]) all.push(...RDMAP[prodKey][m]); });
+      return all;
+    }
+    function buildCollapsedCell(prodKey, qKey) {
+      const all = getQMarcos(prodKey, qKey);
+      const cls = 'rdmap-qcell';
+      const periodId = qKey;
+      const marcosHtml = all.map(m => `<div style="display:flex;align-items:flex-start;gap:4px;margin-bottom:3px">
+          <span class="marco-dot ${m.s}" style="margin-top:3px;flex-shrink:0"></span>
+          <span class="marco-txt ${m.s}">${m.txt}</span>
+        </div>`).join('');
+      const addSection = rdEditMode ? `
+        <button class="rd-add-btn" onclick="showAddInput('${prodKey}','${qKey}')">+ adicionar entrega</button>
+        <div class="rd-add-input-wrap" id="rd-add-wrap-${prodKey}-${periodId}">
+          <input class="rd-add-input" placeholder="Descrever entrega..." onkeydown="if(event.key==='Enter')confirmAddMarco('${prodKey}','${qKey}')">
+          <button class="rd-add-confirm" onclick="confirmAddMarco('${prodKey}','${qKey}')">✓</button>
+        </div>` : '';
+      const inner = all.length||rdEditMode
+        ? marcosHtml+addSection
+        : `<div class="rd-empty"><div class="rd-dash"></div></div>`;
+      return `<td class="${cls}">${inner}</td>`;
+    }
+
     // Q1
     if (!q1Exp) {
-      cells.push(buildCell(prodKey, p, '1T', false));
+      cells.push(buildCollapsedCell(prodKey, '1T'));
     } else {
       cells.push(buildCell(prodKey, p, 'JAN', CURRENT_PERIOD==='JAN'));
       cells.push(buildCell(prodKey, p, 'FEV', CURRENT_PERIOD==='FEV'));
@@ -2529,7 +2577,7 @@ function renderRdmap() {
     cells.push(buildCell(prodKey, p, 'JUN', CURRENT_PERIOD==='JUN'));
     // Q3
     if (!q3Exp) {
-      cells.push(buildCell(prodKey, p, '3T', false));
+      cells.push(buildCollapsedCell(prodKey, '3T'));
     } else {
       cells.push(buildCell(prodKey, p, 'JUL', CURRENT_PERIOD==='JUL'));
       cells.push(buildCell(prodKey, p, 'AGO', CURRENT_PERIOD==='AGO'));
@@ -2537,7 +2585,7 @@ function renderRdmap() {
     }
     // Q4
     if (!q4Exp) {
-      cells.push(buildCell(prodKey, p, '4T', false));
+      cells.push(buildCollapsedCell(prodKey, '4T'));
     } else {
       cells.push(buildCell(prodKey, p, 'OUT', CURRENT_PERIOD==='OUT'));
       cells.push(buildCell(prodKey, p, 'NOV', CURRENT_PERIOD==='NOV'));
@@ -3585,34 +3633,21 @@ function toggleRdQ(qKey) {
   const expanding = !rdQExpanded.has(qKey);
   if (expanding) {
     rdQExpanded.add(qKey);
+    // Only migrate items that are still under the quarter key (not yet distributed)
     const lastMonth = Q_LAST_MONTH[qKey];
     Object.keys(PRODS).forEach(prodKey => {
       if (!RDMAP[prodKey]) return;
       const items = (RDMAP[prodKey][qKey] || []).slice();
-      if (!items.length) return;
+      if (!items.length) return; // already distributed to months — leave as is
       if (!RDMAP[prodKey][lastMonth]) RDMAP[prodKey][lastMonth] = [];
       RDMAP[prodKey][lastMonth].push(...items);
       RDMAP[prodKey][qKey] = [];
       fbSaveRdmap(prodKey);
     });
   } else {
+    // COLLAPSE: just hide the columns visually — do NOT merge data back
+    // Items stay in their month keys, collapsed view reads from month keys too
     rdQExpanded.delete(qKey);
-    const months = Q_MONTH_MAP[qKey];
-    Object.keys(PRODS).forEach(prodKey => {
-      if (!RDMAP[prodKey]) return;
-      const all = [];
-      months.forEach(m => {
-        if (RDMAP[prodKey][m] && RDMAP[prodKey][m].length) {
-          all.push(...RDMAP[prodKey][m]);
-          RDMAP[prodKey][m] = [];
-        }
-      });
-      if (all.length) {
-        if (!RDMAP[prodKey][qKey]) RDMAP[prodKey][qKey] = [];
-        RDMAP[prodKey][qKey].push(...all);
-        fbSaveRdmap(prodKey);
-      }
-    });
   }
   renderRdmap();
 }
@@ -3681,6 +3716,137 @@ function moveMarcoPeriod(prodKey, fromPeriod, idx, dir) {
   RDMAP[prodKey][toPeriod].push(item);
   fbSaveRdmap(prodKey);
   renderRdmap();
+}
+
+// ══════════════════════════════════════════
+//  EXPORT / IMPORT
+// ══════════════════════════════════════════
+
+function toggleHdMenu() {
+  const m = document.getElementById('hd-menu');
+  if (!m) return;
+  m.style.display = m.style.display === 'none' ? 'block' : 'none';
+}
+// Close menu when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('hd-menu-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    const m = document.getElementById('hd-menu');
+    if (m) m.style.display = 'none';
+  }
+});
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function downloadFile(content, filename, mime) {
+  const blob = new Blob([content], {type: mime});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Export JSON (full backup)
+function exportJSON() {
+  document.getElementById('hd-menu').style.display = 'none';
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    version:    'jip-v5',
+    PRODS:      JSON.parse(JSON.stringify(PRODS)),
+    RDMAP:      JSON.parse(JSON.stringify(RDMAP)),
+    KR_DATA:    JSON.parse(JSON.stringify(KR_DATA)),
+  };
+  downloadFile(JSON.stringify(backup, null, 2), `JIP-backup-${todayStr()}.json`, 'application/json');
+}
+
+// ── Export CSV (simplified for Excel)
+function exportCSV() {
+  document.getElementById('hd-menu').style.display = 'none';
+  const rows = [];
+  // Header
+  rows.push([
+    'Produto','Etapa','Gestor','PO','Status','Potencial',
+    'OKR','KR','Realizado','Meta','Progresso %',
+    'Alavancas','Ambições'
+  ].join(';'));
+
+  const ET = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra',pos:'Pós-Obra'};
+  const ST = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
+
+  Object.entries(PRODS).forEach(([key, p]) => {
+    const etapa   = ET[p.etapa] || p.etapa;
+    const gestor  = p.gestor==='l'?'Lilian':p.gestor==='m'?'Marcos':'Lilian/Marcos';
+    const status  = ST[p.status] || p.status;
+    const pot     = p.pot || '—';
+    const alavs   = (p.alavancas||[]).map(a=>ALAVANCAS[a]||a).join(' | ');
+    const ambs    = (p.ambicoes||[]).map(a=>AMBS[a]?AMBS[a].lbl:a).join(' | ');
+
+    if (!p.okrs || !p.okrs.length) {
+      rows.push([p.nm,etapa,gestor,p.po||'',status,pot,'','','','','',alavs,ambs].join(';'));
+      return;
+    }
+    p.okrs.forEach((okr, oi) => {
+      if (!okr.krs || !okr.krs.length) {
+        rows.push([p.nm,etapa,gestor,p.po||'',status,pot,okr.ttl,'','','','',alavs,ambs].join(';'));
+        return;
+      }
+      okr.krs.forEach((kr, ki) => {
+        // Try to get latest realizado from KR_DATA
+        let real = kr.real || '—';
+        let pct  = kr.atual || 0;
+        if (KR_DATA[key] && KR_DATA[key][oi] && KR_DATA[key][oi][ki]) {
+          const rArr = KR_DATA[key][oi][ki].r;
+          const latest = rArr.slice(0, new Date().getMonth()+1).reverse().find(v=>v!==null);
+          if (latest !== null && latest !== undefined) { real = latest + '%'; pct = latest; }
+        }
+        rows.push([
+          p.nm, etapa, gestor, p.po||'', status, pot,
+          okr.ttl.replace(/;/g,','),
+          kr.lbl.replace(/;/g,','),
+          real, kr.meta, pct,
+          alavs, ambs
+        ].join(';'));
+      });
+    });
+  });
+
+  // BOM for Excel UTF-8
+  downloadFile('\uFEFF' + rows.join('\n'), `JIP-export-${todayStr()}.csv`, 'text/csv;charset=utf-8');
+}
+
+// ── Import JSON (restore backup)
+function importJSON() {
+  document.getElementById('hd-menu').style.display = 'none';
+  document.getElementById('import-file-input').click();
+}
+
+function handleImportFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.PRODS || !data.RDMAP) { alert('Arquivo inválido — falta PRODS ou RDMAP'); return; }
+      if (!confirm(`Restaurar backup de ${data.exportedAt ? new Date(data.exportedAt).toLocaleString('pt-BR') : 'data desconhecida'}?\n\nIsso vai sobrescrever todos os dados atuais.`)) return;
+      // Merge into current objects
+      Object.assign(PRODS,   data.PRODS);
+      Object.assign(RDMAP,   data.RDMAP);
+      if (data.KR_DATA) Object.assign(KR_DATA, data.KR_DATA);
+      // Rebuild views
+      buildPort();
+      cvBuilt = false;
+      okrevBuilt = false;
+      alert('✅ Backup restaurado com sucesso!');
+    } catch(err) {
+      alert('Erro ao importar: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
 </script>
