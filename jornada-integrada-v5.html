@@ -1071,7 +1071,20 @@ button,input,select,textarea{font-family:inherit;}
       </div>
       <div class="fgrow">
         <div class="fg"><label>Etapa</label><select id="ep-e"><option value="est">Estratégia</option><option value="pre">Pré-Obra</option><option value="obra">Obra</option></select></div>
-        <div class="fg"><label>Status</label><select id="ep-s"><option value="sv">No prazo</option><option value="so">Atenção / Atenção</option><option value="sg">Acompanhar</option></select></div>
+        <div class="fg">
+        <label style="display:flex;align-items:center;gap:5px">
+          Status
+          <span style="cursor:help;font-size:10px;color:var(--t3)" title="Calculado automaticamente com base nos KRs e no Roadmap:
+• No prazo: realizado ≥ orçado em todos os KRs e sem atrasos no roadmap
+• Acompanhar: algum KR abaixo do orçado mas projetado chega na meta, OU há entregas em atraso no roadmap
+• Atenção: algum KR abaixo do orçado e projetado também não chega na meta">ℹ️</span>
+        </label>
+        <div id="ep-s-display" style="padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;border:1.5px solid var(--bd);background:var(--gyb);display:flex;align-items:center;gap:6px;cursor:help" title="">
+          <span id="ep-s-dot" style="width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
+          <span id="ep-s-label">—</span>
+        </div>
+        <input type="hidden" id="ep-s" value="">
+      </div>
       </div>
       <div class="fg"><label>Descrição</label><textarea id="ep-desc" rows="2" style="resize:vertical"></textarea></div>
       <div class="edit-sec-hd"><span>🎯 Objetivos e KRs</span><button class="btn-sm" onclick="addOKR()">+ OKR</button></div>
@@ -1847,7 +1860,8 @@ function openEdit(key){
   document.getElementById('ep-po').value=p.po;
   document.getElementById('ep-g').value=p.gestor==='lm'?'lm':p.gestor;
   document.getElementById('ep-e').value=p.etapa;
-  document.getElementById('ep-s').value=p.status;
+  // Status is auto-calculated
+  setTimeout(() => applyAutoStatus(key), 50);
   document.getElementById('ep-desc').value=p.desc;
   renderEditOKRs(p);
   document.getElementById('edit-mbg').classList.add('open');
@@ -1915,7 +1929,8 @@ function saveEdit(){
   p.po=document.getElementById('ep-po').value;
   p.gestor=document.getElementById('ep-g').value;
   p.etapa=document.getElementById('ep-e').value;
-  p.status=document.getElementById('ep-s').value;
+  // Apply auto-calculated status
+  p.status = calcAutoStatus(editKey);
   p.desc=document.getElementById('ep-desc').value;
   // refresh built pages
   document.getElementById('port-grid').innerHTML='';buildPort();
@@ -3434,6 +3449,13 @@ function closeKREdit() {
     fbSaveKRData(key);
     buildKRList(key);
     selectKR(key, oi, ki);
+    // Recalculate and save auto-status
+    const newStatus = calcAutoStatus(key);
+    if (PRODS[key] && PRODS[key].status !== newStatus) {
+      PRODS[key].status = newStatus;
+      fbSaveProd(key);
+      buildPort();
+    }
   }
 }
 
@@ -3847,6 +3869,168 @@ function handleImportFile(input) {
   };
   reader.readAsText(file);
   input.value = '';
+}
+
+// ══════════════════════════════════════════
+//  STATUS AUTOMÁTICO
+// ══════════════════════════════════════════
+
+// Month index sequence for determining "past months"
+const MONTH_PERIODS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+const QTR_MONTHS    = {'1T':['JAN','FEV','MAR'],'3T':['JUL','AGO','SET'],'4T':['OUT','NOV','DEZ']};
+
+function calcAutoStatus(prodKey) {
+  const p = PRODS[prodKey];
+  if (!p) return 'sg';
+
+  let statusKR   = 'sv'; // optimistic
+  let statusRoad = 'sv';
+
+  // ── Rule 1: KR_DATA analysis ──
+  const kdProd = KR_DATA[prodKey];
+  if (kdProd) {
+    let hasAtencao = false;
+    let hasAcomp   = false;
+
+    p.okrs.forEach((okr, oi) => {
+      okr.krs.forEach((kr, ki) => {
+        const kd = kdProd[oi] && kdProd[oi][ki];
+        if (!kd) return;
+
+        // Latest realizado up to current month
+        const realizado = kd.r.slice(0, CUR_M + 1).reduce((last, v) =>
+          v !== null && v !== undefined ? v : last, null);
+
+        // Orçado for current month
+        const orcado = kd.o[CUR_M];
+
+        // End-of-year projetado (last non-null p value, or last o value)
+        const projFinal = [...kd.p].reverse().find(v => v !== null && v !== undefined);
+        const orcFinal  = [...kd.o].reverse().find(v => v !== null && v !== undefined);
+
+        if (realizado === null || orcado === null) return; // no data yet
+
+        if (realizado < orcado) {
+          // Behind — check if projection saves it
+          const proj = projFinal !== null && projFinal !== undefined ? projFinal : null;
+          const orc  = orcFinal  !== null && orcFinal  !== undefined ? orcFinal  : null;
+          if (proj !== null && orc !== null && proj >= orc) {
+            hasAcomp = true;   // behind now but projection recovers
+          } else {
+            hasAtencao = true; // projection won't recover
+          }
+        }
+      });
+    });
+
+    if (hasAtencao)    statusKR = 'so';
+    else if (hasAcomp) statusKR = 'sg';
+    else               statusKR = 'sv';
+  }
+
+  // ── Rule 2: Roadmap past-month overdue check ──
+  const rdProd = RDMAP[prodKey];
+  if (rdProd) {
+    const curMIdx = CUR_M; // 0=Jan
+    // All periods representing months BEFORE current month
+    const pastMonths = MONTH_PERIODS.slice(0, curMIdx); // e.g. if CUR_M=5 (Jun) → Jan-May
+
+    // Also check quarter keys that are fully in the past (Q1 if current month >= Apr)
+    const pastPeriods = [...pastMonths];
+    if (curMIdx >= 3)  pastPeriods.push('1T'); // 1T = Jan-Mar, past if >= Apr
+
+    let hasOverdue = false;
+    pastPeriods.forEach(period => {
+      const marcos = rdProd[period] || [];
+      marcos.forEach(m => {
+        if (m.s === 'todo' || m.s === 'doing') hasOverdue = true;
+      });
+    });
+
+    if (hasOverdue) statusRoad = 'sg'; // overdue → at least Acompanhar
+  }
+
+  // ── Combine: worst wins (Atenção > Acompanhar > No prazo) ──
+  const rank = {sv: 0, sg: 1, so: 2};
+  const combined = rank[statusKR] >= rank[statusRoad] ? statusKR : statusRoad;
+  return combined;
+}
+
+function buildStatusExplanation(prodKey) {
+  const p = PRODS[prodKey];
+  const kdProd = KR_DATA[prodKey];
+  const rdProd = RDMAP[prodKey];
+  const lines  = [];
+
+  // KR analysis
+  if (kdProd) {
+    p.okrs.forEach((okr, oi) => {
+      okr.krs.forEach((kr, ki) => {
+        const kd = kdProd[oi] && kdProd[oi][ki];
+        if (!kd) return;
+        const realizado = kd.r.slice(0, CUR_M + 1).reduce((last, v) =>
+          v !== null && v !== undefined ? v : last, null);
+        const orcado    = kd.o[CUR_M];
+        const projFinal = [...kd.p].reverse().find(v => v !== null && v !== undefined);
+        const orcFinal  = [...kd.o].reverse().find(v => v !== null && v !== undefined);
+        if (realizado === null || orcado === null) return;
+        const short = kr.lbl.length > 40 ? kr.lbl.substring(0,39)+'…' : kr.lbl;
+        if (realizado >= orcado) {
+          lines.push(`✓ ${short}: ${realizado}% ≥ orçado ${orcado}%`);
+        } else {
+          const proj = projFinal !== null && projFinal !== undefined ? projFinal : null;
+          const orc  = orcFinal  !== null && orcFinal  !== undefined ? orcFinal  : null;
+          if (proj !== null && orc !== null && proj >= orc) {
+            lines.push(`⚠ ${short}: ${realizado}% < orçado ${orcado}% mas projetado ${proj}% ≥ meta ${orc}%`);
+          } else {
+            lines.push(`✗ ${short}: ${realizado}% < orçado ${orcado}% e projetado ${proj||'?'}% < meta ${orc||'?'}%`);
+          }
+        }
+      });
+    });
+  }
+
+  // Roadmap overdue
+  if (rdProd) {
+    const pastPeriods = [...MONTH_PERIODS.slice(0, CUR_M)];
+    if (CUR_M >= 3) pastPeriods.push('1T');
+    pastPeriods.forEach(period => {
+      (rdProd[period] || []).forEach(m => {
+        if (m.s === 'todo' || m.s === 'doing') {
+          lines.push(`⏳ Entrega atrasada em ${period}: "${m.txt}"`);
+        }
+      });
+    });
+  }
+
+  return lines.length ? lines.join('\n') : 'Sem dados suficientes para calcular.';
+}
+
+function applyAutoStatus(prodKey) {
+  const status   = calcAutoStatus(prodKey);
+  const hidden   = document.getElementById('ep-s');
+  const display  = document.getElementById('ep-s-display');
+  const dot      = document.getElementById('ep-s-dot');
+  const label    = document.getElementById('ep-s-label');
+  if (!hidden || !display) return;
+
+  hidden.value = status;
+
+  const cfg = {
+    sv: {color:'var(--g)',   bg:'var(--gb)',   lbl:'No prazo'},
+    so: {color:'var(--o)',   bg:'var(--ob)',   lbl:'Atenção'},
+    sg: {color:'var(--gy)',  bg:'var(--gyb)',  lbl:'Acompanhar'},
+  };
+  const c = cfg[status] || cfg.sg;
+  dot.style.background   = c.color;
+  display.style.background= c.bg;
+  display.style.borderColor= c.color;
+  label.textContent = c.lbl;
+  label.style.color = c.color;
+
+  // Tooltip with explanation
+  const explanation = buildStatusExplanation(prodKey);
+  display.title = 'Status calculado automaticamente:\n\n' + explanation;
 }
 
 </script>
