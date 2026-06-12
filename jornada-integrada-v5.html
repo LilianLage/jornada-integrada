@@ -610,6 +610,13 @@ button,input,select,textarea{font-family:inherit;}
 .okrev-legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
 .okrev-leg-item{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:600;}
 
+
+.pb-ta{width:100%;box-sizing:border-box;border:1.5px solid var(--bd);border-radius:7px;padding:6px 9px;font-size:10px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--tx);background:var(--gyb);resize:vertical;min-height:56px;line-height:1.5;outline:none;transition:border-color .15s;margin-top:4px;}
+.pb-ta:focus{border-color:var(--gm);background:#fff;}
+.pb-ta::placeholder{color:var(--t3);}
+.pb-ta-purple:focus{border-color:var(--a1);}
+.pb-ta-green{border-color:rgba(7,157,86,.3);}
+.pb-ta-green:focus{border-color:var(--gm);}
 </style>
 
   <!-- Firebase -->
@@ -1071,20 +1078,7 @@ button,input,select,textarea{font-family:inherit;}
       </div>
       <div class="fgrow">
         <div class="fg"><label>Etapa</label><select id="ep-e"><option value="est">Estratégia</option><option value="pre">Pré-Obra</option><option value="obra">Obra</option></select></div>
-        <div class="fg">
-        <label style="display:flex;align-items:center;gap:5px">
-          Status
-          <span style="cursor:help;font-size:10px;color:var(--t3)" title="Calculado automaticamente com base nos KRs e no Roadmap:
-• No prazo: realizado ≥ orçado em todos os KRs e sem atrasos no roadmap
-• Acompanhar: algum KR abaixo do orçado mas projetado chega na meta, OU há entregas em atraso no roadmap
-• Atenção: algum KR abaixo do orçado e projetado também não chega na meta">ℹ️</span>
-        </label>
-        <div id="ep-s-display" style="padding:7px 10px;border-radius:7px;font-size:11px;font-weight:700;border:1.5px solid var(--bd);background:var(--gyb);display:flex;align-items:center;gap:6px;cursor:help" title="">
-          <span id="ep-s-dot" style="width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0"></span>
-          <span id="ep-s-label">—</span>
-        </div>
-        <input type="hidden" id="ep-s" value="">
-      </div>
+        <div class="fg"><label>Status</label><select id="ep-s"><option value="sv">No prazo</option><option value="so">Atenção / Atenção</option><option value="sg">Acompanhar</option></select></div>
       </div>
       <div class="fg"><label>Descrição</label><textarea id="ep-desc" rows="2" style="resize:vertical"></textarea></div>
       <div class="edit-sec-hd"><span>🎯 Objetivos e KRs</span><button class="btn-sm" onclick="addOKR()">+ OKR</button></div>
@@ -1421,9 +1415,12 @@ function buildPort(){
 
     // Build all product cards for this group
     const cardsHtml=prods.map(([key,p])=>{
+      // Recalculate status live — ensures pill always matches the expanded block
+      const _liveStatus = calcAutoStatus(key);
+      p.status = _liveStatus; // update in memory only — saves on next user action
       const prog=calcProg(p);
-      const fc=p.status==='sv'?'pf-v':p.status==='so'?'pf-o':'pf-g';
-      const pc=p.status==='sv'?'pct-v':p.status==='so'?'pct-o':'pct-g';
+      const fc=_liveStatus==='sv'?'pf-v':_liveStatus==='so'?'pf-o':'pf-g';
+      const pc=_liveStatus==='sv'?'pct-v':_liveStatus==='so'?'pct-o':'pct-g';
       const gs=p.gestor==='l'?'<span class="tg tl">Lilian</span>':p.gestor==='m'?'<span class="tg tm">Marcos</span>':'<span class="tg tl">Lilian</span><span class="tg tm">Marcos</span>';
 
       // OKR blocks — full rich text like expanded portfolio card
@@ -1480,6 +1477,20 @@ function buildPort(){
 ;
 
 
+      // ── Auto-status explanation for expanded panel
+      const _autoSt = calcAutoStatus(key);
+      const _stCfg = {
+        sv:{color:'var(--g)',  border:'var(--gm)',  bg:'var(--gb)',  label:'No prazo'},
+        so:{color:'var(--o)',  border:'var(--o)',   bg:'var(--ob)',  label:'Atenção'},
+        sg:{color:'var(--gy)', border:'var(--gy)',  bg:'var(--gyb)', label:'Acompanhar'},
+      };
+      const _sc    = _stCfg[_autoSt] || _stCfg.sg;
+      const _stColor  = _sc.color;
+      const _stBorder = _sc.border;
+      const _stBg     = _sc.bg;
+      const _stLabel  = _sc.label;
+      const _stLines  = buildStatusExplanation(key).split('\n').filter(l=>l.trim());
+
       // ── Alavancas & Ambições for expanded panel
       const alavHtml2 = p.alavancas.map(ak =>
         `<div style="background:var(--ob);border:1px solid var(--o);border-radius:6px;padding:5px 9px;margin-bottom:4px;font-size:10px;font-weight:700;color:#7a3d00">${ALAVANCAS[ak]||ak}</div>`
@@ -1492,14 +1503,14 @@ function buildPort(){
       }).join('');
 
       return `
-      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${p.status}" data-e="${p.etapa}">
+      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}">
         <div class="port-hd" onclick="togglePort('pb-${key}','arr-${key}')">
           <div class="phd-cell">
             <div class="phd-nm">${p.nm}</div>
           </div>
 
           <div class="phd-cell"><div class="phd-people">${p.po}<small>${gs}</small></div></div>
-          <div class="phd-cell"><span class="stat-pill ${p.status}">${ST_LABEL[p.status]}</span></div>
+          <div class="phd-cell"><span class="stat-pill ${_liveStatus}">${ST_LABEL[_liveStatus]}</span></div>
           <div class="phd-cell"><div class="prog-wrap"><div class="prog-bar"><div class="prog-fill ${fc}" style="width:${prog.pct}%"></div></div><span class="prog-pct ${pc}">${prog.pct}%</span></div><div style="font-size:9px;color:var(--t3);margin-top:2px">${prog.label}</div></div>
           <div class="phd-cell" style="font-size:12px;font-weight:800;color:var(--a1)">${p.pot}</div>
           <div class="phd-cell" style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
@@ -1515,6 +1526,14 @@ function buildPort(){
             <div class="pb-section">
               <div class="pb-sec-ttl">Objetivos e KRs</div>
               ${okrHtml}
+              <div style="margin-top:10px;padding:8px 10px;border-radius:7px;background:${_stBg};border:1.5px solid ${_stBorder}">
+                <div style="display:flex;align-items:center;gap:6px;margin-bottom:${_stLines.length?'5px':'0'}">
+                  <span style="width:9px;height:9px;border-radius:50%;background:${_stColor};flex-shrink:0;display:inline-block"></span>
+                  <span style="font-size:10px;font-weight:800;color:${_stColor}">${_stLabel}</span>
+                  <span style="font-size:8px;color:var(--t3);font-weight:400;margin-left:2px">— calculado automaticamente</span>
+                </div>
+                ${_stLines.length ? '<div style="display:flex;flex-direction:column;gap:2px">' + _stLines.map(l => '<div style="font-size:8.5px;color:var(--t2);line-height:1.4">'+l+'</div>').join('') + '</div>' : ''}
+              </div>
             </div>
             <div class="pb-section">
               <div class="pb-sec-ttl">Roadmap</div>
@@ -1526,14 +1545,12 @@ function buildPort(){
               ${rdHtml}
             </div>
             <div class="pb-section">
-              <div class="pb-sec-ttl">Riscos & Notas</div>
-              ${riskHtml}
-              <div class="pb-sec-ttl" style="margin-top:10px">Notas</div>
-              ${notaHtml||'<div style="font-size:10px;color:var(--t3)">Sem notas.</div>'}
-              <div class="nota-add-row" style="margin-top:6px">
-                <input class="nota-inp" id="ni-${key}" placeholder="Adicionar nota..." onkeydown="if(event.key==='Enter'){addNota('${key}');buildPort();}">
-                <button class="nota-btn" onclick="addNota('${key}');buildPort()">+</button>
-              </div>
+              <div class="pb-sec-ttl">⚠️ Riscos</div>
+              <textarea class="pb-ta" placeholder="Descreva os riscos do produto..." onblur="savePbField('${key}','riscos_txt',this.value)">${p.riscos_txt||p.notas_riscos||''}</textarea>
+              <div class="pb-sec-ttl" style="margin-top:8px;color:var(--a1)">🎯 Plano de Ação</div>
+              <textarea class="pb-ta pb-ta-purple" placeholder="Ações planejadas para resolver riscos ou melhorar o resultado..." onblur="savePbField('${key}','plano_acao',this.value)">${p.plano_acao||''}</textarea>
+              <div class="pb-sec-ttl" style="margin-top:8px;color:var(--gm)">⭐ Destaques</div>
+              <textarea class="pb-ta pb-ta-green" placeholder="Conquistas, entregas concluídas, pontos positivos..." onblur="savePbField('${key}','destaques',this.value)">${p.destaques||''}</textarea>
             </div>
             <div class="pb-section">
               <div class="pb-sec-ttl">⚡ Alavancas de Valor</div>
@@ -1929,7 +1946,6 @@ function saveEdit(){
   p.po=document.getElementById('ep-po').value;
   p.gestor=document.getElementById('ep-g').value;
   p.etapa=document.getElementById('ep-e').value;
-  // Apply auto-calculated status
   p.status = calcAutoStatus(editKey);
   p.desc=document.getElementById('ep-desc').value;
   // refresh built pages
@@ -2957,6 +2973,15 @@ function highlightChainAndTrace(key) {
 
 // Initialize default tab
 document.addEventListener('DOMContentLoaded', function(){
+  // Migrate legacy riscos[]/notas[] arrays to free-text fields
+  Object.values(PRODS).forEach(function(p){
+    if(!p.riscos_txt){
+      var parts=[];
+      if(p.riscos&&p.riscos.length) parts=parts.concat(p.riscos.map(function(r){return r.nm+(r.desc?': '+r.desc:'');}));
+      if(p.notas&&p.notas.length)   parts=parts.concat(p.notas);
+      if(parts.length) p.riscos_txt=parts.join('\n');
+    }
+  });
   // Expose data to window so Firebase module can access + overwrite
   window.PRODS   = PRODS;
   window.RDMAP   = RDMAP;
@@ -3449,13 +3474,6 @@ function closeKREdit() {
     fbSaveKRData(key);
     buildKRList(key);
     selectKR(key, oi, ki);
-    // Recalculate and save auto-status
-    const newStatus = calcAutoStatus(key);
-    if (PRODS[key] && PRODS[key].status !== newStatus) {
-      PRODS[key].status = newStatus;
-      fbSaveProd(key);
-      buildPort();
-    }
   }
 }
 
@@ -3871,166 +3889,102 @@ function handleImportFile(input) {
   input.value = '';
 }
 
+function savePbField(key,field,value){
+  if(!PRODS[key])return;
+  PRODS[key][field]=value;
+  fbSaveProd(key);
+}
+
 // ══════════════════════════════════════════
 //  STATUS AUTOMÁTICO
 // ══════════════════════════════════════════
-
-// Month index sequence for determining "past months"
-const MONTH_PERIODS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
-const QTR_MONTHS    = {'1T':['JAN','FEV','MAR'],'3T':['JUL','AGO','SET'],'4T':['OUT','NOV','DEZ']};
+const MONTH_PERIODS_AS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
 
 function calcAutoStatus(prodKey) {
   const p = PRODS[prodKey];
   if (!p) return 'sg';
-
-  let statusKR   = 'sv'; // optimistic
-  let statusRoad = 'sv';
-
-  // ── Rule 1: KR_DATA analysis ──
+  let statusKR = 'sv', statusRoad = 'sv';
   const kdProd = KR_DATA[prodKey];
   if (kdProd) {
-    let hasAtencao = false;
-    let hasAcomp   = false;
-
-    p.okrs.forEach((okr, oi) => {
-      okr.krs.forEach((kr, ki) => {
-        const kd = kdProd[oi] && kdProd[oi][ki];
+    let hasAtencao=false, hasAcomp=false;
+    p.okrs.forEach((okr,oi) => {
+      okr.krs.forEach((kr,ki) => {
+        const kd = kdProd[oi]&&kdProd[oi][ki];
         if (!kd) return;
-
-        // Latest realizado up to current month
-        const realizado = kd.r.slice(0, CUR_M + 1).reduce((last, v) =>
-          v !== null && v !== undefined ? v : last, null);
-
-        // Orçado for current month
-        const orcado = kd.o[CUR_M];
-
-        // End-of-year projetado (last non-null p value, or last o value)
-        const projFinal = [...kd.p].reverse().find(v => v !== null && v !== undefined);
-        const orcFinal  = [...kd.o].reverse().find(v => v !== null && v !== undefined);
-
-        if (realizado === null || orcado === null) return; // no data yet
-
+        const realizado = kd.r.slice(0,CUR_M+1).reduce((l,v)=>v!==null&&v!==undefined?v:l,null);
+        const orcado    = kd.o[CUR_M];
+        const projFinal = [...kd.p].reverse().find(v=>v!==null&&v!==undefined);
+        const orcFinal  = [...kd.o].reverse().find(v=>v!==null&&v!==undefined);
+        if (realizado===null||orcado===null) return;
         if (realizado < orcado) {
-          // Behind — check if projection saves it
-          const proj = projFinal !== null && projFinal !== undefined ? projFinal : null;
-          const orc  = orcFinal  !== null && orcFinal  !== undefined ? orcFinal  : null;
-          if (proj !== null && orc !== null && proj >= orc) {
-            hasAcomp = true;   // behind now but projection recovers
-          } else {
-            hasAtencao = true; // projection won't recover
-          }
+          if (projFinal!==null&&projFinal!==undefined&&orcFinal!==null&&orcFinal!==undefined&&projFinal>=orcFinal)
+            hasAcomp=true;
+          else hasAtencao=true;
         }
       });
     });
-
-    if (hasAtencao)    statusKR = 'so';
-    else if (hasAcomp) statusKR = 'sg';
-    else               statusKR = 'sv';
+    statusKR = hasAtencao?'so':hasAcomp?'sg':'sv';
   }
-
-  // ── Rule 2: Roadmap past-month overdue check ──
   const rdProd = RDMAP[prodKey];
   if (rdProd) {
-    const curMIdx = CUR_M; // 0=Jan
-    // All periods representing months BEFORE current month
-    const pastMonths = MONTH_PERIODS.slice(0, curMIdx); // e.g. if CUR_M=5 (Jun) → Jan-May
-
-    // Also check quarter keys that are fully in the past (Q1 if current month >= Apr)
-    const pastPeriods = [...pastMonths];
-    if (curMIdx >= 3)  pastPeriods.push('1T'); // 1T = Jan-Mar, past if >= Apr
-
-    let hasOverdue = false;
-    pastPeriods.forEach(period => {
-      const marcos = rdProd[period] || [];
-      marcos.forEach(m => {
-        if (m.s === 'todo' || m.s === 'doing') hasOverdue = true;
-      });
+    const pastPeriods = [...MONTH_PERIODS_AS.slice(0,CUR_M)];
+    if (CUR_M>=3) pastPeriods.push('1T');
+    let hasOverdue=false;
+    pastPeriods.forEach(period=>{
+      (rdProd[period]||[]).forEach(m=>{ if(m.s==='todo'||m.s==='doing') hasOverdue=true; });
     });
-
-    if (hasOverdue) statusRoad = 'sg'; // overdue → at least Acompanhar
+    if (hasOverdue) statusRoad='sg';
   }
-
-  // ── Combine: worst wins (Atenção > Acompanhar > No prazo) ──
-  const rank = {sv: 0, sg: 1, so: 2};
-  const combined = rank[statusKR] >= rank[statusRoad] ? statusKR : statusRoad;
-  return combined;
+  const rank={sv:0,sg:1,so:2};
+  return rank[statusKR]>=rank[statusRoad]?statusKR:statusRoad;
 }
 
 function buildStatusExplanation(prodKey) {
-  const p = PRODS[prodKey];
-  const kdProd = KR_DATA[prodKey];
-  const rdProd = RDMAP[prodKey];
-  const lines  = [];
-
-  // KR analysis
+  const p=PRODS[prodKey], kdProd=KR_DATA[prodKey], rdProd=RDMAP[prodKey];
+  const lines=[];
   if (kdProd) {
-    p.okrs.forEach((okr, oi) => {
-      okr.krs.forEach((kr, ki) => {
-        const kd = kdProd[oi] && kdProd[oi][ki];
+    p.okrs.forEach((okr,oi)=>{
+      okr.krs.forEach((kr,ki)=>{
+        const kd=kdProd[oi]&&kdProd[oi][ki];
         if (!kd) return;
-        const realizado = kd.r.slice(0, CUR_M + 1).reduce((last, v) =>
-          v !== null && v !== undefined ? v : last, null);
-        const orcado    = kd.o[CUR_M];
-        const projFinal = [...kd.p].reverse().find(v => v !== null && v !== undefined);
-        const orcFinal  = [...kd.o].reverse().find(v => v !== null && v !== undefined);
-        if (realizado === null || orcado === null) return;
-        const short = kr.lbl.length > 40 ? kr.lbl.substring(0,39)+'…' : kr.lbl;
-        if (realizado >= orcado) {
-          lines.push(`✓ ${short}: ${realizado}% ≥ orçado ${orcado}%`);
-        } else {
-          const proj = projFinal !== null && projFinal !== undefined ? projFinal : null;
-          const orc  = orcFinal  !== null && orcFinal  !== undefined ? orcFinal  : null;
-          if (proj !== null && orc !== null && proj >= orc) {
-            lines.push(`⚠ ${short}: ${realizado}% < orçado ${orcado}% mas projetado ${proj}% ≥ meta ${orc}%`);
-          } else {
-            lines.push(`✗ ${short}: ${realizado}% < orçado ${orcado}% e projetado ${proj||'?'}% < meta ${orc||'?'}%`);
-          }
-        }
+        const realizado=kd.r.slice(0,CUR_M+1).reduce((l,v)=>v!==null&&v!==undefined?v:l,null);
+        const orcado=kd.o[CUR_M];
+        const projFinal=[...kd.p].reverse().find(v=>v!==null&&v!==undefined);
+        const orcFinal=[...kd.o].reverse().find(v=>v!==null&&v!==undefined);
+        if (realizado===null||orcado===null) return;
+        const short=kr.lbl.length>40?kr.lbl.substring(0,39)+'…':kr.lbl;
+        if (realizado>=orcado) lines.push('✓ '+short+': '+realizado+'% ≥ orçado '+orcado+'%');
+        else if (projFinal!==null&&orcFinal!==null&&projFinal>=orcFinal)
+          lines.push('⚠ '+short+': '+realizado+'% < orçado '+orcado+'% mas projetado '+projFinal+'% ≥ meta '+orcFinal+'%');
+        else lines.push('✗ '+short+': '+realizado+'% < orçado '+orcado+'% e projetado '+(projFinal||'?')+'% < meta '+(orcFinal||'?')+'%');
       });
     });
   }
-
-  // Roadmap overdue
   if (rdProd) {
-    const pastPeriods = [...MONTH_PERIODS.slice(0, CUR_M)];
-    if (CUR_M >= 3) pastPeriods.push('1T');
-    pastPeriods.forEach(period => {
-      (rdProd[period] || []).forEach(m => {
-        if (m.s === 'todo' || m.s === 'doing') {
-          lines.push(`⏳ Entrega atrasada em ${period}: "${m.txt}"`);
-        }
+    const pastPeriods=[...MONTH_PERIODS_AS.slice(0,CUR_M)];
+    if (CUR_M>=3) pastPeriods.push('1T');
+    pastPeriods.forEach(period=>{
+      (rdProd[period]||[]).forEach(m=>{
+        if(m.s==='todo'||m.s==='doing') lines.push('⏳ Entrega atrasada em '+period+': "'+m.txt+'"');
       });
     });
   }
-
-  return lines.length ? lines.join('\n') : 'Sem dados suficientes para calcular.';
+  return lines.length?lines.join('\n'):'Sem dados suficientes para calcular.';
 }
 
 function applyAutoStatus(prodKey) {
-  const status   = calcAutoStatus(prodKey);
-  const hidden   = document.getElementById('ep-s');
-  const display  = document.getElementById('ep-s-display');
-  const dot      = document.getElementById('ep-s-dot');
-  const label    = document.getElementById('ep-s-label');
-  if (!hidden || !display) return;
-
-  hidden.value = status;
-
-  const cfg = {
-    sv: {color:'var(--g)',   bg:'var(--gb)',   lbl:'No prazo'},
-    so: {color:'var(--o)',   bg:'var(--ob)',   lbl:'Atenção'},
-    sg: {color:'var(--gy)',  bg:'var(--gyb)',  lbl:'Acompanhar'},
-  };
-  const c = cfg[status] || cfg.sg;
-  dot.style.background   = c.color;
-  display.style.background= c.bg;
-  display.style.borderColor= c.color;
-  label.textContent = c.lbl;
-  label.style.color = c.color;
-
-  // Tooltip with explanation
-  const explanation = buildStatusExplanation(prodKey);
-  display.title = 'Status calculado automaticamente:\n\n' + explanation;
+  const status=calcAutoStatus(prodKey);
+  const hidden=document.getElementById('ep-s');
+  const display=document.getElementById('ep-s-display');
+  const dot=document.getElementById('ep-s-dot');
+  const label=document.getElementById('ep-s-label');
+  if (!hidden||!display) return;
+  hidden.value=status;
+  const cfg={sv:{color:'var(--g)',bg:'var(--gb)',lbl:'No prazo'},so:{color:'var(--o)',bg:'var(--ob)',lbl:'Atenção'},sg:{color:'var(--gy)',bg:'var(--gyb)',lbl:'Acompanhar'}};
+  const c=cfg[status]||cfg.sg;
+  dot.style.background=c.color; display.style.background=c.bg; display.style.borderColor=c.color;
+  label.textContent=c.lbl; label.style.color=c.color;
+  display.title='Status calculado automaticamente:\n\n'+buildStatusExplanation(prodKey);
 }
 
 </script>
