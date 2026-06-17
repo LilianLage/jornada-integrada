@@ -362,6 +362,9 @@ button,input,select,textarea{font-family:inherit;}
 .rdmap-qcell.current-q{background:#f6fdf9;border-right:1px solid #c8e8d8;}
 .rdmap-mcell{padding:7px 8px;border-right:1px solid var(--bd);vertical-align:top;min-width:90px;}
 .rdmap-mcell.current-m{background:#f0fbf5;}
+/* Backlog 2027 — coluna parking-lot (não detalhada) */
+.rdmap-tbl .rd-bl-hd{background:#0b3a4a;border-left:2px solid var(--gm);}
+.rdmap-bl-cell{background:#f3f7fb;border-left:2px solid var(--gm);min-width:150px;}
 /* Marco chips */
 .marco{display:flex;align-items:flex-start;gap:5px;margin-bottom:5px;cursor:pointer;}
 .marco:last-child{margin-bottom:0;}
@@ -1445,8 +1448,8 @@ function buildPort(){
         </div>`).join('');
 
       // Roadmap — full RDMAP data grouped by period
-      const rdPeriods = ['1T','ABR','MAI','JUN','3T','4T'];
-      const rdPeriodLabels = {'1T':'1º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri'};
+      const rdPeriods = ['1T','ABR','MAI','JUN','3T','4T','BL27'];
+      const rdPeriodLabels = {'1T':'1º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri','BL27':'Backlog 2027 · a detalhar'};
       const rdData = RDMAP[key] || {};
       const rdHtml = rdPeriods.map(period => {
         const items = rdData[period] || [];
@@ -2518,12 +2521,16 @@ function renderRdmap() {
     row1 += `<th class="col-hd" colspan="3" style="cursor:pointer" onclick="toggleRdQ('4T')">4º Tri ▼<br><span style="font-size:8px;opacity:.7">expandido — clique para recolher</span></th>`;
     row2 += `<th class="month-hd">Out</th><th class="month-hd">Nov</th><th class="month-hd">Dez</th>`;
   }
+  // Backlog 2027 — parking-lot (entra em 2027, roadmap ainda não detalhado)
+  row1 += `<th class="col-hd rd-bl-hd" style="white-space:nowrap">Backlog 2027<br><span style="font-size:8px;opacity:.7">a detalhar</span></th>`;
+  row2 += `<th class="col-hd rd-bl-hd"></th>`;
 
   // ── Build a single data cell ──
   function buildCell(prodKey, p, colKey, colIsCurrent) {
     const marcos   = (RDMAP[prodKey] && RDMAP[prodKey][colKey]) || [];
     const isQCol   = ['1T','3T','4T'].includes(colKey);
-    const cls      = colIsCurrent ? 'rdmap-mcell current-m' : isQCol ? 'rdmap-qcell' : 'rdmap-mcell';
+    const isBacklog = colKey === 'BL27';
+    const cls      = colIsCurrent ? 'rdmap-mcell current-m' : isBacklog ? 'rdmap-qcell rdmap-bl-cell' : isQCol ? 'rdmap-qcell' : 'rdmap-mcell';
     const periodId = colKey.replace(/\s/g,'_');
 
     const marcosHtml = marcos.map((m, i) => {
@@ -2622,6 +2629,8 @@ function renderRdmap() {
       cells.push(buildCell(prodKey, p, 'NOV', CURRENT_PERIOD==='NOV'));
       cells.push(buildCell(prodKey, p, 'DEZ', CURRENT_PERIOD==='DEZ'));
     }
+    // Backlog 2027 — parking-lot
+    cells.push(buildCell(prodKey, p, 'BL27', false));
     return cells.join('');
   }
 
@@ -2645,7 +2654,7 @@ function renderRdmap() {
   etapaGroups.forEach(({key:etapa, label, col}) => {
     if (rdFiltState.etapa && rdFiltState.etapa!==etapa) return;
     if (etapa==='pos') {
-      tbodyHtml += `<tr><td colspan="10" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
+      tbodyHtml += `<tr><td colspan="15" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
         <b style="color:${col}">Pós-Obra</b> &nbsp;🚧 Em mapeamento
       </td></tr>`;
       return;
@@ -2687,7 +2696,7 @@ function renderRdmap() {
         <tr>${row1}</tr>
         <tr>${row2}</tr>
       </thead>
-      <tbody>${tbodyHtml||'<tr><td colspan="10" style="padding:24px;text-align:center;color:var(--t3)">Nenhum produto.</td></tr>'}</tbody>
+      <tbody>${tbodyHtml||'<tr><td colspan="15" style="padding:24px;text-align:center;color:var(--t3)">Nenhum produto.</td></tr>'}</tbody>
     </table>
   </div>`;
 }
@@ -3743,6 +3752,7 @@ function moveMarcoPeriod(prodKey, fromPeriod, idx, dir) {
   visP.push('ABR','MAI','JUN');
   if (rdQExpanded.has('3T')) visP.push('JUL','AGO','SET'); else visP.push('3T');
   if (rdQExpanded.has('4T')) visP.push('OUT','NOV','DEZ'); else visP.push('4T');
+  visP.push('BL27');
 
   const curPos = visP.indexOf(fromPeriod);
   if (curPos < 0) return;
