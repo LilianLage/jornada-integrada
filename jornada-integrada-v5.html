@@ -625,7 +625,7 @@ button,input,select,textarea{font-family:inherit;}
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs }
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit }
       from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -647,6 +647,9 @@ button,input,select,textarea{font-family:inherit;}
     window._fsGetDoc  = getDoc;
     window._fsColl    = collection;
     window._fsGetDocs = getDocs;
+    window._fsQuery   = query;
+    window._fsOrderBy = orderBy;
+    window._fsLimit   = limit;
     window._fbReady   = true;
 
     // ── Load all data from Firestore on startup ──
@@ -704,6 +707,10 @@ button,input,select,textarea{font-family:inherit;}
     <div id="sync-status" style="font-size:10px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:4px">
       <span id="sync-icon">☁</span><span id="sync-text">Conectando...</span>
     </div>
+    <div id="editor-badge" onclick="openEditorGate()" title="Identificação do editor (clique para alterar)"
+      style="font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
+      <span>👤</span><span id="editor-badge-txt">Identificar-se</span>
+    </div>
     <div class="hd-pill">Potencial total UH <b>R$ 3,5k→14,2k</b></div>
     <!-- ⋮ menu -->
     <div style="position:relative" id="hd-menu-wrap">
@@ -724,7 +731,46 @@ button,input,select,textarea{font-family:inherit;}
           <div><div>Importar JSON</div><div style="font-size:9px;color:var(--t3);font-weight:400">Restaurar um backup anterior</div></div>
         </div>
         <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="handleImportFile(this)">
+        <div style="border-top:1px solid var(--bd)"></div>
+        <div onclick="openHistory()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
+          <span style="font-size:16px">📜</span>
+          <div><div>Histórico de edições</div><div style="font-size:9px;color:var(--t3);font-weight:400">Quem editou o quê e quando</div></div>
+        </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: IDENTIFICAÇÃO DO EDITOR ══════ -->
+<div id="editor-gate" style="display:none;position:fixed;inset:0;background:rgba(15,30,22,.55);z-index:2000;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:14px;max-width:420px;width:100%;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px">Identifique-se para editar</div>
+    <div style="font-size:11px;color:var(--t2);margin-bottom:14px;line-height:1.5">Digite seu e-mail MRV. Ele fica salvo neste navegador e identifica suas edições no histórico.</div>
+    <input id="editor-gate-input" type="email" placeholder="nome@mrv.com.br" autocomplete="email"
+      oninput="document.getElementById('editor-gate-err').style.display='none'"
+      onkeydown="if(event.key==='Enter')submitEditorGate()"
+      style="width:100%;box-sizing:border-box;border:1.5px solid var(--bd);border-radius:8px;padding:10px 12px;font-size:13px;outline:none">
+    <div id="editor-gate-err" style="display:none;color:#c0392b;font-size:10.5px;font-weight:600;margin-top:7px"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px">
+      <button onclick="closeEditorGate()" style="background:none;border:1.5px solid var(--bd);border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;color:var(--t2);cursor:pointer">Cancelar</button>
+      <button onclick="submitEditorGate()" style="background:#006837;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#fff;cursor:pointer">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MODAL: HISTÓRICO DE EDIÇÕES ══════ -->
+<div id="hist-panel" style="display:none;position:fixed;inset:0;background:rgba(15,30,22,.5);z-index:2000;align-items:flex-start;justify-content:center;padding:5vh 16px">
+  <div style="background:#fff;border-radius:14px;max-width:760px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden">
+    <div style="padding:15px 20px;background:#003d22;color:#fff;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:14px;font-weight:800">📜 Histórico de edições</div>
+      <button onclick="closeHistory()" style="background:rgba(255,255,255,.15);border:none;border-radius:8px;color:#fff;font-size:15px;width:30px;height:30px;cursor:pointer">✕</button>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid var(--bd);display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input id="hist-search" oninput="renderHistory()" placeholder="Filtrar por e-mail, produto, ação…" style="flex:1;min-width:160px;border:1.5px solid var(--bd);border-radius:8px;padding:7px 10px;font-size:12px;outline:none">
+      <button onclick="loadHistory()" style="background:none;border:1.5px solid var(--bd);border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:var(--t2);cursor:pointer">↻ Atualizar</button>
+    </div>
+    <div id="hist-body" style="overflow-y:auto;padding:6px 0;flex:1">
+      <div style="padding:30px;text-align:center;color:var(--t3);font-size:12px">—</div>
     </div>
   </div>
 </div>
@@ -1614,10 +1660,18 @@ function togglePort(bodyId,arrId){
 function addNota(key){
   const inp=document.getElementById('ni-'+key);
   if(!inp||!inp.value.trim())return;
-  PRODS[key].notas.push(inp.value.trim());
+  if(!requireEditor(()=>addNota(key)))return;
+  const t=inp.value.trim();
+  setEditDetail('adicionou nota', `"${t}"`);
+  PRODS[key].notas.push(t);
   fbSaveProd(key);
 }
-function delNota(key,i){PRODS[key].notas.splice(i,1);fbSaveProd(key);}
+function delNota(key,i){
+  if(!requireEditor(()=>delNota(key,i)))return;
+  const t=PRODS[key].notas[i];
+  setEditDetail('removeu nota', `"${t||''}"`);
+  PRODS[key].notas.splice(i,1);fbSaveProd(key);
+}
 
 // Multi-dimensional filter state
 let portFiltGestor = null;
@@ -1874,6 +1928,7 @@ function buildTraceTable(){
 // ══ EDIT MODAL ══
 let editKey=null;
 function openEdit(key){
+  if(!requireEditor(()=>openEdit(key)))return;
   editKey=key;
   const p=PRODS[key];
   document.getElementById('edit-ttl').textContent='✏️ '+p.nm;
@@ -1967,6 +2022,7 @@ function saveEdit(){
     });
     fbSaveKRData(editKey);
   }
+  setEditDetail('editou produto/OKRs', '');
   fbSaveProd(editKey);
   setLastUpdated();
   closeEdit();
@@ -2412,6 +2468,8 @@ function rdFiltEtapa(etapa) {
 let rdEditMode = false;
 
 function toggleRdEdit() {
+  // Exige identificação antes de habilitar o modo de edição
+  if (!rdEditMode && !requireEditor(() => toggleRdEdit())) return;
   rdEditMode = !rdEditMode;
   const btn = document.getElementById('rd-edit-btn');
   if (btn) {
@@ -2432,12 +2490,16 @@ function marcoClick(event, prodKey, period, idx) {
 }
 
 function setMarcoStatus(prodKey, period, idx, status) {
-  RDMAP[prodKey][period][idx].s = status;
+  const m = RDMAP[prodKey][period][idx];
+  setEditDetail('alterou status', `${rdLbl(period)}: "${m.txt}" → ${_ST_LBL[status]||status}`);
+  m.s = status;
   fbSaveRdmap(prodKey);
   renderRdmap();
 }
 
 function deleteMarco(prodKey, period, idx) {
+  const removed = RDMAP[prodKey][period][idx];
+  setEditDetail('removeu entrega', `${rdLbl(period)}: "${removed ? removed.txt : ''}"`);
   RDMAP[prodKey][period].splice(idx, 1);
   if (RDMAP[prodKey][period].length === 0) delete RDMAP[prodKey][period];
   fbSaveRdmap(prodKey);
@@ -2463,6 +2525,7 @@ function confirmAddMarco(prodKey, period) {
   if (!txt) { wrap.classList.remove('open'); return; }
   if (!RDMAP[prodKey]) RDMAP[prodKey] = {};
   if (!RDMAP[prodKey][period]) RDMAP[prodKey][period] = [];
+  setEditDetail('adicionou entrega', `${rdLbl(period)}: "${txt}"`);
   RDMAP[prodKey][period].push({txt, s:'todo'});
   fbSaveRdmap(prodKey);
   wrap.classList.remove('open');
@@ -2997,6 +3060,9 @@ document.addEventListener('DOMContentLoaded', function(){
   window.KR_DATA = KR_DATA;
   buildPort();
   setLastUpdated();
+  updateEditorBadge();
+  // Pede identificação automaticamente ao acessar, se ainda não houver e-mail válido salvo
+  if (!isValidMrvEmail(getEditorEmail())) openEditorGate();
 });
 
 function setLastUpdated() {
@@ -3427,6 +3493,7 @@ function buildBarChart(key, oi, ki) {
 
 // ── KR Data Edit Modal ──
 function openKRDataEdit(key, oi, ki) {
+  if(!requireEditor(()=>openKRDataEdit(key, oi, ki)))return;
   editModalKey = {key, oi, ki};
   const p   = PRODS[key];
   const kr  = p.okrs[oi].krs[ki];
@@ -3467,6 +3534,8 @@ function closeKREdit() {
   document.getElementById('kred-modal-bg').classList.remove('open');
   if (editModalKey) {
     const {key,oi,ki} = editModalKey;
+    const _krLbl = (PRODS[key] && PRODS[key].okrs[oi] && PRODS[key].okrs[oi].krs[ki]) ? PRODS[key].okrs[oi].krs[ki].lbl : '';
+    setEditDetail('editou valores de KR', `"${_krLbl}"`);
     // Sync latest realizado → kr.atual in PRODS
     if (KR_DATA[key] && KR_DATA[key][oi] && KR_DATA[key][oi][ki]) {
       const rArr = KR_DATA[key][oi][ki].r;
@@ -3605,7 +3674,174 @@ function setSyncStatus(state) {
 window.setSyncStatus    = setSyncStatus;
 window.unflattenKRData  = unflattenKRData;
 
+// ══════════════════════════════════════════
+//  IDENTIDADE DO EDITOR + LOG DE EDIÇÕES
+// ══════════════════════════════════════════
+const EDITOR_KEY = 'jip_editor_email';
+const MRV_EMAIL_RE = /^[a-z0-9._%+\-]+@mrv\.com\.br$/i;
+
+function getEditorEmail() {
+  try { return (localStorage.getItem(EDITOR_KEY) || '').trim().toLowerCase(); }
+  catch(e) { return ''; }
+}
+function isValidMrvEmail(e) { return MRV_EMAIL_RE.test((e || '').trim()); }
+
+function updateEditorBadge() {
+  const el = document.getElementById('editor-badge-txt');
+  if (!el) return;
+  const email = getEditorEmail();
+  el.textContent = isValidMrvEmail(email) ? email : 'Identificar-se';
+}
+
+let _pendingEditAction = null;
+function openEditorGate() {
+  const m = document.getElementById('editor-gate');
+  const inp = document.getElementById('editor-gate-input');
+  const err = document.getElementById('editor-gate-err');
+  if (err) err.style.display = 'none';
+  if (inp) inp.value = getEditorEmail();
+  if (m) { m.style.display = 'flex'; }
+  setTimeout(() => { if (inp) inp.focus(); }, 30);
+}
+function closeEditorGate() {
+  const m = document.getElementById('editor-gate');
+  if (m) m.style.display = 'none';
+  _pendingEditAction = null; // cancel pending edit if not identified
+}
+function submitEditorGate() {
+  const inp = document.getElementById('editor-gate-input');
+  const err = document.getElementById('editor-gate-err');
+  const val = (inp ? inp.value : '').trim().toLowerCase();
+  if (!isValidMrvEmail(val)) {
+    if (err) {
+      err.textContent = 'E-mail inválido. Use o formato nome@mrv.com.br';
+      err.style.display = 'block';
+    }
+    if (inp) { inp.focus(); inp.select(); }
+    return; // não aceita — pede de novo
+  }
+  try { localStorage.setItem(EDITOR_KEY, val); } catch(e) {}
+  updateEditorBadge();
+  const m = document.getElementById('editor-gate');
+  if (m) m.style.display = 'none';
+  const act = _pendingEditAction; _pendingEditAction = null;
+  if (typeof act === 'function') act();
+}
+// Garante identificação antes de qualquer edição.
+// Já identificado → retorna true e o chamador segue normalmente (NÃO reexecuta a ação).
+// Não identificado → abre o modal, guarda a ação e retorna false; após confirmar, a ação roda.
+function requireEditor(action) {
+  if (isValidMrvEmail(getEditorEmail())) return true;
+  _pendingEditAction = (typeof action === 'function') ? action : null;
+  openEditorGate();
+  return false;
+}
+
+// Detalhe da última ação (preenchido pelas funções de edição antes de salvar)
+let _lastEditDetail = null;
+let _suppressLog = false; // true durante operações que não são edição (ex.: expandir trimestre)
+function setEditDetail(action, detail) { _lastEditDetail = { action: action || '', detail: detail || '' }; }
+
+const _SCOPE_LABEL = { produtos:'Produto', rdmap:'Roadmap', kr_data:'KRs' };
+const _RD_LBL = {'1T':'1º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri','BL27':'Backlog 2027','JAN':'Jan','FEV':'Fev','MAR':'Mar','JUL':'Jul','AGO':'Ago','SET':'Set','OUT':'Out','NOV':'Nov','DEZ':'Dez'};
+function rdLbl(p){ return _RD_LBL[p] || p; }
+const _ST_LBL = { done:'Feito', doing:'Em andamento', todo:'Previsto' };
+
+// Grava um registro append-only em audit_log (não interfere no status de sync)
+async function logEdit(collName, docId, action, detail) {
+  try {
+    if (!window._fbReady || !window._db) return;
+    const id = Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+    const entry = {
+      email: getEditorEmail() || '(não identificado)',
+      coll: collName,
+      scope: _SCOPE_LABEL[collName] || collName,
+      productKey: docId,
+      product: (window.PRODS && PRODS[docId] && PRODS[docId].nm) || docId,
+      action: action || 'editou',
+      detail: detail || '',
+      ts: Date.now(),
+      tsISO: new Date().toISOString()
+    };
+    await window._fsSetDoc(window._fsDoc(window._db, 'audit_log', id), entry);
+  } catch(e) { console.error('logEdit error:', e); }
+}
+
+// ── Histórico (painel) ──
+let _histRows = [];
+function openHistory() {
+  const m = document.getElementById('hist-panel');
+  if (m) m.style.display = 'flex';
+  const menu = document.getElementById('hd-menu');
+  if (menu) menu.style.display = 'none';
+  loadHistory();
+}
+function closeHistory() {
+  const m = document.getElementById('hist-panel');
+  if (m) m.style.display = 'none';
+}
+async function loadHistory() {
+  const body = document.getElementById('hist-body');
+  if (body) body.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3);font-size:12px">Carregando…</div>';
+  try {
+    const q = window._fsQuery(window._fsColl(window._db, 'audit_log'), window._fsOrderBy('ts', 'desc'), window._fsLimit(300));
+    const snap = await window._fsGetDocs(q);
+    _histRows = [];
+    snap.forEach(d => _histRows.push(d.data()));
+    renderHistory();
+  } catch(e) {
+    console.error('loadHistory error:', e);
+    if (body) body.innerHTML = '<div style="padding:30px;text-align:center;color:#c0392b;font-size:12px">Não foi possível carregar o histórico.</div>';
+  }
+}
+function renderHistory() {
+  const body = document.getElementById('hist-body');
+  if (!body) return;
+  const term = (document.getElementById('hist-search')?.value || '').trim().toLowerCase();
+  const rows = _histRows.filter(r => {
+    if (!term) return true;
+    return [r.email, r.product, r.scope, r.action, r.detail].join(' ').toLowerCase().includes(term);
+  });
+  if (!rows.length) {
+    body.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3);font-size:12px">' + (_histRows.length ? 'Nenhum registro para esse filtro.' : 'Ainda não há edições registradas.') + '</div>';
+    return;
+  }
+  // Agrupa por dia
+  const fmtDay = ts => new Date(ts).toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const fmtTime = ts => new Date(ts).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  let html = '';
+  let lastDay = '';
+  rows.forEach(r => {
+    const day = fmtDay(r.ts);
+    if (day !== lastDay) {
+      html += '<div style="position:sticky;top:0;background:var(--gyb);padding:6px 18px;font-size:9px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--t2);border-bottom:1px solid var(--bd)">' + day + '</div>';
+      lastDay = day;
+    }
+    const scopeColor = r.coll === 'rdmap' ? '#0b6b3a' : r.coll === 'kr_data' ? '#7a3d00' : '#3d5166';
+    const detail = r.detail ? '<span style="color:var(--t2)"> — ' + escapeHtmlLog(r.detail) + '</span>' : '';
+    html += '<div style="padding:9px 18px;border-bottom:1px solid var(--bd);display:flex;gap:10px;align-items:flex-start">'
+      + '<div style="font-size:10px;color:var(--t3);min-width:42px;font-variant-numeric:tabular-nums;padding-top:1px">' + fmtTime(r.ts) + '</div>'
+      + '<div style="flex:1">'
+        + '<div style="font-size:11.5px;color:var(--tx);line-height:1.45">'
+          + '<b>' + escapeHtmlLog(r.email) + '</b> '
+          + '<span style="font-weight:600">' + escapeHtmlLog(r.action) + '</span> '
+          + '<span style="display:inline-block;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:#fff;background:' + scopeColor + ';border-radius:4px;padding:1px 5px;vertical-align:middle">' + escapeHtmlLog(r.scope) + '</span> '
+          + '<span style="font-weight:700">' + escapeHtmlLog(r.product) + '</span>'
+          + detail
+        + '</div>'
+      + '</div>'
+    + '</div>';
+  });
+  body.innerHTML = html;
+}
+function escapeHtmlLog(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 async function fbSave(collName, docId, data) {
+  // Captura detalhe/supressão de forma síncrona (fbSave é async)
+  const _logInfo = _lastEditDetail; _lastEditDetail = null;
+  const _logSuppress = _suppressLog;
   // Wait up to 3s for Firebase module to be ready
   let attempts = 0;
   while (!window._fbReady && attempts < 30) {
@@ -3621,6 +3857,10 @@ async function fbSave(collName, docId, data) {
   try {
     await window._fsSetDoc(window._fsDoc(window._db, collName, docId), data);
     setSyncStatus('ok');
+    // Registra no histórico (quem/quando/o quê)
+    if (collName !== 'audit_log' && !_logSuppress) {
+      logEdit(collName, docId, _logInfo ? _logInfo.action : 'editou', _logInfo ? _logInfo.detail : '');
+    }
   } catch(e) {
     console.error('Firebase save error:', e);
     setSyncStatus('error');
@@ -3684,6 +3924,7 @@ function toggleRdQ(qKey) {
     rdQExpanded.add(qKey);
     // Only migrate items that are still under the quarter key (not yet distributed)
     const lastMonth = Q_LAST_MONTH[qKey];
+    _suppressLog = true; // migração ao expandir não é edição
     Object.keys(PRODS).forEach(prodKey => {
       if (!RDMAP[prodKey]) return;
       const items = (RDMAP[prodKey][qKey] || []).slice();
@@ -3693,6 +3934,7 @@ function toggleRdQ(qKey) {
       RDMAP[prodKey][qKey] = [];
       fbSaveRdmap(prodKey);
     });
+    _suppressLog = false;
   } else {
     // COLLAPSE: just hide the columns visually — do NOT merge data back
     // Items stay in their month keys, collapsed view reads from month keys too
@@ -3715,7 +3957,10 @@ function startEditMarco(event, prodKey, period, idx) {
   inp.style.cssText = 'font-size:10px;border:1.5px solid var(--gm);border-radius:4px;padding:2px 6px;width:100%;outline:none;background:#fff;box-sizing:border-box';
   const save = () => {
     const v = inp.value.trim();
-    if (v) { RDMAP[prodKey][period][idx].txt = v; fbSaveRdmap(prodKey); }
+    if (v && v !== cur) {
+      setEditDetail('renomeou entrega', `${rdLbl(period)}: "${cur}" → "${v}"`);
+      RDMAP[prodKey][period][idx].txt = v; fbSaveRdmap(prodKey);
+    }
     renderRdmap();
   };
   inp.onblur   = save;
@@ -3729,6 +3974,7 @@ function moveMarco(prodKey, period, fromIdx, dir) {
   const arr = RDMAP[prodKey][period];
   const toIdx = fromIdx + dir;
   if (toIdx < 0 || toIdx >= arr.length) return;
+  setEditDetail('reordenou', `${rdLbl(period)}`);
   const tmp = arr[fromIdx]; arr[fromIdx] = arr[toIdx]; arr[toIdx] = tmp;
   fbSaveRdmap(prodKey);
   renderRdmap();
@@ -3763,6 +4009,7 @@ function moveMarcoPeriod(prodKey, fromPeriod, idx, dir) {
   if (!RDMAP[prodKey][fromPeriod]) return;
   const item = RDMAP[prodKey][fromPeriod].splice(idx, 1)[0];
   if (!RDMAP[prodKey][toPeriod]) RDMAP[prodKey][toPeriod] = [];
+  setEditDetail('moveu entrega', `"${item ? item.txt : ''}": ${rdLbl(fromPeriod)} → ${rdLbl(toPeriod)}`);
   RDMAP[prodKey][toPeriod].push(item);
   fbSaveRdmap(prodKey);
   renderRdmap();
@@ -3901,7 +4148,9 @@ function handleImportFile(input) {
 
 function savePbField(key,field,value){
   if(!PRODS[key])return;
+  if(!requireEditor(()=>savePbField(key,field,value)))return;
   PRODS[key][field]=value;
+  setEditDetail('editou campo', field);
   fbSaveProd(key);
 }
 
