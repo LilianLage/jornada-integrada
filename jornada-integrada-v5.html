@@ -400,29 +400,39 @@ button,input,select,textarea{font-family:inherit;}
 .rdmap-mcell:hover .rd-add-btn,
 .rdmap-qcell:hover .rd-add-btn{display:block;}
 .rd-add-btn:hover{border-color:var(--gm);color:var(--g);}
-/* ── Roadmap Gantt (named deliverables) ── */
+/* ── Roadmap Gantt (spanning deliverables) ── */
 .gnt-wrap{overflow-x:auto;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--wh);}
-.gnt-grid{min-width:1080px;}
-.gnt-row{display:grid;grid-template-columns:184px repeat(6,1fr);}
-.gnt-head .gnt-h{padding:11px 8px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;text-align:center;color:#fff;background:#003d22;border-right:1px solid rgba(255,255,255,.1);}
+.gnt-row{display:grid;}
+.gnt-head .gnt-h{padding:9px 6px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;text-align:center;color:#fff;background:#003d22;border-right:1px solid rgba(255,255,255,.1);line-height:1.2;}
 .gnt-head .gnt-h.cur{background:#005a2e;}
-.gnt-head .gnt-h.first{position:sticky;left:0;z-index:4;text-align:left;padding-left:14px;}
+.gnt-head .gnt-h.first{position:sticky;left:0;z-index:5;text-align:left;padding-left:14px;}
 .gnt-grp{grid-column:1/-1;padding:6px 14px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;border-top:1.5px solid var(--bd);background:var(--gyb);}
-.gnt-name{padding:11px 12px 11px 14px;position:sticky;left:0;z-index:2;background:var(--gyb);border-right:1.5px solid var(--bd);border-top:1px solid var(--bd);}
-.gnt-pnm{font-size:11px;font-weight:800;color:var(--tx);line-height:1.25;}
+.gnt-prow{position:relative;}
+.gnt-name{grid-column:1;padding:9px 12px;position:sticky;left:0;z-index:4;background:var(--gyb);border-right:1.5px solid var(--bd);border-top:1px solid var(--bd);}
+.gnt-pnm{font-size:11px;font-weight:800;color:var(--tx);line-height:1.2;}
 .gnt-psub{font-size:8px;color:var(--t3);margin-top:5px;display:flex;align-items:center;gap:6px;font-weight:700;}
-.gnt-prog{flex:0 0 54px;height:5px;border-radius:3px;background:#e2e8f0;overflow:hidden;}
+.gnt-prog{flex:0 0 50px;height:5px;border-radius:3px;background:#e2e8f0;overflow:hidden;}
 .gnt-prog>i{display:block;height:100%;background:var(--gm);border-radius:3px;}
-.gnt-cell{padding:8px 7px;border-top:1px solid var(--bd);border-right:1px solid var(--bd);display:flex;flex-direction:column;gap:5px;justify-content:center;min-width:140px;}
-.gnt-cell.cur{background:#f3fbf6;}
-.gnt-bar{border-radius:7px;padding:6px 9px;font-size:9.5px;font-weight:700;line-height:1.25;cursor:default;transition:transform .12s,box-shadow .12s;border-left:3px solid transparent;display:flex;gap:6px;align-items:flex-start;}
+.gnt-add{margin-top:7px;font-size:8px;font-weight:800;color:var(--g);background:var(--gb);border:1px dashed var(--gm);border-radius:5px;padding:3px 0;cursor:pointer;width:100%;text-align:center;}
+.gnt-bg{border-right:1px solid var(--bd);border-top:1px solid var(--bd);}
+.gnt-bg.cur{background:#f3fbf6;}
+.gnt-bar{align-self:center;margin:3px;border-radius:7px;padding:5px 9px;font-size:9.5px;font-weight:700;line-height:1.2;border-left:3px solid transparent;display:flex;gap:6px;align-items:center;overflow:hidden;transition:transform .12s,box-shadow .12s;z-index:1;}
 .gnt-bar:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(0,0,0,.13);}
-.gnt-ic{font-size:9px;flex-shrink:0;margin-top:1px;}
-.gnt-tx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.gnt-bar.clk{cursor:pointer;}
+.gnt-ic{font-size:9px;flex-shrink:0;}
+.gnt-tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .gnt-bar.done{background:#e7f7ee;color:#0a6b3b;border-left-color:var(--gm);}
 .gnt-bar.doing{background:#fff1e3;color:#9a4d00;border-left-color:var(--o);}
 .gnt-bar.todo{background:#f1f5f9;color:#64748b;border-left-color:#cbd5e1;border-left-style:dashed;}
-.gnt-empty{height:3px;border-radius:3px;background:repeating-linear-gradient(90deg,#eef2f6 0 6px,transparent 6px 12px);}
+.gnt-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:9999;}
+.gnt-modal-bg.open{display:flex;}
+.gnt-modal{background:#fff;border-radius:12px;padding:18px 20px;width:340px;max-width:92vw;box-shadow:0 20px 50px rgba(0,0,0,.3);}
+.gnt-modal h4{margin:0 0 4px;font-size:13px;font-weight:800;color:var(--tx);}
+.gnt-modal label{display:block;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t2);margin:11px 0 4px;}
+.gnt-modal input,.gnt-modal select{width:100%;border:1px solid var(--bd);border-radius:6px;padding:6px 9px;font-size:11px;outline:none;box-sizing:border-box;}
+.gnt-mrow{display:flex;gap:8px;}
+.gnt-mrow>div{flex:1;}
+.gnt-mbtns{display:flex;gap:8px;margin-top:16px;align-items:center;}
 /* Inline add input */
 .rd-add-input-wrap{display:none;margin-top:5px;gap:4px;}
 .rd-add-input-wrap.open{display:flex;}
@@ -1068,6 +1078,32 @@ button,input,select,textarea{font-family:inherit;}
 
 
 <!-- ══════ EVOLUÇÃO DE KRs ══════ -->
+<div class="gnt-modal-bg" id="gnt-edit-bg" onclick="if(event.target===this)closeGanttEdit()">
+  <div class="gnt-modal">
+    <h4>Editar entrega</h4>
+    <div style="font-size:9px;color:var(--t3);margin-bottom:6px">Início e fim em meses de 2026. O fim é o prazo.</div>
+    <label>Descrição</label>
+    <input type="text" id="gnt-e-txt" placeholder="Descrição da entrega">
+    <label>Status</label>
+    <select id="gnt-e-st">
+      <option value="todo">○ Previsto</option>
+      <option value="doing">▸ Em andamento</option>
+      <option value="done">✓ Feito</option>
+    </select>
+    <div class="gnt-mrow">
+      <div><label>Início</label><select id="gnt-e-ini"></select></div>
+      <div><label>Fim (prazo)</label><select id="gnt-e-fim"></select></div>
+    </div>
+    <div class="gnt-mbtns">
+      <button onclick="deleteGanttEdit()" style="border:none;background:none;color:#dc2626;font-size:11px;font-weight:700;cursor:pointer">Excluir</button>
+      <div style="margin-left:auto;display:flex;gap:8px">
+        <button onclick="closeGanttEdit()" style="border:1px solid var(--bd);background:#fff;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button onclick="saveGanttEdit()" style="border:none;background:var(--g);color:#fff;border-radius:7px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="pg" id="pg-okrev">
 
   <!-- Fixed-height layout matching left column height -->
@@ -2947,13 +2983,46 @@ function setRdView(v){
     setBtn(bm,true); setBtn(bg,false);
   }
 }
+// período (chave) → faixa de meses [ini,fim]; 13 = Backlog 2027
+const RD_MLBL2={JAN:'Jan',FEV:'Fev',MAR:'Mar',ABR:'Abr',MAI:'Mai',JUN:'Jun',JUL:'Jul',AGO:'Ago',SET:'Set',OUT:'Out',NOV:'Nov',DEZ:'Dez'};
+const RD_PRANGE={JAN:[1,1],FEV:[2,2],MAR:[3,3],ABR:[4,4],MAI:[5,5],JUN:[6,6],JUL:[7,7],AGO:[8,8],SET:[9,9],OUT:[10,10],NOV:[11,11],DEZ:[12,12],'1T':[1,3],'3T':[7,9],'4T':[10,12],BL27:[13,13]};
+const RD_MOPTS=[[1,'Jan'],[2,'Fev'],[3,'Mar'],[4,'Abr'],[5,'Mai'],[6,'Jun'],[7,'Jul'],[8,'Ago'],[9,'Set'],[10,'Out'],[11,'Nov'],[12,'Dez'],[13,'Backlog 2027']];
+// Colunas visíveis do Gantt — espelham a matriz (mês a mês, trimestres recolhíveis)
+function rdGanttCols(){
+  const cols=[];
+  const mon=(mn)=>cols.push({key:mn,label:RD_MLBL2[mn],sub:'',ms:RD_PRANGE[mn][0],me:RD_PRANGE[mn][1],quarter:false,toggle:null,collapseArrow:false,cur:mn===CURRENT_PERIOD});
+  const qcol=(qk,lbl,sub)=>cols.push({key:qk,label:lbl,sub:sub,ms:RD_PRANGE[qk][0],me:RD_PRANGE[qk][1],quarter:true,toggle:qk,collapseArrow:false,cur:CURRENT_PERIOD===qk});
+  const q1=rdQExpanded.has('1T'),q3=rdQExpanded.has('3T'),q4=rdQExpanded.has('4T');
+  if(q1){['JAN','FEV','MAR'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='1T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('1T','1º Tri','Jan–Mar');
+  ['ABR','MAI','JUN'].forEach(mon);
+  if(q3){['JUL','AGO','SET'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='3T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('3T','3º Tri','Jul–Set');
+  if(q4){['OUT','NOV','DEZ'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='4T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('4T','4º Tri','Out–Dez');
+  cols.push({key:'BL27',label:'Backlog',sub:'2027',ms:13,me:13,quarter:false,toggle:null,collapseArrow:false,cur:false});
+  return cols;
+}
+function rdColIdx(cols,month){ for(let i=0;i<cols.length;i++){ if(month>=cols[i].ms && month<=cols[i].me) return i; } return cols.length-1; }
+function rdMarcoSpan(periodKey,m){
+  const kr=RD_PRANGE[periodKey]||[1,1];
+  let s=(typeof m.ini==='number')?m.ini:kr[0];
+  let e=(typeof m.fim==='number')?m.fim:kr[1];
+  if(s>e) s=e;
+  return [s,e];
+}
 function buildRdmapGantt(){
   const wrap=document.getElementById('rdmap-gantt-wrap');
   if(!wrap) return;
   const icon={done:'✓',doing:'▸',todo:'○'};
-  let h='<div class="gnt-wrap"><div class="gnt-grid">';
-  h+='<div class="gnt-row gnt-head"><div class="gnt-h first">Produto</div>';
-  PERIODS.forEach(per=>{ const cur=per===CURRENT_PERIOD; h+='<div class="gnt-h'+(cur?' cur':'')+'">'+PERIOD_LABELS[per].split('\n')[0]+(cur?' ◀':'')+'</div>'; });
+  const cols=rdGanttCols(), nC=cols.length;
+  const tpl='184px repeat('+nC+',1fr)';
+  const minw=184+nC*118;
+  let h='<div class="gnt-wrap"><div class="gnt-grid" style="min-width:'+minw+'px">';
+  // header
+  h+='<div class="gnt-row gnt-head" style="grid-template-columns:'+tpl+'"><div class="gnt-h first">Produto</div>';
+  cols.forEach(c=>{
+    const clk=c.toggle?(' onclick="toggleRdQ(\''+c.toggle+'\')" style="cursor:pointer" title="'+(c.quarter?'Expandir por mês':'Recolher trimestre')+'"'):'';
+    const mark=c.quarter?' ▶':(c.collapseArrow?' ▾':'');
+    h+='<div class="gnt-h'+(c.cur?' cur':'')+'"'+clk+'>'+c.label+mark+(c.cur?' ◀':'')+(c.sub?'<br><span style="font-size:7px;opacity:.7;font-weight:600">'+c.sub+'</span>':'')+'</div>';
+  });
   h+='</div>';
   const groups=[{k:'est',l:'Estratégia',c:'var(--est)'},{k:'pre',l:'Pré-Obra',c:'var(--pre)'},{k:'obra',l:'Obra',c:'var(--obra)'}];
   let any=false;
@@ -2962,24 +3031,35 @@ function buildRdmapGantt(){
     const prods=Object.entries(PRODS).filter(([k,p])=>p.etapa===g.k && rdGanttVisible(k,p));
     if(!prods.length) return;
     any=true;
-    h+='<div class="gnt-row"><div class="gnt-grp" style="color:'+g.c+';border-left:4px solid '+g.c+'">'+g.l+'</div></div>';
+    h+='<div class="gnt-row" style="grid-template-columns:'+tpl+'"><div class="gnt-grp" style="color:'+g.c+';border-left:4px solid '+g.c+'">'+g.l+'</div></div>';
     prods.forEach(([key,p])=>{
       const rd=RDMAP[key]||{};
-      let done=0,total=0; PERIODS.forEach(per=>(rd[per]||[]).forEach(m=>{total++; if(m.s==='done')done++;}));
+      // coleta entregas de todas as chaves do produto + calcula span em colunas
+      const items=[]; let done=0,total=0;
+      Object.keys(rd).forEach(pk=>{
+        (rd[pk]||[]).forEach((m,i)=>{
+          total++; if(m.s==='done')done++;
+          const sp=rdMarcoSpan(pk,m);
+          let sc=rdColIdx(cols,sp[0]), ec=rdColIdx(cols,sp[1]);
+          items.push({pk,i,m,sc:Math.min(sc,ec),ec:Math.max(sc,ec)});
+        });
+      });
+      // empilhamento em faixas (lane packing)
+      items.sort((a,b)=> a.sc-b.sc || a.ec-b.ec);
+      const lanes=[];
+      items.forEach(it=>{ let pl=false; for(let l=0;l<lanes.length;l++){ if(lanes[l]<it.sc){ it.lane=l; lanes[l]=it.ec; pl=true; break; } } if(!pl){ it.lane=lanes.length; lanes.push(it.ec); } });
+      const nL=Math.max(1,lanes.length);
       const pctc=total?Math.round(done/total*100):0;
-      h+='<div class="gnt-row">';
-      h+='<div class="gnt-name"><div class="gnt-pnm">'+p.nm+'</div>'
-        +'<div class="gnt-psub">'+(total?('<span class="gnt-prog"><i style="width:'+pctc+'%"></i></span>'+done+'/'+total+' feitas'):'sem entregas')+'</div></div>';
-      PERIODS.forEach(per=>{
-        const cur=per===CURRENT_PERIOD;
-        const marcos=rd[per]||[];
-        let inner;
-        if(marcos.length){
-          inner=marcos.map(m=>'<div class="gnt-bar '+m.s+'" title="'+m.txt.replace(/"/g,'&quot;')+'"><span class="gnt-ic">'+icon[m.s]+'</span><span class="gnt-tx">'+m.txt+'</span></div>').join('');
-        } else {
-          inner='<div class="gnt-empty"></div>';
-        }
-        h+='<div class="gnt-cell'+(cur?' cur':'')+'">'+inner+'</div>';
+      h+='<div class="gnt-row gnt-prow" style="grid-template-columns:'+tpl+';grid-template-rows:repeat('+nL+',minmax(30px,auto))">';
+      h+='<div class="gnt-name" style="grid-row:1/'+(nL+1)+'"><div class="gnt-pnm">'+p.nm+'</div>'
+        +'<div class="gnt-psub">'+(total?('<span class="gnt-prog"><i style="width:'+pctc+'%"></i></span>'+done+'/'+total):'sem entregas')+'</div>'
+        +(rdEditMode?'<div class="gnt-add" onclick="addGanttEntrega(\''+key+'\')">+ entrega</div>':'')
+        +'</div>';
+      cols.forEach((c,ci)=>{ h+='<div class="gnt-bg'+(c.cur?' cur':'')+'" style="grid-column:'+(ci+2)+';grid-row:1/'+(nL+1)+'"></div>'; });
+      items.forEach(it=>{
+        const tip=it.m.txt.replace(/"/g,'&quot;');
+        const oc=rdEditMode?(' onclick="openGanttMarcoEdit(\''+key+'\',\''+it.pk+'\','+it.i+')"'):'';
+        h+='<div class="gnt-bar '+it.m.s+(rdEditMode?' clk':'')+'" style="grid-column:'+(it.sc+2)+'/'+(it.ec+3)+';grid-row:'+(it.lane+1)+'" title="'+tip+'"'+oc+'><span class="gnt-ic">'+icon[it.m.s]+'</span><span class="gnt-tx">'+it.m.txt+'</span></div>';
       });
       h+='</div>';
     });
@@ -2990,9 +3070,58 @@ function buildRdmapGantt(){
     +'<span style="display:flex;align-items:center;gap:5px;color:#0a6b3b"><span style="width:13px;height:13px;border-radius:4px;background:#e7f7ee;border-left:3px solid var(--gm)"></span>Feito</span>'
     +'<span style="display:flex;align-items:center;gap:5px;color:#9a4d00"><span style="width:13px;height:13px;border-radius:4px;background:#fff1e3;border-left:3px solid var(--o)"></span>Em andamento</span>'
     +'<span style="display:flex;align-items:center;gap:5px;color:#64748b"><span style="width:13px;height:13px;border-radius:4px;background:#f1f5f9;border-left:3px dashed #cbd5e1"></span>Previsto</span>'
-    +'<span style="margin-left:auto;color:var(--t3);font-style:italic">Passe o mouse sobre uma entrega para ver o texto completo</span>'
+    +'<span style="margin-left:auto;color:var(--t3);font-style:italic">'+(rdEditMode?'Clique numa entrega para editar início/fim · use "+ entrega"':'Clique em ✏️ Editar para ajustar início/fim · clique num trimestre para expandir')+'</span>'
     +'</div>';
   wrap.innerHTML=h;
+}
+// ── Editor de entrega no Gantt (texto, status, início, fim) ──
+let gntEdit=null;
+function rdFillMonthSel(sel,val){ if(!sel)return; sel.innerHTML=RD_MOPTS.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===val?' selected':'')+'>'+o[1]+'</option>';}).join(''); }
+function openGanttMarcoEdit(prodKey,periodKey,idx){
+  if(!rdEditMode) return;
+  const m=RDMAP[prodKey] && RDMAP[prodKey][periodKey] && RDMAP[prodKey][periodKey][idx];
+  if(!m) return;
+  gntEdit={prodKey,periodKey,idx};
+  const kr=RD_PRANGE[periodKey]||[1,1];
+  document.getElementById('gnt-e-txt').value=m.txt||'';
+  document.getElementById('gnt-e-st').value=m.s||'todo';
+  rdFillMonthSel(document.getElementById('gnt-e-ini'), (typeof m.ini==='number')?m.ini:kr[0]);
+  rdFillMonthSel(document.getElementById('gnt-e-fim'), (typeof m.fim==='number')?m.fim:kr[1]);
+  document.getElementById('gnt-edit-bg').classList.add('open');
+  setTimeout(function(){ const t=document.getElementById('gnt-e-txt'); if(t){t.focus();t.select();} },30);
+}
+function closeGanttEdit(){ const bg=document.getElementById('gnt-edit-bg'); if(bg) bg.classList.remove('open'); gntEdit=null; }
+function saveGanttEdit(){
+  if(!gntEdit) return;
+  const m=RDMAP[gntEdit.prodKey] && RDMAP[gntEdit.prodKey][gntEdit.periodKey] && RDMAP[gntEdit.prodKey][gntEdit.periodKey][gntEdit.idx];
+  if(!m){ closeGanttEdit(); return; }
+  const txt=document.getElementById('gnt-e-txt').value.trim();
+  let ini=+document.getElementById('gnt-e-ini').value, fim=+document.getElementById('gnt-e-fim').value;
+  if(ini>fim) ini=fim;
+  if(txt) m.txt=txt;
+  m.s=document.getElementById('gnt-e-st').value;
+  m.ini=ini; m.fim=fim;
+  setEditDetail('editou entrega (Gantt)', '"'+m.txt+'"');
+  fbSaveRdmap(gntEdit.prodKey);
+  closeGanttEdit();
+  renderRdmap();
+}
+function deleteGanttEdit(){
+  if(!gntEdit) return;
+  const c=gntEdit; closeGanttEdit();
+  deleteMarco(c.prodKey,c.periodKey,c.idx);
+}
+function addGanttEntrega(prodKey){
+  if(!rdEditMode) return;
+  const key=CURRENT_PERIOD;
+  if(!RDMAP[prodKey]) RDMAP[prodKey]={};
+  if(!RDMAP[prodKey][key]) RDMAP[prodKey][key]=[];
+  RDMAP[prodKey][key].push({txt:'Nova entrega',s:'todo'});
+  const idx=RDMAP[prodKey][key].length-1;
+  setEditDetail('adicionou entrega (Gantt)','');
+  fbSaveRdmap(prodKey);
+  renderRdmap();
+  openGanttMarcoEdit(prodKey,key,idx);
 }
 
 
