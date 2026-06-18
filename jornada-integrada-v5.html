@@ -400,6 +400,29 @@ button,input,select,textarea{font-family:inherit;}
 .rdmap-mcell:hover .rd-add-btn,
 .rdmap-qcell:hover .rd-add-btn{display:block;}
 .rd-add-btn:hover{border-color:var(--gm);color:var(--g);}
+/* ── Roadmap Gantt (named deliverables) ── */
+.gnt-wrap{overflow-x:auto;border:1.5px solid var(--bd);border-radius:var(--r);background:var(--wh);}
+.gnt-grid{min-width:1080px;}
+.gnt-row{display:grid;grid-template-columns:184px repeat(6,1fr);}
+.gnt-head .gnt-h{padding:11px 8px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;text-align:center;color:#fff;background:#003d22;border-right:1px solid rgba(255,255,255,.1);}
+.gnt-head .gnt-h.cur{background:#005a2e;}
+.gnt-head .gnt-h.first{position:sticky;left:0;z-index:4;text-align:left;padding-left:14px;}
+.gnt-grp{grid-column:1/-1;padding:6px 14px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;border-top:1.5px solid var(--bd);background:var(--gyb);}
+.gnt-name{padding:11px 12px 11px 14px;position:sticky;left:0;z-index:2;background:var(--gyb);border-right:1.5px solid var(--bd);border-top:1px solid var(--bd);}
+.gnt-pnm{font-size:11px;font-weight:800;color:var(--tx);line-height:1.25;}
+.gnt-psub{font-size:8px;color:var(--t3);margin-top:5px;display:flex;align-items:center;gap:6px;font-weight:700;}
+.gnt-prog{flex:0 0 54px;height:5px;border-radius:3px;background:#e2e8f0;overflow:hidden;}
+.gnt-prog>i{display:block;height:100%;background:var(--gm);border-radius:3px;}
+.gnt-cell{padding:8px 7px;border-top:1px solid var(--bd);border-right:1px solid var(--bd);display:flex;flex-direction:column;gap:5px;justify-content:center;min-width:140px;}
+.gnt-cell.cur{background:#f3fbf6;}
+.gnt-bar{border-radius:7px;padding:6px 9px;font-size:9.5px;font-weight:700;line-height:1.25;cursor:default;transition:transform .12s,box-shadow .12s;border-left:3px solid transparent;display:flex;gap:6px;align-items:flex-start;}
+.gnt-bar:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(0,0,0,.13);}
+.gnt-ic{font-size:9px;flex-shrink:0;margin-top:1px;}
+.gnt-tx{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+.gnt-bar.done{background:#e7f7ee;color:#0a6b3b;border-left-color:var(--gm);}
+.gnt-bar.doing{background:#fff1e3;color:#9a4d00;border-left-color:var(--o);}
+.gnt-bar.todo{background:#f1f5f9;color:#64748b;border-left-color:#cbd5e1;border-left-style:dashed;}
+.gnt-empty{height:3px;border-radius:3px;background:repeating-linear-gradient(90deg,#eef2f6 0 6px,transparent 6px 12px);}
 /* Inline add input */
 .rd-add-input-wrap{display:none;margin-top:5px;gap:4px;}
 .rd-add-input-wrap.open{display:flex;}
@@ -679,8 +702,9 @@ button,input,select,textarea{font-family:inherit;}
           }
         });
         if (window.setSyncStatus) window.setSyncStatus('ok');
-        // Rebuild active tab
-        if (typeof buildPort === 'function') buildPort();
+        // Reconcile KR_DATA shape with loaded PRODS and rebuild the active tab
+        if (typeof window.refreshAfterLoad === 'function') window.refreshAfterLoad();
+        else if (typeof buildPort === 'function') buildPort();
       } catch(e) {
         console.error('Firebase load error:', e);
         if (window.setSyncStatus) window.setSyncStatus('error');
@@ -1006,6 +1030,11 @@ button,input,select,textarea{font-family:inherit;}
   <div class="sh">
     <div class="sh-t"><span class="pulse"></span>Roadmap Integrado · 2026</div>
     <div class="frow" style="align-items:center;">
+      <div style="display:flex;border:1px solid var(--bd);border-radius:7px;overflow:hidden">
+        <button id="rdv-matriz" onclick="setRdView('matriz')" style="border:none;padding:5px 13px;font-size:10px;font-weight:700;cursor:pointer;background:var(--g);color:#fff">Matriz</button>
+        <button id="rdv-gantt" onclick="setRdView('gantt')" style="border:none;padding:5px 13px;font-size:10px;font-weight:700;cursor:pointer;background:#fff;color:var(--t2)">Gantt</button>
+      </div>
+      <div class="fsep"></div>
       <button class="rd-edit-toggle" id="rd-edit-btn" onclick="toggleRdEdit()" title="Ativar modo de edição">✏️ Editar</button>
       <div class="fsep"></div>
       <div id="rd-prod-filters" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
@@ -1033,6 +1062,7 @@ button,input,select,textarea{font-family:inherit;}
     <div style="margin-left:auto;font-size:10px;color:var(--t3);font-style:italic">Modo edição (✏️): altere status e adicione/remova entregas</div>
   </div>
       <div id="rdmap-wrap"></div>
+      <div id="rdmap-gantt-wrap" style="display:none"></div>
   </div>
 </div>
 
@@ -1322,10 +1352,75 @@ const PRODS = {
 const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
 
+// ── KR: % da meta atingida ──
+// real/meta são texto livre na unidade do KR (ex: "56%", "200,4h", "2,05d", "≤5d").
+// dir: 'up' = maior é melhor (padrão) · 'down' = menor é melhor (metas tipo ≤).
+function krNum(s){
+  if(s===null||s===undefined) return null;
+  const m=String(s).replace(/,/g,'.').match(/-?\d+(?:\.\d+)?/);
+  return m?parseFloat(m[0]):null;
+}
+function krDir(kr){
+  if(kr.dir==='down'||kr.dir==='up') return kr.dir;
+  return /≤|<=|menor|redu[zç]/i.test(String(kr.meta||'')) ? 'down' : 'up';
+}
+function krAting(kr){
+  // % da meta atingida (0–100); null se a meta não for numérica
+  const meta=krNum(kr.meta), real=krNum(kr.real);
+  if(meta===null||meta===0||real===null) return null;
+  let pct = krDir(kr)==='down' ? (meta/real*100) : (real/meta*100);
+  if(!isFinite(pct)) return null;
+  return Math.max(0,Math.min(100,Math.round(pct)));
+}
+function krPct(kr){ const a=krAting(kr); return a===null ? Math.round(kr.atual||0) : a; }
+function krColorKey(pct){ return pct>=80?'v':pct>=40?'o':'g'; }
+function krDotCol(kr){ const c=krColorKey(krPct(kr)); return c==='v'?'var(--gm)':c==='o'?'var(--o)':'var(--gy)'; }
+function krValsHTML(kr){
+  // Opção 2: % da meta em destaque + valor bruto (realizado · meta) como legenda
+  const pct=krPct(kr), c=krColorKey(pct);
+  const kc=c==='v'?'pf-v':c==='o'?'pf-o':'pf-g';
+  const kpc=c==='v'?'pct-v':c==='o'?'pct-o':'pct-g';
+  const ating=krAting(kr);
+  const hasReal=kr.real&&kr.real!=='—';
+  const hasMeta=kr.meta&&kr.meta!=='—';
+  let legend='';
+  if(ating!==null) legend=(hasReal?kr.real:'—')+' · meta '+kr.meta;
+  else if(hasReal&&hasMeta) legend=kr.real+' · meta '+kr.meta;
+  else if(hasMeta) legend='meta '+kr.meta;
+  else if(hasReal) legend=kr.real;
+  const leg = legend ? '<span style="font-size:8px;font-weight:500;color:var(--t3);line-height:1.1">'+legend+'</span>' : '';
+  return '<div class="kr-bar"><div class="kr-bar-fill '+kc+'" style="width:'+pct+'%"></div></div>'+
+    '<span class="kr-num '+kpc+'" style="display:flex;flex-direction:column;align-items:flex-end;gap:1px;line-height:1.1"><span>'+pct+'%</span>'+leg+'</span>';
+}
+// ── Realizado: fonte única = aba Evolução de KRs ──
+function fmtNum(n){
+  if(n===null||n===undefined) return '';
+  return (Math.round(n*100)/100).toString().replace('.', ',');
+}
+function krUnit(kr){
+  const m=String(kr.meta||'');
+  if(!m||m==='—') return '';
+  return m.replace(/[0-9.,\s]/g,'').replace(/^[≥≤<>=~+\-]+/,'').replace(/—/g,'').trim();
+}
+function krLatestReal(key,oi,ki){
+  const kd=(window.KR_DATA||KR_DATA)[key] && (window.KR_DATA||KR_DATA)[key][oi] && (window.KR_DATA||KR_DATA)[key][oi][ki];
+  if(!kd||!kd.r) return null;
+  const v=kd.r.slice(0,CUR_M+1).reverse().find(x=>x!==null&&x!==undefined);
+  return (v===undefined)?null:v;
+}
+function syncKRFromEvo(key,oi,ki){
+  const kr=PRODS[key] && PRODS[key].okrs[oi] && PRODS[key].okrs[oi].krs[ki];
+  if(!kr) return;
+  const v=krLatestReal(key,oi,ki);
+  if(v!==null) kr.real=fmtNum(v)+krUnit(kr);   // ex.: "56%", "200,4h"
+  const a=krAting(kr);
+  kr.atual=(a!==null)?a:(v!==null?Math.round(v):(kr.atual||0));
+  kr.c=krColorKey(krPct(kr));
+}
 function calcProg(p){
-  let t=0,n=0;
-  p.okrs.forEach(o=>o.krs.forEach(k=>{t+=k.atual;n++;}));
-  const pct=n?Math.round(t/n):0;
+  // progresso do produto = média dos OKRs; cada OKR = média do % da meta dos seus KRs
+  const okrPcts = p.okrs.map(o => o.krs.length ? o.krs.reduce((a,k)=>a+krPct(k),0)/o.krs.length : 0);
+  const pct = okrPcts.length ? Math.round(okrPcts.reduce((a,b)=>a+b,0)/okrPcts.length) : 0;
   const c=pct>=80?'v':pct>=40?'o':'g';
   const krs=p.okrs.reduce((a,o)=>a+o.krs.length,0);
   return{pct,c,label:`${p.okrs.length} obj · ${krs} KRs`};
@@ -1477,16 +1572,12 @@ function buildPort(){
         <div class="okr-block">
           <div class="okr-ttl">🎯 ${okr.ttl}</div>
           ${okr.krs.map(kr=>{
-            const kc=kr.c==='v'?'pf-v':kr.c==='o'?'pf-o':'pf-g';
-            const kpc=kr.c==='v'?'pct-v':kr.c==='o'?'pct-o':'pct-g';
-            const kdotcol=kr.c==='v'?'var(--gm)':kr.c==='o'?'var(--o)':'var(--gy)';
             return `<div class="kr-item">
-              <span class="kr-dot" style="background:${kdotcol};margin-top:5px"></span>
+              <span class="kr-dot" style="background:${krDotCol(kr)};margin-top:5px"></span>
               <div class="kr-info">
                 <div class="kr-lbl">${kr.lbl}</div>
                 <div class="kr-vals">
-                  <div class="kr-bar"><div class="kr-bar-fill ${kc}" style="width:${kr.atual}%"></div></div>
-                  <span class="kr-num ${kpc}">${kr.real||'—'} / ${kr.meta}</span>
+                  ${krValsHTML(kr)}
                 </div>
               </div>
             </div>`;
@@ -1967,36 +2058,96 @@ function updateKRFromFields(oi, ki) {
 function renderEditOKRs(p){
   const cont=document.getElementById('ep-okrs');
   cont.innerHTML='';
-  // Note: edit KR values (Realizado/Meta/Projetado) in the "Evolução de KRs" tab
-  cont.innerHTML += `<div style="background:var(--ob);border:1px solid var(--o);border-radius:6px;padding:7px 12px;margin-bottom:10px;font-size:9px;color:#7a3d00;font-weight:600">
-    ℹ️ Para editar progresso dos KRs, use a aba <b>📈 Evolução de KRs</b>. Aqui você edita apenas o título dos OKRs e a estrutura dos KRs.
+  cont.innerHTML += `<div style="background:var(--gb);border:1px solid var(--gm);border-radius:6px;padding:7px 12px;margin-bottom:10px;font-size:9px;color:var(--g);font-weight:600">
+    ℹ️ <b>Realizado</b> vem da aba <b>📈 Evolução de KRs</b> (último mês preenchido). Aqui você define a <b>Meta</b> na unidade do KR (%, h, dias, R$…) e a <b>direção</b>. O <b>% da meta</b> é calculado automaticamente.
   </div>`;
   p.okrs.forEach((okr,oi)=>{
     const krsHtml=okr.krs.map((kr,ki)=>{
-      const pct = kr.atual || 0;
+      const pct = krPct(kr);
       const pctColor = pct>=80?'var(--g)':pct>=40?'var(--o)':'var(--gy)';
+      const dir = krDir(kr);
+      const realDisp = (kr.real&&kr.real!=='—')?kr.real:'—';
+      const metaVal = (kr.meta&&kr.meta!=='—')?kr.meta:'';
       return `
-      <div class="kr-edit-row" style="align-items:center;gap:8px;margin-bottom:6px">
-        <input type="text" value="${kr.lbl}" onchange="PRODS[editKey].okrs[${oi}].krs[${ki}].lbl=this.value" placeholder="Descrição do KR" style="flex:1">
-        <div style="font-size:12px;font-weight:800;color:${pctColor};min-width:40px;text-align:right">${pct}%</div>
-        <button class="btn-del" onclick="PRODS[editKey].okrs[${oi}].krs.splice(${ki},1);renderEditOKRs(PRODS[editKey])">✕</button>
+      <div style="background:var(--gyb);border-radius:6px;padding:8px 10px;margin-bottom:6px">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+          <input type="text" value="${kr.lbl}" onchange="PRODS[editKey].okrs[${oi}].krs[${ki}].lbl=this.value" placeholder="Descrição do KR" style="flex:1;border:1px solid var(--bd);border-radius:5px;padding:4px 7px;font-size:10px;outline:none">
+          <button class="btn-del" onclick="delKR(${oi},${ki})">✕</button>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <div title="Realizado vem da aba Evolução de KRs" style="flex:1;min-width:0;border:1px dashed var(--bd);border-radius:5px;padding:4px 7px;font-size:10px;color:var(--t2);background:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${realDisp} <span style="font-size:7px;color:var(--t3)">· realiz. (Evolução)</span></div>
+          <input type="text" value="${metaVal}" onchange="setKRField(${oi},${ki},'meta',this.value)" placeholder="Meta (90%, ≥200h, ≤5d)" style="flex:1;min-width:0;border:1px solid var(--bd);border-radius:5px;padding:4px 7px;font-size:10px;outline:none">
+          <select onchange="setKRField(${oi},${ki},'dir',this.value)" title="Direção da meta" style="border:1px solid var(--bd);border-radius:5px;padding:4px;font-size:10px;outline:none">
+            <option value="up" ${dir==='up'?'selected':''}>↑ maior</option>
+            <option value="down" ${dir==='down'?'selected':''}>↓ menor</option>
+          </select>
+          <div id="kating-${oi}-${ki}" style="min-width:58px;text-align:right;font-size:12px;font-weight:800;color:${pctColor}">${pct}%<span style="display:block;font-size:7px;font-weight:500;color:var(--t3);line-height:1">da meta</span></div>
+        </div>
       </div>`;
     }).join('');
     cont.innerHTML+=`<div class="okr-edit-block">
       <div class="okr-edit-ttl-row">
         <input type="text" value="${okr.ttl}" onchange="PRODS[editKey].okrs[${oi}].ttl=this.value" placeholder="Título do OKR">
-        <button class="btn-del" onclick="PRODS[editKey].okrs.splice(${oi},1);renderEditOKRs(PRODS[editKey])">✕ OKR</button>
+        <button class="btn-del" onclick="delOKR(${oi})">✕ OKR</button>
       </div>
       ${krsHtml}
-      <button class="btn-add-kr" onclick="PRODS[editKey].okrs[${oi}].krs.push({lbl:'Novo KR',atual:0,meta:'—',real:'—',c:'g'});renderEditOKRs(PRODS[editKey])">+ Adicionar KR</button>
+      <button class="btn-add-kr" onclick="addKR(${oi})">+ Adicionar KR</button>
     </div>`;
   });
 }
 // updateKRSlider replaced by updateKRFromFields
+function setKRField(oi,ki,field,val){
+  if(!editKey)return;
+  const kr=PRODS[editKey].okrs[oi].krs[ki];
+  if(field==='meta')      kr.meta = val.trim()===''?'—':val.trim();
+  else if(field==='dir')  kr.dir  = (val==='down')?'down':'up';
+  const a=krAting(kr);
+  if(a!==null) kr.atual=a;          // meta numérica → % da meta calculado
+  kr.c=krColorKey(krPct(kr));
+  const cell=document.getElementById('kating-'+oi+'-'+ki);
+  if(cell){
+    const pct=krPct(kr);
+    cell.innerHTML=pct+'%<span style="display:block;font-size:7px;font-weight:500;color:var(--t3);line-height:1">da meta</span>';
+    cell.style.color=pct>=80?'var(--g)':pct>=40?'var(--o)':'var(--gy)';
+  }
+  setEditDetail('editou KR (meta/realizado)','');
+  fbSaveProd(editKey);
+}
 function addOKR(){
   if(!editKey)return;
   PRODS[editKey].okrs.push({ttl:'Novo Objetivo',krs:[{lbl:'KR1: ...',atual:0,meta:'—',real:'—',c:'g'}]});
+  reconcileKRData();
   renderEditOKRs(PRODS[editKey]);
+  setEditDetail('adicionou OKR','');
+  fbSaveProd(editKey);
+  fbSaveKRData(editKey);
+}
+function addKR(oi){
+  if(!editKey)return;
+  PRODS[editKey].okrs[oi].krs.push({lbl:'Novo KR',atual:0,meta:'—',real:'—',c:'g'});
+  reconcileKRData();
+  renderEditOKRs(PRODS[editKey]);
+  setEditDetail('adicionou KR','');
+  fbSaveProd(editKey);
+  fbSaveKRData(editKey);
+}
+function delKR(oi,ki){
+  if(!editKey)return;
+  PRODS[editKey].okrs[oi].krs.splice(ki,1);
+  if(KR_DATA[editKey] && KR_DATA[editKey][oi]) KR_DATA[editKey][oi].splice(ki,1);
+  renderEditOKRs(PRODS[editKey]);
+  setEditDetail('removeu KR','');
+  fbSaveProd(editKey);
+  fbSaveKRData(editKey);
+}
+function delOKR(oi){
+  if(!editKey)return;
+  PRODS[editKey].okrs.splice(oi,1);
+  if(KR_DATA[editKey]) KR_DATA[editKey].splice(oi,1);
+  renderEditOKRs(PRODS[editKey]);
+  setEditDetail('removeu OKR','');
+  fbSaveProd(editKey);
+  fbSaveKRData(editKey);
 }
 function saveEdit(){
   if(!editKey)return;
@@ -2015,7 +2166,7 @@ function saveEdit(){
   if (_sp && KR_DATA[editKey]) {
     _sp.okrs.forEach((okr, oi) => {
       okr.krs.forEach((kr, ki) => {
-        if (KR_DATA[editKey][oi] && KR_DATA[editKey][oi][ki]) {
+        if (KR_DATA[editKey][oi] && KR_DATA[editKey][oi][ki] && krAting(kr)===null) {
           KR_DATA[editKey][oi][ki].r[CUR_M] = kr.atual;
         }
       });
@@ -2762,6 +2913,86 @@ function renderRdmap() {
       <tbody>${tbodyHtml||'<tr><td colspan="15" style="padding:24px;text-align:center;color:var(--t3)">Nenhum produto.</td></tr>'}</tbody>
     </table>
   </div>`;
+  if(rdView==='gantt' && document.getElementById('rdmap-gantt-wrap')) buildRdmapGantt();
+}
+
+// ── Roadmap · visão Gantt (swimlane por produto) ──
+let rdView = 'matriz';
+const RD_STATUS_COL = {done:'var(--gm)', doing:'var(--o)', todo:'#cbd5e1'};
+function rdGanttVisible(key,p){
+  const hideProd   = rdFiltState.prods.size>0 && !rdFiltState.prods.has(key);
+  const hideGestor = rdFiltState.gestor && p.gestor!==rdFiltState.gestor
+    && !(rdFiltState.gestor==='l'&&p.gestor==='lm')
+    && !(rdFiltState.gestor==='m'&&p.gestor==='lm');
+  return !hideProd && !hideGestor;
+}
+function rdPeriodStatus(marcos){
+  if(!marcos||!marcos.length) return null;
+  let d=0,g=0,t=0; marcos.forEach(m=> m.s==='done'?d++:m.s==='doing'?g++:t++);
+  if(g>0) return 'doing';
+  if(d>0&&t>0) return d>=t?'done':'todo';
+  return d>0?'done':'todo';
+}
+function setRdView(v){
+  rdView = v;
+  const mw=document.getElementById('rdmap-wrap'), gw=document.getElementById('rdmap-gantt-wrap');
+  const bm=document.getElementById('rdv-matriz'), bg=document.getElementById('rdv-gantt');
+  const setBtn=(b,active)=>{ if(!b)return; b.style.background=active?'var(--g)':'#fff'; b.style.color=active?'#fff':'var(--t2)'; };
+  if(v==='gantt'){
+    if(mw) mw.style.display='none'; if(gw) gw.style.display='block';
+    setBtn(bg,true); setBtn(bm,false);
+    buildRdmapGantt();
+  } else {
+    if(gw) gw.style.display='none'; if(mw) mw.style.display='block';
+    setBtn(bm,true); setBtn(bg,false);
+  }
+}
+function buildRdmapGantt(){
+  const wrap=document.getElementById('rdmap-gantt-wrap');
+  if(!wrap) return;
+  const icon={done:'✓',doing:'▸',todo:'○'};
+  let h='<div class="gnt-wrap"><div class="gnt-grid">';
+  h+='<div class="gnt-row gnt-head"><div class="gnt-h first">Produto</div>';
+  PERIODS.forEach(per=>{ const cur=per===CURRENT_PERIOD; h+='<div class="gnt-h'+(cur?' cur':'')+'">'+PERIOD_LABELS[per].split('\n')[0]+(cur?' ◀':'')+'</div>'; });
+  h+='</div>';
+  const groups=[{k:'est',l:'Estratégia',c:'var(--est)'},{k:'pre',l:'Pré-Obra',c:'var(--pre)'},{k:'obra',l:'Obra',c:'var(--obra)'}];
+  let any=false;
+  groups.forEach(g=>{
+    if(rdFiltState.etapa && rdFiltState.etapa!==g.k) return;
+    const prods=Object.entries(PRODS).filter(([k,p])=>p.etapa===g.k && rdGanttVisible(k,p));
+    if(!prods.length) return;
+    any=true;
+    h+='<div class="gnt-row"><div class="gnt-grp" style="color:'+g.c+';border-left:4px solid '+g.c+'">'+g.l+'</div></div>';
+    prods.forEach(([key,p])=>{
+      const rd=RDMAP[key]||{};
+      let done=0,total=0; PERIODS.forEach(per=>(rd[per]||[]).forEach(m=>{total++; if(m.s==='done')done++;}));
+      const pctc=total?Math.round(done/total*100):0;
+      h+='<div class="gnt-row">';
+      h+='<div class="gnt-name"><div class="gnt-pnm">'+p.nm+'</div>'
+        +'<div class="gnt-psub">'+(total?('<span class="gnt-prog"><i style="width:'+pctc+'%"></i></span>'+done+'/'+total+' feitas'):'sem entregas')+'</div></div>';
+      PERIODS.forEach(per=>{
+        const cur=per===CURRENT_PERIOD;
+        const marcos=rd[per]||[];
+        let inner;
+        if(marcos.length){
+          inner=marcos.map(m=>'<div class="gnt-bar '+m.s+'" title="'+m.txt.replace(/"/g,'&quot;')+'"><span class="gnt-ic">'+icon[m.s]+'</span><span class="gnt-tx">'+m.txt+'</span></div>').join('');
+        } else {
+          inner='<div class="gnt-empty"></div>';
+        }
+        h+='<div class="gnt-cell'+(cur?' cur':'')+'">'+inner+'</div>';
+      });
+      h+='</div>';
+    });
+  });
+  if(!any) h+='<div style="padding:24px;text-align:center;color:var(--t3);font-size:11px">Nenhum produto.</div>';
+  h+='</div></div>';
+  h+='<div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;font-size:10px;font-weight:700;align-items:center">'
+    +'<span style="display:flex;align-items:center;gap:5px;color:#0a6b3b"><span style="width:13px;height:13px;border-radius:4px;background:#e7f7ee;border-left:3px solid var(--gm)"></span>Feito</span>'
+    +'<span style="display:flex;align-items:center;gap:5px;color:#9a4d00"><span style="width:13px;height:13px;border-radius:4px;background:#fff1e3;border-left:3px solid var(--o)"></span>Em andamento</span>'
+    +'<span style="display:flex;align-items:center;gap:5px;color:#64748b"><span style="width:13px;height:13px;border-radius:4px;background:#f1f5f9;border-left:3px dashed #cbd5e1"></span>Previsto</span>'
+    +'<span style="margin-left:auto;color:var(--t3);font-style:italic">Passe o mouse sobre uma entrega para ver o texto completo</span>'
+    +'</div>';
+  wrap.innerHTML=h;
 }
 
 
@@ -2931,16 +3162,12 @@ function renderProdRows(filterAlavanca) {
     // ── OKR blocks (full rich text)
     const okrHtml = p.okrs.map(okr => {
       const krsHtml = okr.krs.map(kr => {
-        const kc  = kr.c==='v' ? 'pf-v' : kr.c==='o' ? 'pf-o' : 'pf-g';
-        const kpc = kr.c==='v' ? 'pct-v': kr.c==='o' ? 'pct-o': 'pct-g';
-        const kdot= kr.c==='v' ? 'var(--gm)': kr.c==='o' ? 'var(--o)':'var(--gy)';
         return `<div class="kr-item" style="margin-bottom:6px">
-          <span class="kr-dot" style="background:${kdot};margin-top:5px;flex-shrink:0"></span>
+          <span class="kr-dot" style="background:${krDotCol(kr)};margin-top:5px;flex-shrink:0"></span>
           <div class="kr-info">
             <div class="kr-lbl">${kr.lbl}</div>
             <div class="kr-vals">
-              <div class="kr-bar"><div class="kr-bar-fill ${kc}" style="width:${kr.atual}%"></div></div>
-              <span class="kr-num ${kpc}">${kr.real||'—'} / ${kr.meta}</span>
+              ${krValsHTML(kr)}
             </div>
           </div>
         </div>`;
@@ -3058,6 +3285,8 @@ document.addEventListener('DOMContentLoaded', function(){
   window.PRODS   = PRODS;
   window.RDMAP   = RDMAP;
   window.KR_DATA = KR_DATA;
+  window.reconcileKRData  = reconcileKRData;
+  window.refreshAfterLoad = refreshAfterLoad;
   buildPort();
   setLastUpdated();
   updateEditorBadge();
@@ -3093,16 +3322,12 @@ function toggleRdChain(key) {
     // OKR blocks
     const okrHtml = p.okrs.map(okr => {
       const krsHtml = okr.krs.map(kr => {
-        const kc  = kr.c==='v' ? 'pf-v' : kr.c==='o' ? 'pf-o' : 'pf-g';
-        const kpc = kr.c==='v' ? 'pct-v': kr.c==='o' ? 'pct-o': 'pct-g';
-        const kdot= kr.c==='v' ? 'var(--gm)': kr.c==='o' ? 'var(--o)':'var(--gy)';
         return `<div class="kr-item" style="margin-bottom:6px">
-          <span class="kr-dot" style="background:${kdot};margin-top:4px;flex-shrink:0"></span>
+          <span class="kr-dot" style="background:${krDotCol(kr)};margin-top:4px;flex-shrink:0"></span>
           <div class="kr-info">
             <div class="kr-lbl">${kr.lbl}</div>
             <div class="kr-vals">
-              <div class="kr-bar"><div class="kr-bar-fill ${kc}" style="width:${kr.atual}%"></div></div>
-              <span class="kr-num ${kpc}">${kr.real||'—'} / ${kr.meta}</span>
+              ${krValsHTML(kr)}
             </div>
           </div>
         </div>`;
@@ -3322,6 +3547,7 @@ function buildKRList(key) {
       const latest = kd ? (kd.r.slice(0,CUR_M+1).reverse().find(v=>v!==null)??0) : kr.atual;
       const orcadoNow = kd ? (kd.o[CUR_M]??'—') : '—';
       const projNow   = kd ? (kd.p.slice(0,CUR_M+1).reverse().find(v=>v!==null)??'—') : '—';
+      const u = krUnit(kr)||'%';
       const item = document.createElement('div');
       item.className = 'kr-item-ev';
       item.innerHTML = `
@@ -3329,9 +3555,9 @@ function buildKRList(key) {
         <div style="flex:1;min-width:0">
           <div style="font-size:10px;color:var(--t2);line-height:1.4">${kr.lbl}</div>
           <div style="display:flex;gap:10px;margin-top:3px;font-size:9px">
-            <span style="color:var(--g);font-weight:700">▮ ${latest}% real.</span>
-            <span style="color:var(--g);opacity:.45;font-weight:600">▮ ${orcadoNow}% orç.</span>
-            <span style="color:var(--a1);font-weight:600">◌ ${projNow}% proj.</span>
+            <span style="color:var(--g);font-weight:700">▮ ${latest}${u} real.</span>
+            <span style="color:var(--g);opacity:.45;font-weight:600">▮ ${orcadoNow}${orcadoNow==='—'?'':u} orç.</span>
+            <span style="color:var(--a1);font-weight:600">◌ ${projNow}${projNow==='—'?'':u} proj.</span>
           </div>
         </div>
         <button onclick="event.stopPropagation();openKRDataEdit('${key}',${oi},${ki})"
@@ -3386,6 +3612,8 @@ function buildBarChart(key, oi, ki) {
   };
   const ci  = (oi*3+ki) % KR_COLS.length;
   const col = KR_COLS[ci];
+  const unit  = krUnit(kr)||'%';
+  const metaN = krNum(kr.meta);
 
   // Realizado: bars, jan→mai
   const rData = MONTHS.map((_,mi) => mi<=CUR_M ? (kd.r[mi]??null) : null);
@@ -3420,8 +3648,8 @@ function buildBarChart(key, oi, ki) {
           tension: 0.25, spanGaps: true, order: 2,
         },
         {
-          type: 'line', label: 'Meta (100%)',
-          data: Array(12).fill(100),
+          type: 'line', label: 'Meta',
+          data: Array(12).fill(metaN!==null?metaN:null),
           borderColor: '#e2e8f0', borderWidth: 1.5, borderDash: [4,3],
           pointRadius: 0, backgroundColor: 'transparent', order: 5,
         },
@@ -3436,7 +3664,7 @@ function buildBarChart(key, oi, ki) {
           display: ctx => {
             const v = ctx.dataset.data[ctx.dataIndex];
             if (v === null || v === undefined) return false;
-            if (ctx.dataset.label === 'Meta (100%)') return false;
+            if (ctx.dataset.label === 'Meta') return false;
             // Hide Orçado labels to reduce clutter — tooltip still shows it
             if (ctx.dataset.label === 'Orçado') return false;
             // For projection line, only show non-null future points
@@ -3445,7 +3673,7 @@ function buildBarChart(key, oi, ki) {
           },
           color: ctx => ctx.dataset.type === 'line' ? '#793F98' : '#003d22',
           font: { family: 'Plus Jakarta Sans', size: 9, weight: 'bold' },
-          formatter: v => v !== null ? v + '%' : '',
+          formatter: v => v !== null ? v + unit : '',
           // Bars: label above; line: label above point
           anchor: 'end',
           align:  'end',
@@ -3459,13 +3687,13 @@ function buildBarChart(key, oi, ki) {
           position: 'bottom',
           labels: {
             font:{family:'Plus Jakarta Sans',size:9}, boxWidth:12, padding:10,
-            filter: item => item.text !== 'Meta (100%)',
+            filter: item => item.text !== 'Meta',
           }
         },
         tooltip: {
           callbacks: {
             title: ctx => ctx[0].label + ' 2026',
-            label: ctx => ctx.parsed.y!==null ? ` ${ctx.dataset.label}: ${ctx.parsed.y}%` : null,
+            label: ctx => ctx.parsed.y!==null ? ` ${ctx.dataset.label}: ${ctx.parsed.y}${unit}` : null,
           },
           filter: item => item.parsed.y !== null,
         },
@@ -3499,21 +3727,21 @@ function openKRDataEdit(key, oi, ki) {
   const kr  = p.okrs[oi].krs[ki];
   const kd  = KR_DATA[key]?.[oi]?.[ki] || {r:Array(12).fill(null),o:Array(12).fill(null),p:Array(12).fill(null)};
 
-  document.getElementById('kred-title').textContent = `✏️ ${p.nm} · ${kr.lbl.substring(0,50)}`;
+  document.getElementById('kred-title').textContent = `✏️ ${p.nm} · ${kr.lbl.substring(0,42)} · unidade: ${krUnit(kr)||'%'}`;
 
   const tbody = document.getElementById('kred-tbody');
   tbody.innerHTML = MONTHS.map((m,mi) => `
     <tr>
       <td style="padding:5px 8px;font-size:10px;font-weight:${mi===CUR_M?'800':'400'};color:${mi===CUR_M?'var(--o)':'var(--t2)'}">${m}${mi===CUR_M?' ◀':''}</td>
-      <td style="padding:3px 5px"><input type="number" min="0" max="100" value="${kd.r[mi]??''}" placeholder="—"
+      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.r[mi]??''}" placeholder="—"
         onchange="updateKRDataCell('r',${mi},this.value)"
         style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
         onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--bd)'"></td>
-      <td style="padding:3px 5px"><input type="number" min="0" max="100" value="${kd.o[mi]??''}" placeholder="—"
+      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.o[mi]??''}" placeholder="—"
         onchange="updateKRDataCell('o',${mi},this.value)"
         style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
         onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--bd)'"></td>
-      <td style="padding:3px 5px"><input type="number" min="0" max="100" value="${kd.p[mi]??''}" placeholder="—"
+      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.p[mi]??''}" placeholder="—"
         onchange="updateKRDataCell('p',${mi},this.value)"
         style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
         onfocus="this.style.borderColor='var(--a1)'" onblur="this.style.borderColor='var(--bd)'"></td>
@@ -3536,19 +3764,9 @@ function closeKREdit() {
     const {key,oi,ki} = editModalKey;
     const _krLbl = (PRODS[key] && PRODS[key].okrs[oi] && PRODS[key].okrs[oi].krs[ki]) ? PRODS[key].okrs[oi].krs[ki].lbl : '';
     setEditDetail('editou valores de KR', `"${_krLbl}"`);
-    // Sync latest realizado → kr.atual in PRODS
-    if (KR_DATA[key] && KR_DATA[key][oi] && KR_DATA[key][oi][ki]) {
-      const rArr = KR_DATA[key][oi][ki].r;
-      let latest = null;
-      for (let m = CUR_M; m >= 0; m--) {
-        if (rArr[m] !== null && rArr[m] !== undefined) { latest = rArr[m]; break; }
-      }
-      if (latest !== null && PRODS[key] && PRODS[key].okrs[oi] && PRODS[key].okrs[oi].krs[ki]) {
-        PRODS[key].okrs[oi].krs[ki].atual = latest;
-        PRODS[key].okrs[oi].krs[ki].c = latest>=80?'v':latest>=40?'o':'g';
-        fbSaveProd(key);
-      }
-    }
+    // Realizado do card vem da Evolução: deriva realizado + % da meta
+    syncKRFromEvo(key, oi, ki);
+    fbSaveProd(key);
     fbSaveKRData(key);
     buildKRList(key);
     selectKR(key, oi, ki);
@@ -3896,14 +4114,63 @@ function flattenKRData(data) {
 }
 
 function unflattenKRData(flat, template) {
-  // Rebuild nested structure from flat Firestore doc using template for shape
-  return template.map((okr, oi) =>
-    okr.map((kr, ki) => ({
-      r: (flat[`o${oi}_k${ki}_r`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
-      o: (flat[`o${oi}_k${ki}_o`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
-      p: (flat[`o${oi}_k${ki}_p`] || Array(12).fill(-1)).map(v => v === -1 ? null : v),
-    }))
-  );
+  // Rebuild nested structure deriving the SHAPE from the saved keys themselves
+  // (o{oi}_k{ki}_*), not from the local hardcoded template. Without this, any
+  // OKR/KR added after the original hardcode is silently dropped on reload.
+  flat = flat || {};
+  const maxKiByOi = {};
+  Object.keys(flat).forEach(k => {
+    const m = /^o(\d+)_k(\d+)_[rop]$/.exec(k);
+    if (m) {
+      const oi = +m[1], ki = +m[2];
+      maxKiByOi[oi] = Math.max(maxKiByOi[oi] === undefined ? -1 : maxKiByOi[oi], ki);
+    }
+  });
+  const ois = Object.keys(maxKiByOi).map(Number);
+  if (!ois.length) return template || [];
+  const maxOi = Math.max(...ois);
+  const decode = key => (flat[key] || Array(12).fill(-1)).map(v => v === -1 ? null : v);
+  const out = [];
+  for (let oi = 0; oi <= maxOi; oi++) {
+    const krs = [];
+    const maxKi = maxKiByOi[oi] === undefined ? -1 : maxKiByOi[oi];
+    for (let ki = 0; ki <= maxKi; ki++) {
+      krs.push({ r: decode('o'+oi+'_k'+ki+'_r'), o: decode('o'+oi+'_k'+ki+'_o'), p: decode('o'+oi+'_k'+ki+'_p') });
+    }
+    out.push(krs);
+  }
+  return out;
+}
+
+// Ensure KR_DATA has a slot for every OKR/KR currently in PRODS.
+// Runs after load and after any structural OKR/KR edit so the time-series
+// store never drifts out of alignment with the product structure.
+function reconcileKRData() {
+  Object.keys(PRODS).forEach(key => {
+    const okrs = (PRODS[key] && PRODS[key].okrs) || [];
+    if (!KR_DATA[key]) KR_DATA[key] = [];
+    okrs.forEach((okr, oi) => {
+      if (!KR_DATA[key][oi]) KR_DATA[key][oi] = [];
+      (okr.krs || []).forEach((kr, ki) => {
+        if (!KR_DATA[key][oi][ki]) {
+          KR_DATA[key][oi][ki] = { r: Array(12).fill(null), o: Array(12).fill(null), p: Array(12).fill(null) };
+        }
+      });
+    });
+  });
+}
+
+// Called by the Firebase module after data loads: reconcile, then rebuild the
+// tab the user is actually looking at (previously only the Portfolio refreshed).
+function refreshAfterLoad() {
+  reconcileKRData();
+  cvBuilt = false; connBuilt = false; okrevBuilt = false;
+  const active = document.querySelector('.pg.on');
+  const id = active ? active.id.replace('pg-', '') : 'port';
+  buildPort();
+  if (id === 'valor') { buildValor(); buildConn(); }
+  else if (id === 'rdmap') buildRdmap();
+  else if (id === 'okrev') buildOKRev();
 }
 
 function fbSaveKRData(key) {
