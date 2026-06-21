@@ -712,6 +712,8 @@ button,input,select,textarea{font-family:inherit;}
           }
         });
         if (window.setSyncStatus) window.setSyncStatus('ok');
+        // Corrige nomes legados persistidos (ex.: "DAEane" → "Daeane") e re-salva docs alterados
+        if (typeof window.fixLegacyNames === 'function') window.fixLegacyNames();
         // Reconcile KR_DATA shape with loaded PRODS and rebuild the active tab
         if (typeof window.refreshAfterLoad === 'function') window.refreshAfterLoad();
         else if (typeof buildPort === 'function') buildPort();
@@ -881,7 +883,7 @@ button,input,select,textarea{font-family:inherit;}
       <div class="pc pv" data-g="m" onclick="openEdit('prateleira')"><div class="pc-nm">Prateleira MO + Catracas</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M</span></div></div>
       <div class="pc pv" data-g="l" onclick="openEdit('smp')"><div class="pc-nm">SMP Digital</div><div class="pc-sq">Júlia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Piloto em andamento</div><span class="pb">R$ 23M</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('ze')"><div class="pc-nm">IA – Zé da Obra</div><div class="pc-sq">Camila</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>KR1 atingido ✓</div><span class="pb">R$ 14M</span></div></div>
-      <div class="pc pv" data-g="m" onclick="openEdit('daeans')"><div class="pc-nm">IA – DAEane</div><div class="pc-sq">Camila</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Em desenvolvimento</div><span class="pb">R$ 7M</span></div></div>
+      <div class="pc pv" data-g="m" onclick="openEdit('daeans')"><div class="pc-nm">IA – Daeane</div><div class="pc-sq">Camila</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Em desenvolvimento</div><span class="pb">R$ 7M</span></div></div>
     </div>
     <div class="kc pos">
       <div class="kc-hd"><div class="kc-ttl">🏁 Pós-Obra</div><div class="kc-n">—</div></div>
@@ -1373,13 +1375,13 @@ const PRODS = {
     rd:{done:['Multi Agentes WhatsApp c/ áudio · 200,4h/mês eliminadas'],doing:['Converse c/ Dados (Pedidos) · Alertas MDF-e'],todo:['Dados VP · MCP Integração (3T26)']}
   },
   daeans: {
-    nm:'IA – DAEane', etapa:'obra', gestor:'m', po:'Camila', status:'sv', pot:'R$ 7M',
+    nm:'IA – Daeane', etapa:'obra', gestor:'m', po:'Camila', status:'sv', pot:'R$ 7M',
     pot_alav:{'hc':4,'rccp':3},
     desc:'IA de prospecção e qualificação de fornecedores de MO empreiteira. Chatbot IA Gen, Hot Lead, autoagendamento de visitas em obra.',
     ambicoes:['vp','du'], alavancas:['hc','rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Automatizar prospecção e qualificação de fornecedores MO',
-           krs:[{lbl:'KR1: DAEane ativa em ≥ 3 regionais até set/26',atual:0,meta:'3 regionais',real:'—',c:'g'},
+           krs:[{lbl:'KR1: Daeane ativa em ≥ 3 regionais até set/26',atual:0,meta:'3 regionais',real:'—',c:'g'},
                 {lbl:'KR2: ≥ 200 fornecedores qualificados/mês até dez/26',atual:0,meta:'200/mês',real:'—',c:'g'}]}],
     rd:{done:['Hot Lead · Chatbot IA Gen'],doing:['Autoagendamento visita em obra'],todo:['Integração Prateleira MO · Expansão regionais (3T26)']}
   },
@@ -1534,7 +1536,7 @@ const KPI_DATA = {
     {ic:'🏗️',ttl:'Obra 360',desc:'Visão integrada · Jornada Materiais · Medições',badge:'Obra',bc:'kv'},
     {ic:'👷',ttl:'Prateleira MO + Catracas',desc:'Sequenciamento MO · Controle de acesso',badge:'Obra',bc:'kv'},
     {ic:'🤖',ttl:'IA – Zé da Obra',desc:'Assistente IA via WhatsApp · 200h/mês eliminadas',badge:'Obra',bc:'kv'},
-    {ic:'🤖',ttl:'IA – DAEane',desc:'Prospecção e qualificação de fornecedores MO',badge:'Obra',bc:'kv'},
+    {ic:'🤖',ttl:'IA – Daeane',desc:'Prospecção e qualificação de fornecedores MO',badge:'Obra',bc:'kv'},
   ]},
   andamento:{ttl:'12 Produtos & Processos em andamento · 2T26',items:[
     {ic:'📈',ttl:'Sincroniza',desc:'Simulador VPL com RO · Eliminação planilha Sequenciamento',badge:'No prazo',bc:'kv'},
@@ -1544,7 +1546,7 @@ const KPI_DATA = {
     {ic:'🏗️',ttl:'Obra 360',desc:'Novo Portal de Medições · Gestão de Responsabilidades',badge:'No prazo',bc:'kv'},
     {ic:'👷',ttl:'Prateleira MO',desc:'Carga inicial especialidades · Integração Sincroniza',badge:'No prazo',bc:'kv'},
     {ic:'🤖',ttl:'IA – Zé da Obra',desc:'Converse c/ Dados (Pedidos) · MCP Integração',badge:'No prazo',bc:'kv'},
-    {ic:'🤖',ttl:'IA – DAEane',desc:'Autoagendamento visita em obra · expansão regional',badge:'No prazo',bc:'kv'},
+    {ic:'🤖',ttl:'IA – Daeane',desc:'Autoagendamento visita em obra · expansão regional',badge:'No prazo',bc:'kv'},
   ]},
   riscos:{ttl:'3 Riscos Críticos ativos',items:[
     {ic:'🔴',ttl:'ECO-PAM: instabilidade técnica e alto volume de erros',desc:'Redesenho de arquitetura em curso. Impacto no desligamento do sistema legado MRV Obras.',badge:'Alto',bc:'ko'},
@@ -2149,23 +2151,26 @@ function setKRField(oi,ki,field,val){
   setEditDetail('editou KR (meta/realizado)','');
   fbSaveProd(editKey);
 }
-function addOKR(){
+async function addOKR(){
   if(!editKey)return;
   PRODS[editKey].okrs.push({ttl:'Novo Objetivo',krs:[{lbl:'KR1: ...',atual:0,meta:'—',real:'—',c:'g'}]});
   reconcileKRData();
-  renderEditOKRs(PRODS[editKey]);
+  // Persiste ANTES de renderizar e AGUARDA a gravação concluir, para que o
+  // novo OKR já fique salvo mesmo sem meta preenchida (não se perde no F5).
   setEditDetail('adicionou OKR','');
-  fbSaveProd(editKey);
-  fbSaveKRData(editKey);
+  await fbSaveProd(editKey);
+  await fbSaveKRData(editKey);
+  renderEditOKRs(PRODS[editKey]);
 }
-function addKR(oi){
+async function addKR(oi){
   if(!editKey)return;
   PRODS[editKey].okrs[oi].krs.push({lbl:'Novo KR',atual:0,meta:'—',real:'—',c:'g'});
   reconcileKRData();
-  renderEditOKRs(PRODS[editKey]);
+  // Persiste ANTES de renderizar e AGUARDA a gravação concluir.
   setEditDetail('adicionou KR','');
-  fbSaveProd(editKey);
-  fbSaveKRData(editKey);
+  await fbSaveProd(editKey);
+  await fbSaveKRData(editKey);
+  renderEditOKRs(PRODS[editKey]);
 }
 function delKR(oi,ki){
   if(!editKey)return;
@@ -2499,7 +2504,7 @@ const RDMAP = {
       {txt:'Autoagendamento visita em obra', s:'doing'},
     ],
     'JUN': [
-      {txt:'DAEane: expansão regional piloto', s:'doing'},
+      {txt:'Daeane: expansão regional piloto', s:'doing'},
     ],
     '3T': [
       {txt:'Integração Prateleira MO', s:'todo'},
@@ -3091,9 +3096,15 @@ function openGanttMarcoEdit(prodKey,periodKey,idx){
   setTimeout(function(){ const t=document.getElementById('gnt-e-txt'); if(t){t.focus();t.select();} },30);
 }
 function closeGanttEdit(){ const bg=document.getElementById('gnt-edit-bg'); if(bg) bg.classList.remove('open'); gntEdit=null; }
+// Mês (índice 1–13) → chave de armazenamento da matriz
+function rdMonthKey(idx){
+  const K=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  return (idx>=1 && idx<=12) ? K[idx-1] : 'BL27';
+}
 function saveGanttEdit(){
   if(!gntEdit) return;
-  const m=RDMAP[gntEdit.prodKey] && RDMAP[gntEdit.prodKey][gntEdit.periodKey] && RDMAP[gntEdit.prodKey][gntEdit.periodKey][gntEdit.idx];
+  const srcKey=gntEdit.periodKey;
+  const m=RDMAP[gntEdit.prodKey] && RDMAP[gntEdit.prodKey][srcKey] && RDMAP[gntEdit.prodKey][srcKey][gntEdit.idx];
   if(!m){ closeGanttEdit(); return; }
   const txt=document.getElementById('gnt-e-txt').value.trim();
   let ini=+document.getElementById('gnt-e-ini').value, fim=+document.getElementById('gnt-e-fim').value;
@@ -3101,6 +3112,19 @@ function saveGanttEdit(){
   if(txt) m.txt=txt;
   m.s=document.getElementById('gnt-e-st').value;
   m.ini=ini; m.fim=fim;
+  // A matriz posiciona a entrega pela CHAVE de armazenamento. Como o Gantt
+  // define duração (ini→fim), reposicionamos a entrega na chave do mês de
+  // PRAZO FINAL (fim), para que na Matriz ela apareça na coluna do fim.
+  const destKey=rdMonthKey(fim);
+  if(destKey!==srcKey){
+    const arr=RDMAP[gntEdit.prodKey][srcKey];
+    if(arr){
+      arr.splice(gntEdit.idx,1);
+      if(arr.length===0) delete RDMAP[gntEdit.prodKey][srcKey];
+    }
+    if(!RDMAP[gntEdit.prodKey][destKey]) RDMAP[gntEdit.prodKey][destKey]=[];
+    RDMAP[gntEdit.prodKey][destKey].push(m);
+  }
   setEditDetail('editou entrega (Gantt)', '"'+m.txt+'"');
   fbSaveRdmap(gntEdit.prodKey);
   closeGanttEdit();
@@ -4227,6 +4251,39 @@ function fbSaveRdmap(key) {
   if (!RDMAP[key]) return;
   fbSave('rdmap', key, JSON.parse(JSON.stringify(RDMAP[key])));
 }
+
+// ── Normalização de nomes legados persistidos no Firestore ──
+// O nome do produto (e textos relacionados) pode ter sido salvo no Firebase com
+// a grafia antiga "DAEane". Como o load faz Object.assign do Firestore por cima
+// do HTML, o valor antigo sobrescreveria a correção. Esta função roda após o
+// load, troca "DAEane" → "Daeane" em PRODS/RDMAP e re-salva só os docs alterados.
+function _fixDae(s){ return (typeof s === 'string' && s.indexOf('DAEane') >= 0) ? s.split('DAEane').join('Daeane') : s; }
+function fixLegacyNames(){
+  // produtos
+  Object.keys(PRODS).forEach(key => {
+    const p = PRODS[key]; if (!p) return;
+    let changed = false;
+    const fix = (obj, field) => { const v = _fixDae(obj[field]); if (v !== obj[field]) { obj[field] = v; changed = true; } };
+    fix(p, 'nm'); fix(p, 'desc');
+    (p.okrs || []).forEach(okr => {
+      fix(okr, 'ttl');
+      (okr.krs || []).forEach(kr => { fix(kr, 'lbl'); fix(kr, 'meta'); fix(kr, 'real'); });
+    });
+    if (changed) { _suppressLog = true; fbSaveProd(key); _suppressLog = false; }
+  });
+  // rdmap
+  Object.keys(RDMAP).forEach(key => {
+    const rd = RDMAP[key]; if (!rd) return;
+    let changed = false;
+    Object.keys(rd).forEach(pk => {
+      (rd[pk] || []).forEach(marco => {
+        if (marco) { const v = _fixDae(marco.txt); if (v !== marco.txt) { marco.txt = v; changed = true; } }
+      });
+    });
+    if (changed) { _suppressLog = true; fbSaveRdmap(key); _suppressLog = false; }
+  });
+}
+window.fixLegacyNames = fixLegacyNames;
 
 // Save KR_DATA entry for a product
 // Firestore doesn't support nested arrays — flatten to object
