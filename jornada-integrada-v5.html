@@ -105,6 +105,24 @@ button,input,select,textarea{font-family:inherit;}
 .fc.fy{background:var(--gyb);color:var(--gy);border-color:var(--gy);}
 .fc.dim{opacity:.28;}
 .fsep{width:1px;height:14px;background:var(--bd);}
+/* ─── MULTI-SELECT DROPDOWN FILTERS ─── */
+.msdd{position:relative;display:inline-block;user-select:none;font-family:inherit;}
+.msdd-btn{display:flex;align-items:center;gap:7px;padding:5px 11px;border-radius:9px;border:1.5px solid var(--bd);background:var(--wh);cursor:pointer;font-size:10px;font-weight:700;color:var(--t2);transition:all .15s;white-space:nowrap;line-height:1.4;}
+.msdd-btn:hover{border-color:var(--gm);}
+.msdd.open .msdd-btn{border-color:var(--g);box-shadow:0 0 0 2px var(--gb);}
+.msdd-lbl{color:var(--t3);font-weight:800;text-transform:uppercase;letter-spacing:.3px;font-size:9px;}
+.msdd-val{color:var(--tx);font-weight:700;}
+.msdd.has-sel .msdd-val{color:var(--g);}
+.msdd-arr{font-size:7px;color:var(--t3);transition:transform .15s;}
+.msdd.open .msdd-arr{transform:rotate(180deg);}
+.msdd-panel{position:absolute;top:calc(100% + 5px);left:0;z-index:90;min-width:190px;background:var(--wh);border:1.5px solid var(--bd);border-radius:11px;box-shadow:0 10px 28px rgba(15,23,42,.16);padding:6px;display:none;max-height:300px;overflow-y:auto;}
+.msdd.open .msdd-panel{display:block;}
+.msdd-opt{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:11px;font-weight:600;color:var(--tx);transition:background .12s;}
+.msdd-opt:hover{background:var(--gyb);}
+.msdd-opt input{width:14px;height:14px;accent-color:var(--g);cursor:pointer;margin:0;flex-shrink:0;}
+.msdd-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.msdd-clr{width:100%;text-align:center;padding:6px;margin-top:4px;border:none;border-top:1px solid var(--bd);font-size:9px;font-weight:700;color:var(--t3);cursor:pointer;background:none;border-radius:0;}
+.msdd-clr:hover{color:var(--o);}
 /* ─── KANBAN ─── */
 .kb{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;}
 .kc{border-radius:var(--r);padding:12px;border:1.5px solid var(--bd);}
@@ -847,17 +865,26 @@ button,input,select,textarea{font-family:inherit;}
   <div class="sh">
     <div class="sh-t"><span class="pulse"></span>Produtos por Etapa da Jornada</div>
     <div class="frow">
-      <div class="fc fl" id="kf-l" onclick="kbFilt('l')">Lilian Lage</div>
-      <div class="fc fm" id="kf-m" onclick="kbFilt('m')">Marcos Costa</div>
-      <div class="fsep"></div>
-      <div class="fc fv" id="ks-sv" onclick="kbFiltStatus('sv')" title="Filtrar: no prazo">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gm);margin-right:4px;vertical-align:middle"></span>No prazo
+      <div class="msdd" id="msdd-kb-gestor">
+        <button class="msdd-btn" type="button" onclick="msddOpen('kb-gestor', event)">
+          <span class="msdd-lbl">Gestor</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="l" data-lbl="Lilian Lage" onchange="msddChange('kb-gestor')">Lilian Lage</label>
+          <label class="msdd-opt"><input type="checkbox" value="m" data-lbl="Marcos Costa" onchange="msddChange('kb-gestor')">Marcos Costa</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('kb-gestor', event)">Limpar</button>
+        </div>
       </div>
-      <div class="fc fo" id="ks-so" onclick="kbFiltStatus('so')" title="Filtrar: atenção">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--o);margin-right:4px;vertical-align:middle"></span>Risco / Atenção
-      </div>
-      <div class="fc fy" id="ks-sg" onclick="kbFiltStatus('sg')" title="Filtrar: acompanhar">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gy);margin-right:4px;vertical-align:middle"></span>Acompanhar
+      <div class="msdd" id="msdd-kb-status">
+        <button class="msdd-btn" type="button" onclick="msddOpen('kb-status', event)">
+          <span class="msdd-lbl">Status</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="sv" data-lbl="No prazo" onchange="msddChange('kb-status')"><span class="msdd-dot" style="background:var(--gm)"></span>No prazo</label>
+          <label class="msdd-opt"><input type="checkbox" value="so" data-lbl="Atenção" onchange="msddChange('kb-status')"><span class="msdd-dot" style="background:var(--o)"></span>Risco / Atenção</label>
+          <label class="msdd-opt"><input type="checkbox" value="sg" data-lbl="Acompanhar" onchange="msddChange('kb-status')"><span class="msdd-dot" style="background:var(--gy)"></span>Acompanhar</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('kb-status', event)">Limpar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -870,14 +897,16 @@ button,input,select,textarea{font-family:inherit;}
       <div class="pc pv" data-g="m" onclick="openEdit('simurb')"><div class="pc-nm">SIMURB</div><div class="pc-sq">Brenda</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">Habilitador</span></div></div>
     </div>
     <div class="kc pre" id="kc-pre">
-      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">3</div></div>
+      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">4</div></div>
       <div class="pc po" data-g="l" onclick="openEdit('compilador')"><div class="pc-nm">Compilador BIM</div><div class="pc-sq">Larissa</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 40M</span></div></div>
       <div class="pc po" data-g="l" onclick="openEdit('lego')"><div class="pc-nm">Sistema LEGO</div><div class="pc-sq">Ana Luiza</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Prioridade redefinida</div><span class="pb">Estratégico</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('mdm')"><div class="pc-nm">MDM – Dados Mestres</div><div class="pc-sq">André Carvalhais</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Aceleração urgente</div><span class="pb">Habilitador</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('inbound')"><div class="pc-nm">Iniciativas Inbound, CD, COMEX</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
     </div>
     <div class="kc obra" id="kc-obra">
-      <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">7</div></div>
+      <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">8</div></div>
       <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM</div><div class="pc-sq">André R. · André C.</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('compras360')"><div class="pc-nm">Módulo de Compras 360</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('novaeap')"><div class="pc-nm">Nova EAP</div><div class="pc-sq">Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Acompanhar</div><span class="pb">Habilitadora</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('obra360')"><div class="pc-nm">Obra 360</div><div class="pc-sq">Higor</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 69M</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('prateleira')"><div class="pc-nm">Prateleira MO + Catracas</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M</span></div></div>
@@ -920,20 +949,43 @@ button,input,select,textarea{font-family:inherit;}
   </div>
 
   <!-- FILTERS ROW -->
-  <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap">
-    <span style="font-size:10px;font-weight:700;color:var(--t2)">Etapa:</span>
-    <div class="fc" id="etapa-all"  onclick="portFiltEtapa(null)"  style="background:var(--gyb);color:var(--gy);border-color:var(--bd)">Todas</div>
-    <div class="fc" id="etapa-est"  onclick="portFiltEtapa('est')" style="background:var(--gyb);color:var(--gy);border-color:var(--gy)">Estratégia</div>
-    <div class="fc" id="etapa-pre"  onclick="portFiltEtapa('pre')" style="background:var(--ob);color:var(--o);border-color:var(--o)">Pré-Obra</div>
-    <div class="fc" id="etapa-obra" onclick="portFiltEtapa('obra')" style="background:var(--gb);color:var(--g);border-color:var(--gm)">Obra</div>
-    <div class="fsep"></div>
-    <span style="font-size:10px;font-weight:700;color:var(--t2)">Gestor:</span>
-    <div class="fc" id="pf-l" onclick="portFilt('l')"  style="background:#e8edf2;color:#3d5166;border-color:#b0bfcc">Lilian Lage</div>
-    <div class="fc" id="pf-m" onclick="portFilt('m')"  style="background:#e4e8f0;color:#354a60;border-color:#a8b4c0">Marcos Costa</div>
-    <div class="fsep"></div>
-    <div class="fc fv" id="pf-sv" onclick="portFiltStatus('sv')">● No prazo</div>
-    <div class="fc fo" id="pf-so" onclick="portFiltStatus('so')">● Atenção</div>
-    <div class="fc fy" id="pf-sg" onclick="portFiltStatus('sg')">● Acompanhar</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+    <span style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.4px">Filtrar:</span>
+
+    <div class="msdd" id="msdd-port-etapa">
+      <button class="msdd-btn" type="button" onclick="msddOpen('port-etapa', event)">
+        <span class="msdd-lbl">Etapa</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+      </button>
+      <div class="msdd-panel">
+        <label class="msdd-opt"><input type="checkbox" value="est" data-lbl="Estratégia" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--est)"></span>Estratégia</label>
+        <label class="msdd-opt"><input type="checkbox" value="pre" data-lbl="Pré-Obra" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--pre)"></span>Pré-Obra</label>
+        <label class="msdd-opt"><input type="checkbox" value="obra" data-lbl="Obra" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--obra)"></span>Obra</label>
+        <button type="button" class="msdd-clr" onclick="msddClear('port-etapa', event)">Limpar</button>
+      </div>
+    </div>
+
+    <div class="msdd" id="msdd-port-gestor">
+      <button class="msdd-btn" type="button" onclick="msddOpen('port-gestor', event)">
+        <span class="msdd-lbl">Gestor</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+      </button>
+      <div class="msdd-panel">
+        <label class="msdd-opt"><input type="checkbox" value="l" data-lbl="Lilian Lage" onchange="msddChange('port-gestor')">Lilian Lage</label>
+        <label class="msdd-opt"><input type="checkbox" value="m" data-lbl="Marcos Costa" onchange="msddChange('port-gestor')">Marcos Costa</label>
+        <button type="button" class="msdd-clr" onclick="msddClear('port-gestor', event)">Limpar</button>
+      </div>
+    </div>
+
+    <div class="msdd" id="msdd-port-status">
+      <button class="msdd-btn" type="button" onclick="msddOpen('port-status', event)">
+        <span class="msdd-lbl">Status</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+      </button>
+      <div class="msdd-panel">
+        <label class="msdd-opt"><input type="checkbox" value="sv" data-lbl="No prazo" onchange="msddChange('port-status')"><span class="msdd-dot" style="background:var(--gm)"></span>No prazo</label>
+        <label class="msdd-opt"><input type="checkbox" value="so" data-lbl="Atenção" onchange="msddChange('port-status')"><span class="msdd-dot" style="background:var(--o)"></span>Risco / Atenção</label>
+        <label class="msdd-opt"><input type="checkbox" value="sg" data-lbl="Acompanhar" onchange="msddChange('port-status')"><span class="msdd-dot" style="background:var(--gy)"></span>Acompanhar</label>
+        <button type="button" class="msdd-clr" onclick="msddClear('port-status', event)">Limpar</button>
+      </div>
+    </div>
   </div>
 
   <!-- TABLE HEADER -->
@@ -1049,20 +1101,34 @@ button,input,select,textarea{font-family:inherit;}
       <div class="fsep"></div>
       <button class="rd-edit-toggle" id="rd-edit-btn" onclick="toggleRdEdit()" title="Ativar modo de edição">✏️ Editar</button>
       <div class="fsep"></div>
-      <div id="rd-prod-filters" style="display:flex;gap:5px;flex-wrap:wrap;"></div>
-      <div class="fsep"></div>
-      <div class="fc" id="rdf-l" onclick="rdFilt('gestor','l')" style="background:#e8edf2;color:#3d5166;border-color:#b0bfcc">Lilian</div>
-      <div class="fc" id="rdf-m" onclick="rdFilt('gestor','m')" style="background:#e4e8f0;color:#354a60;border-color:#a8b4c0">Marcos</div>
+      <div class="msdd" id="msdd-rd-prod">
+        <button class="msdd-btn" type="button" onclick="msddOpen('rd-prod', event)">
+          <span class="msdd-lbl">Produto</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel" id="rd-prod-opts"></div>
+      </div>
+      <div class="msdd" id="msdd-rd-gestor">
+        <button class="msdd-btn" type="button" onclick="msddOpen('rd-gestor', event)">
+          <span class="msdd-lbl">Gestor</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="l" data-lbl="Lilian Lage" onchange="msddChange('rd-gestor')">Lilian Lage</label>
+          <label class="msdd-opt"><input type="checkbox" value="m" data-lbl="Marcos Costa" onchange="msddChange('rd-gestor')">Marcos Costa</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('rd-gestor', event)">Limpar</button>
+        </div>
+      </div>
+      <div class="msdd" id="msdd-rd-etapa">
+        <button class="msdd-btn" type="button" onclick="msddOpen('rd-etapa', event)">
+          <span class="msdd-lbl">Etapa</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="est" data-lbl="Estratégia" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--est)"></span>Estratégia</label>
+          <label class="msdd-opt"><input type="checkbox" value="pre" data-lbl="Pré-Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--pre)"></span>Pré-Obra</label>
+          <label class="msdd-opt"><input type="checkbox" value="obra" data-lbl="Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--obra)"></span>Obra</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('rd-etapa', event)">Limpar</button>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- Etapa filter chips -->
-  <div class="frow" style="margin-bottom:12px;align-items:center">
-    <span style="font-size:10px;font-weight:700;color:var(--t2)">Etapa:</span>
-    <div class="fc" id="rdmap-et-all"  onclick="rdFiltEtapa(null)"   style="background:var(--gyb);color:var(--gy);border-color:var(--bd)" >Todas</div>
-    <div class="fc" id="rdmap-et-est"  onclick="rdFiltEtapa('est')"  style="background:var(--gyb);color:var(--gy);border-color:var(--gy)">Estratégia</div>
-    <div class="fc" id="rdmap-et-pre"  onclick="rdFiltEtapa('pre')"  style="background:var(--ob);color:var(--o);border-color:var(--o)"   >Pré-Obra</div>
-    <div class="fc" id="rdmap-et-obra" onclick="rdFiltEtapa('obra')" style="background:var(--gb);color:var(--g);border-color:var(--gm)"  >Obra</div>
   </div>
 
   <!-- Roadmap (grouped with inline etapa bar) -->
@@ -1304,6 +1370,16 @@ const PRODS = {
                 {lbl:'25% GMs em operação no orçamento até dez/26',atual:4,meta:'25%',real:'3,7%',c:'o'}]}],
     rd:{done:['Piloto metais · Saneamento · PDM/códigos'],doing:['Acab. Elétricos · Argamassa · Concreto (2T26)'],todo:['Aço · Esquadrias · PEX (3T26)']}
   },
+  inbound: {
+    nm:'Iniciativas Inbound, CD, COMEX', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Iniciativas de Inbound, Centro de Distribuição (CD) e Comércio Exterior (COMEX). Escopo em definição.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
+  },
   ecopam: {
     nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 106M',
     pot_alav:{'spot':40,'seq_mo':44,'hc':22},
@@ -1316,6 +1392,16 @@ const PRODS = {
                 {lbl:'% obras com uso ativo ECO (mar-mai/26)',atual:71,meta:'100%',real:'71%',c:'v'},
                 {lbl:'40% compras via PAM até dez/26 (80% notáveis)',atual:7,meta:'40%',real:'2,7%',c:'o'}]}],
     rd:{done:['Rollout 22 cidades · Migração arquitetura ECO'],doing:['Op. assistida pós rollout · Refatoração painel'],todo:['Gestão Acessos · Integr. Obra 360 (2S/26)']}
+  },
+  compras360: {
+    nm:'Módulo de Compras 360', etapa:'obra', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Módulo de compras integrado à jornada de obra. Escopo em definição.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
   },
   novaeap: {
     nm:'Nova EAP', etapa:'obra', gestor:'l', po:'Ana Flávia', status:'sg', pot:'Habilitadora',
@@ -1476,10 +1562,80 @@ function goTab(id,el){
   if(id==='okrev') buildOKRev();
 }
 
-// ══ KANBAN FILTER ══
-let kfA=null;   // gestor filter
-let kfS=null;   // status filter
+// ══════════════════════════════════════════
+//  MULTI-SELECT DROPDOWN FILTER COMPONENT
+//  Reutilizável: registra um dropdown por id, guarda seleção em Set,
+//  e chama onChange() do view a cada alteração.
+// ══════════════════════════════════════════
+const MSDD = {}; // id -> { onChange:fn, allLabel:string, sel:Set }
 
+function msddInit(id, onChange, allLabel){
+  // preserva seleção anterior se já existia (re-render do view)
+  const prev = MSDD[id] && MSDD[id].sel;
+  MSDD[id] = { onChange: onChange || function(){}, allLabel: allLabel || 'Todos', sel: prev || new Set() };
+  // re-marca checkboxes conforme seleção preservada e atualiza rótulo
+  const el = document.getElementById('msdd-' + id);
+  if (el) {
+    el.querySelectorAll('.msdd-opt input').forEach(cb => { cb.checked = MSDD[id].sel.has(cb.value); });
+    msddRefresh(id);
+  }
+}
+
+function msddOpen(id, ev){
+  if (ev) ev.stopPropagation();
+  const el = document.getElementById('msdd-' + id);
+  if (!el) return;
+  const wasOpen = el.classList.contains('open');
+  document.querySelectorAll('.msdd.open').forEach(x => x.classList.remove('open'));
+  if (!wasOpen) el.classList.add('open');
+}
+
+function msddChange(id){
+  const el = document.getElementById('msdd-' + id);
+  const st = MSDD[id];
+  if (!el || !st) return;
+  const sel = new Set();
+  el.querySelectorAll('.msdd-opt input:checked').forEach(cb => sel.add(cb.value));
+  st.sel = sel;
+  msddRefresh(id);
+  st.onChange();
+}
+
+function msddClear(id, ev){
+  if (ev) ev.stopPropagation();
+  const el = document.getElementById('msdd-' + id);
+  const st = MSDD[id];
+  if (!el || !st) return;
+  el.querySelectorAll('.msdd-opt input:checked').forEach(cb => { cb.checked = false; });
+  st.sel = new Set();
+  msddRefresh(id);
+  st.onChange();
+}
+
+function msddRefresh(id){
+  const el = document.getElementById('msdd-' + id);
+  const st = MSDD[id];
+  if (!el || !st) return;
+  const checked = [...el.querySelectorAll('.msdd-opt input:checked')];
+  const n = checked.length;
+  el.classList.toggle('has-sel', n > 0);
+  const valEl = el.querySelector('.msdd-val');
+  if (valEl){
+    if (n === 0) valEl.textContent = st.allLabel;
+    else if (n === 1) valEl.textContent = (checked[0].dataset.lbl || checked[0].value);
+    else valEl.textContent = n + ' selecionados';
+  }
+}
+
+// retorna o Set de valores selecionados (vazio = sem filtro)
+function msddSel(id){ return (MSDD[id] && MSDD[id].sel) || new Set(); }
+
+// fecha dropdowns ao clicar fora
+document.addEventListener('click', function(e){
+  if (!e.target.closest('.msdd')) document.querySelectorAll('.msdd.open').forEach(x => x.classList.remove('open'));
+});
+
+// ══ KANBAN FILTER (multisseleção via msdd) ══
 // map kanban card class to status key
 function pcStatus(c){
   if(c.classList.contains('pv')) return 'sv';
@@ -1488,10 +1644,19 @@ function pcStatus(c){
   return null;
 }
 
+function initKbFilters(){
+  msddInit('kb-gestor', applyKbFilters, 'Todos');
+  msddInit('kb-status', applyKbFilters, 'Todos');
+}
+
 function applyKbFilters(){
+  const gSel = msddSel('kb-gestor');
+  const sSel = msddSel('kb-status');
+  const active = gSel.size>0 || sSel.size>0;
   document.querySelectorAll('.pc').forEach(c=>{
-    const gMatch = !kfA || (c.dataset.g||'').includes(kfA);
-    const sMatch = !kfS || pcStatus(c)===kfS;
+    const g=(c.dataset.g||'');
+    const gMatch = gSel.size===0 || [...gSel].some(x=>g.includes(x));
+    const sMatch = sSel.size===0 || sSel.has(pcStatus(c));
     c.classList.toggle('kb-hidden', !(gMatch && sMatch));
   });
   // hide/show empty columns and update counts
@@ -1500,28 +1665,10 @@ function applyKbFilters(){
     if(!el)return;
     const all=el.querySelectorAll('.pc');
     const visible=[...all].filter(c=>!c.classList.contains('kb-hidden'));
-    el.style.display=(visible.length===0&&(kfA||kfS))?'none':'';
+    el.style.display=(visible.length===0&&active)?'none':'';
     const cnt=document.getElementById('cnt-'+col);
-    if(cnt)cnt.textContent=(kfA||kfS)?visible.length:all.length;
+    if(cnt)cnt.textContent=active?visible.length:all.length;
   });
-}
-
-function kbFilt(g){
-  const fl=document.getElementById('kf-l'),fm=document.getElementById('kf-m');
-  kfA = kfA===g ? null : g;
-  fl.classList.toggle('dim', kfA && kfA!=='l');
-  fm.classList.toggle('dim', kfA && kfA!=='m');
-  applyKbFilters();
-}
-
-function kbFiltStatus(s){
-  const ids=['sv','so','sg'];
-  kfS = kfS===s ? null : s;
-  ids.forEach(i=>{
-    const el=document.getElementById('ks-'+i);
-    if(el) el.classList.toggle('dim', kfS && kfS!==i);
-  });
-  applyKbFilters();
 }
 
 // ══ KPI MODAL ══
@@ -1775,6 +1922,7 @@ function buildPort(){
       </div>
     </div>`;
 
+  initPortFilters();
   applyPortFilt();
 }
 
@@ -1803,9 +1951,13 @@ function delNota(key,i){
 }
 
 // Multi-dimensional filter state
-let portFiltGestor = null;
-let portFiltStatusV = null;
-let portFiltEtapaV = null;
+// Filtros do Portfólio agora usam dropdowns multisseleção (msdd):
+//   port-etapa | port-gestor | port-status
+function initPortFilters(){
+  msddInit('port-etapa',  applyPortFilt, 'Todas');
+  msddInit('port-gestor', applyPortFilt, 'Todos');
+  msddInit('port-status', applyPortFilt, 'Todos');
+}
 
 function setNavActive(group, activeId) {
   document.querySelectorAll('[id^="' + group + '"]').forEach(el => el.classList.remove('active'));
@@ -1817,47 +1969,15 @@ function setNavActive(group, activeId) {
   }
 }
 
-function portFilt(g) {
-  portFiltGestor = (portFiltGestor === g) ? null : g;
-  // update sidebar active state
-  ['pf-all-g','pf-l','pf-m'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('active');
-  });
-  const activeId = portFiltGestor ? 'pf-' + portFiltGestor : 'pf-all-g';
-  const actEl = document.getElementById(activeId);
-  if (actEl) actEl.classList.add('active');
-  applyPortFilt();
-}
-
-function portFiltStatus(s) {
-  portFiltStatusV = (portFiltStatusV === s) ? null : s;
-  ['pf-all-s','pf-sv','pf-so','pf-sg'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('active');
-  });
-  const activeId = portFiltStatusV ? 'pf-' + portFiltStatusV : 'pf-all-s';
-  const actEl = document.getElementById(activeId);
-  if (actEl) actEl.classList.add('active');
-  applyPortFilt();
-}
-
-function portFiltEtapa(etapa) {
-  portFiltEtapaV = (portFiltEtapaV === etapa) ? null : etapa;
-  ['etapa-all','etapa-est','etapa-pre','etapa-obra'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.toggle('dim', portFiltEtapaV && id !== 'etapa-' + portFiltEtapaV && id !== 'etapa-all');
-  });
-  applyPortFilt();
-}
-
 function applyPortFilt() {
+  const eSel = msddSel('port-etapa');
+  const gSel = msddSel('port-gestor');
+  const sSel = msddSel('port-status');
   document.querySelectorAll('.port-card').forEach(c => {
     const g = c.dataset.g, s = c.dataset.s, e = c.dataset.e;
-    const gOk = !portFiltGestor || g === portFiltGestor || g === 'lm';
-    const sOk = !portFiltStatusV || s === portFiltStatusV;
-    const eOk = !portFiltEtapaV || e === portFiltEtapaV;
+    const gOk = gSel.size === 0 || g === 'lm' || gSel.has(g);
+    const sOk = sSel.size === 0 || sSel.has(s);
+    const eOk = eSel.size === 0 || eSel.has(e);
     c.style.display = (gOk && sOk && eOk) ? '' : 'none';
   });
   // Hide entire etapa group if all its cards are hidden
@@ -2531,16 +2651,34 @@ const _NM  = new Date().getMonth();
 const CURRENT_PERIOD = _M2P[_NM] || 'MAI';
 const EXPANDED_Q = _NM<=2?[]:_NM<=5?['ABR','MAI','JUN']:_NM<=8?['JUL','AGO','SET']:['OUT','NOV','DEZ'];
 
-let rdFiltState = {etapa:null, gestor:null, prods:new Set()};
+let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set()};
+
+// Helpers de visibilidade (filtros multisseleção; Set vazio = sem filtro)
+function rdEtapaHidden(et){ const s = rdFiltState.etapa; return s.size > 0 && !s.has(et); }
+function rdGestorHidden(g){ const s = rdFiltState.gestor; if (s.size === 0) return false; if (g === 'lm') return false; return !s.has(g); }
+
+// aplica seleção dos dropdowns ao estado e re-renderiza a view ativa (matriz/gantt)
+function rdApplyFilters(){
+  rdFiltState.prods  = new Set(msddSel('rd-prod'));
+  rdFiltState.gestor = new Set(msddSel('rd-gestor'));
+  rdFiltState.etapa  = new Set(msddSel('rd-etapa'));
+  renderRdmap();
+}
 
 function buildRdmap() {
-  // Build product toggles
-  const pf = document.getElementById('rd-prod-filters');
-  pf.innerHTML = Object.entries(PRODS).map(([key,p]) => `
-    <div class="fc" id="rdf-prod-${key}" onclick="rdFiltProd('${key}')"
-      style="background:#f1f5f9;color:var(--tx);border-color:var(--bd);font-size:9px;">
-      ${p.nm}
-    </div>`).join('');
+  // Popular opções do dropdown de produtos (dinâmico)
+  const pf = document.getElementById('rd-prod-opts');
+  if (pf) {
+    const opts = Object.entries(PRODS).map(([key,p]) => {
+      const nm = (p.nm || key).replace(/"/g,'&quot;');
+      return '<label class="msdd-opt"><input type="checkbox" value="'+key+'" data-lbl="'+nm+'" onchange="msddChange(\'rd-prod\')">'+nm+'</label>';
+    }).join('');
+    pf.innerHTML = opts + '<button type="button" class="msdd-clr" onclick="msddClear(\'rd-prod\', event)">Limpar</button>';
+  }
+  // Registrar dropdowns (preserva seleção em re-render)
+  msddInit('rd-prod',   rdApplyFilters, 'Todos');
+  msddInit('rd-gestor', rdApplyFilters, 'Todos');
+  msddInit('rd-etapa',  rdApplyFilters, 'Todas');
 
   renderRdmap();
 }
@@ -2561,8 +2699,8 @@ function renderRdmap() {
   const rows = Object.entries(PRODS).map(([key, p]) => {
     // Check if this row should be hidden
     const hideProd = rdFiltState.prods.size > 0 && !rdFiltState.prods.has(key);
-    const hideEtapa = rdFiltState.etapa && p.etapa !== rdFiltState.etapa;
-    const hideGestor = rdFiltState.gestor && p.gestor !== rdFiltState.gestor && !(rdFiltState.gestor === 'l' && p.gestor === 'lm') && !(rdFiltState.gestor === 'm' && p.gestor === 'lm');
+    const hideEtapa = rdEtapaHidden(p.etapa);
+    const hideGestor = rdGestorHidden(p.gestor);
     const hidden = hideProd || hideEtapa || hideGestor;
 
     const gs = p.gestor==='l'
@@ -2618,40 +2756,6 @@ function renderRdmap() {
       </thead>
       <tbody>${rows}</tbody>
     </table>`;
-}
-
-function rdFiltProd(key) {
-  const el = document.getElementById('rdf-prod-' + key);
-  if (rdFiltState.prods.has(key)) {
-    rdFiltState.prods.delete(key);
-    if (el) { el.style.background='#f1f5f9'; el.style.color='var(--tx)'; el.style.borderColor='var(--bd)'; }
-  } else {
-    rdFiltState.prods.add(key);
-    if (el) { el.style.background='#003d22'; el.style.color='#fff'; el.style.borderColor='#003d22'; }
-  }
-  renderRdmap();
-}
-
-function rdFilt(type, val) {
-  if (type === 'gestor') {
-    const ids = ['l','m'];
-    rdFiltState.gestor = rdFiltState.gestor === val ? null : val;
-    ids.forEach(g => {
-      const el = document.getElementById('rdf-' + g);
-      if (el) el.classList.toggle('dim', rdFiltState.gestor && rdFiltState.gestor !== g);
-    });
-  }
-  renderRdmap();
-}
-
-function rdFiltEtapa(etapa) {
-  rdFiltState.etapa = rdFiltState.etapa === etapa ? null : etapa;
-  ['all','est','pre','obra'].forEach(e => {
-    const el = document.getElementById('rdmap-et-' + e);
-    if (!el) return;
-    el.classList.toggle('dim', rdFiltState.etapa && e !== rdFiltState.etapa && e !== 'all');
-  });
-  renderRdmap();
 }
 
 // ══════════════════════════════════════════
@@ -2899,15 +3003,13 @@ function renderRdmap() {
 
   function isVisible(p, key) {
     const hideProd   = rdFiltState.prods.size>0 && !rdFiltState.prods.has(key);
-    const hideGestor = rdFiltState.gestor && p.gestor!==rdFiltState.gestor
-      && !(rdFiltState.gestor==='l'&&p.gestor==='lm')
-      && !(rdFiltState.gestor==='m'&&p.gestor==='lm');
+    const hideGestor = rdGestorHidden(p.gestor);
     return !hideProd && !hideGestor;
   }
 
   let tbodyHtml = '';
   etapaGroups.forEach(({key:etapa, label, col}) => {
-    if (rdFiltState.etapa && rdFiltState.etapa!==etapa) return;
+    if (rdEtapaHidden(etapa)) return;
     if (etapa==='pos') {
       tbodyHtml += `<tr><td colspan="15" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
         <b style="color:${col}">Pós-Obra</b> &nbsp;🚧 Em mapeamento
@@ -2962,9 +3064,7 @@ let rdView = 'matriz';
 const RD_STATUS_COL = {done:'var(--gm)', doing:'var(--o)', todo:'#cbd5e1'};
 function rdGanttVisible(key,p){
   const hideProd   = rdFiltState.prods.size>0 && !rdFiltState.prods.has(key);
-  const hideGestor = rdFiltState.gestor && p.gestor!==rdFiltState.gestor
-    && !(rdFiltState.gestor==='l'&&p.gestor==='lm')
-    && !(rdFiltState.gestor==='m'&&p.gestor==='lm');
+  const hideGestor = rdGestorHidden(p.gestor);
   return !hideProd && !hideGestor;
 }
 function rdPeriodStatus(marcos){
@@ -3032,7 +3132,7 @@ function buildRdmapGantt(){
   const groups=[{k:'est',l:'Estratégia',c:'var(--est)'},{k:'pre',l:'Pré-Obra',c:'var(--pre)'},{k:'obra',l:'Obra',c:'var(--obra)'}];
   let any=false;
   groups.forEach(g=>{
-    if(rdFiltState.etapa && rdFiltState.etapa!==g.k) return;
+    if(rdEtapaHidden(g.k)) return;
     const prods=Object.entries(PRODS).filter(([k,p])=>p.etapa===g.k && rdGanttVisible(k,p));
     if(!prods.length) return;
     any=true;
@@ -3441,6 +3541,7 @@ document.addEventListener('DOMContentLoaded', function(){
   window.reconcileKRData  = reconcileKRData;
   window.refreshAfterLoad = refreshAfterLoad;
   buildPort();
+  initKbFilters();
   setLastUpdated();
   updateEditorBadge();
   // Pede identificação automaticamente ao acessar, se ainda não houver e-mail válido salvo
