@@ -765,7 +765,7 @@ button,input,select,textarea{font-family:inherit;}
       style="font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
       <span>👤</span><span id="editor-badge-txt">Identificar-se</span>
     </div>
-    <div class="hd-pill">Potencial total UH <b>R$ 3,5k→14,2k</b></div>
+    <div class="hd-pill">Potencial total <b>R$ 408M · 10,2k/UH</b></div>
     <!-- ⋮ menu -->
     <div style="position:relative" id="hd-menu-wrap">
       <button onclick="toggleHdMenu()" style="background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;font-size:18px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1" title="Mais opções">⋮</button>
@@ -852,8 +852,8 @@ button,input,select,textarea{font-family:inherit;}
     </div>
     <div class="kpi ka" onclick="showKpi('potencial')">
       <div class="kpi-lbl">Potencial Anual</div>
-      <div class="kpi-val a sm">R$ 434M</div>
-      <div class="kpi-sub">c/ custo financeiro · 9 produtos</div>
+      <div class="kpi-val a sm">R$ 408M</div>
+      <div class="kpi-sub">c/ custo financeiro · 8 produtos</div>
     </div>
     <div class="kpi kv" onclick="showKpi('potencial')">
       <div class="kpi-lbl">Potencial por UH</div>
@@ -931,20 +931,20 @@ button,input,select,textarea{font-family:inherit;}
       <div class="kpi-val o">12</div>
       <div class="kpi-sub">Em andamento · 2T26 · 2 gestores</div>
     </div>
-    <div class="kpi ko" onclick="showKpi('riscos')">
-      <div class="kpi-lbl">Riscos Críticos</div>
-      <div class="kpi-val o">3</div>
-      <div class="kpi-sub">ECO · MDM · Lego</div>
+    <div class="kpi kv" onclick="showKpi('potencial')">
+      <div class="kpi-lbl">Potencial Acum. até 2030 · por UH</div>
+      <div class="kpi-val v sm">R$ 10,2k</div>
+      <div class="kpi-sub">R$ 408M total · 10.205,9 R$/UH</div>
+    </div>
+    <div class="kpi ko" style="cursor:default">
+      <div class="kpi-lbl">Captura 2025 · realizado</div>
+      <div class="kpi-val o sm">R$ 1,8k</div>
+      <div class="kpi-sub">R$ 71M · vs 1,2k previsto ✓</div>
     </div>
     <div class="kpi ka" onclick="showKpi('potencial')">
-      <div class="kpi-lbl">Potencial Anual</div>
-      <div class="kpi-val a sm">R$ 434M</div>
-      <div class="kpi-sub">c/ custo financeiro · 9 produtos</div>
-    </div>
-    <div class="kpi kv" onclick="showKpi('potencial')">
-      <div class="kpi-lbl">Potencial por UH</div>
-      <div class="kpi-val v sm">R$ 3,5k</div>
-      <div class="kpi-sub">Custo evitado / unidade habitacional</div>
+      <div class="kpi-lbl">Foco Captura 2026 · acum/UH</div>
+      <div class="kpi-val a sm">R$ 3,5k</div>
+      <div class="kpi-sub">R$ 139M acumulado previsto</div>
     </div>
   </div>
 
@@ -1002,30 +1002,21 @@ button,input,select,textarea{font-family:inherit;}
 <div class="pg" id="pg-valor">
 
   <!-- KPIs financeiros -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--gm)">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Total Anual</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)">R$ 408M</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">c/ custo financeiro · 8 produtos</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Acumulado até 2030 · por UH</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)">R$ 10,2k</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 408M total · 10.205,9 R$/UH</div>
+    </div>
+    <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid #F58220">
+      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Captura 2025 · realizado por UH</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:#F58220">R$ 1,8k</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 71M realizado · vs 1,2k previsto ✓</div>
     </div>
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--a1)">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Acumulado 2026</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--a1)">R$ 139M</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">vs R$ 46M capturado em 2025</div>
-    </div>
-    <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--gm)">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial por UH · 2025→2030</div>
-      <div style="display:flex;align-items:baseline;gap:6px;margin-top:2px">
-        <div style="font-size:20px;font-weight:800;color:var(--g)">R$ 3,5k</div>
-        <div style="font-size:10px;color:var(--t3)">→</div>
-        <div style="font-size:20px;font-weight:800;color:var(--g)">R$ 14,2k</div>
-      </div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">por UH · pico 2028 estimado</div>
-    </div>
-    <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--gm)">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Maior Alavanca</div>
-      <div style="font-size:20px;font-weight:800;letter-spacing:-.5px;color:var(--g);margin-top:4px">R$ 79M</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">Sincroniza · Seq. MO</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Foco de Captura 2026 · acum. por UH</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--a1)">R$ 3,5k</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 139M acumulado previsto</div>
     </div>
   </div>
 
@@ -1040,20 +1031,20 @@ button,input,select,textarea{font-family:inherit;}
     </div>
     <div class="cv-box">
       <div class="cv-ttl" style="margin-bottom:10px">Potencial por Alavanca
-        <span style="font-size:9px;font-weight:400;color:var(--t3);margin-left:6px">clique para destacar produtos relacionados</span>
+        <span style="font-size:9px;font-weight:400;color:var(--t3);margin-left:6px">clique para ver a captura por produto</span>
       </div>
       <table class="alav-tbl" id="alav-tbl">
         <colgroup><col><col style="width:66px"><col style="width:74px"></colgroup>
         <thead><tr><th>Alavanca</th><th>c/ fin. (M)</th><th>Pot./UH</th></tr></thead>
         <tbody>
-          <tr class="alav-row" data-alavanca="seq_mo" onclick="filterByAlavanca('seq_mo',this)"><td>Seq. MO e Produtividade</td><td>134,4</td><td>3360</td></tr>
-          <tr class="alav-row" data-alavanca="rccp"   onclick="filterByAlavanca('rccp',this)"><td>Disp. Recursos Críticos</td><td>121,0</td><td>3024</td></tr>
-          <tr class="alav-row" data-alavanca="nao_q"  onclick="filterByAlavanca('nao_q',this)"><td>Red. Custo Não Qualidade</td><td>44,8</td><td>1120</td></tr>
-          <tr class="alav-row" data-alavanca="spot"   onclick="filterByAlavanca('spot',this)"><td>Red. Compra SPOT</td><td>33,6</td><td>840</td></tr>
-          <tr class="alav-row" data-alavanca="hc"     onclick="filterByAlavanca('hc',this)"><td>Red. HC: Automações</td><td>24,6</td><td>616</td></tr>
-          <tr class="alav-row" data-alavanca="prazo"  onclick="filterByAlavanca('prazo',this)"><td>Red. Multa Atraso Prazo</td><td>22,4</td><td>560</td></tr>
-          <tr class="alav-row" data-alavanca="desp_fin" onclick="filterByAlavanca('desp_fin',this)"><td>Red. Desp. Financeira (Estoque)</td><td>15,3</td><td>383,5</td></tr>
-          <tr class="alav-row" data-alavanca="usinas" onclick="filterByAlavanca('usinas',this)"><td>Usinas de Concreto</td><td>12,1</td><td>302,4</td></tr>
+          <tr class="alav-row" data-alavanca="seq_mo" onclick="openAlavModal('seq_mo')"><td>Seq. MO e Produtividade</td><td>134,4</td><td>3360</td></tr>
+          <tr class="alav-row" data-alavanca="rccp"   onclick="openAlavModal('rccp')"><td>Disp. Recursos Críticos</td><td>121,0</td><td>3024</td></tr>
+          <tr class="alav-row" data-alavanca="nao_q"  onclick="openAlavModal('nao_q')"><td>Red. Custo Não Qualidade</td><td>44,8</td><td>1120</td></tr>
+          <tr class="alav-row" data-alavanca="spot"   onclick="openAlavModal('spot')"><td>Red. Compra SPOT</td><td>33,6</td><td>840</td></tr>
+          <tr class="alav-row" data-alavanca="hc"     onclick="openAlavModal('hc')"><td>Red. HC: Automações</td><td>24,6</td><td>616</td></tr>
+          <tr class="alav-row" data-alavanca="prazo"  onclick="openAlavModal('prazo')"><td>Red. Multa Atraso Prazo</td><td>22,4</td><td>560</td></tr>
+          <tr class="alav-row" data-alavanca="desp_fin" onclick="openAlavModal('desp_fin')"><td>Red. Desp. Financeira (Estoque)</td><td>15,3</td><td>383,5</td></tr>
+          <tr class="alav-row" data-alavanca="usinas" onclick="openAlavModal('usinas')"><td>Usinas de Concreto</td><td>12,1</td><td>302,4</td></tr>
           <tr style="font-weight:800"><td>Total anual</td><td>408,2</td><td>10.205,9</td></tr>
         </tbody>
       </table>
@@ -1065,16 +1056,32 @@ button,input,select,textarea{font-family:inherit;}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
       <div>
         <div class="cv-ttl" style="margin-bottom:2px">Potencial por Produto</div>
-        <div style="font-size:10px;color:var(--t3)" id="prod-filter-label">clique numa alavanca para filtrar</div>
+        <div style="font-size:10px;color:var(--t3)" id="prod-filter-label">selecione produtos ou abra uma alavanca para detalhar a captura</div>
       </div>
       <button onclick="clearAllValorFilters()" id="clear-alav-btn"
         style="display:none;border:1px solid var(--bd);background:none;border-radius:5px;padding:3px 8px;font-size:9px;font-weight:700;color:var(--t2);cursor:pointer">
         ✕ Limpar filtros
       </button>
     </div>
-    <!-- Product filter chips -->
+    <!-- Product filter: pick list multi-seleção + gestor -->
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-      <div style="display:flex;gap:5px;flex-wrap:wrap;flex:1" id="valor-prod-chips"></div>
+      <div class="msdd" id="msdd-valor-prod">
+        <button class="msdd-btn" type="button" onclick="msddOpen('valor-prod', event)">
+          <span class="msdd-lbl">Produtos</span><span class="msdd-val">Todos</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="sincroniza" data-lbl="Sincroniza" onchange="msddChange('valor-prod')">Sincroniza</label>
+          <label class="msdd-opt"><input type="checkbox" value="compilador" data-lbl="Compilador BIM" onchange="msddChange('valor-prod')">Compilador BIM</label>
+          <label class="msdd-opt"><input type="checkbox" value="ecopam" data-lbl="ECO-PAM" onchange="msddChange('valor-prod')">ECO-PAM</label>
+          <label class="msdd-opt"><input type="checkbox" value="obra360" data-lbl="Obra 360" onchange="msddChange('valor-prod')">Obra 360</label>
+          <label class="msdd-opt"><input type="checkbox" value="prateleira" data-lbl="Prateleira MO" onchange="msddChange('valor-prod')">Prateleira MO + Catracas</label>
+          <label class="msdd-opt"><input type="checkbox" value="ia" data-lbl="IA" onchange="msddChange('valor-prod')">IA (Zé · Daeane)</label>
+          <label class="msdd-opt"><input type="checkbox" value="lego" data-lbl="Sistema LEGO" onchange="msddChange('valor-prod')">Sistema LEGO</label>
+          <label class="msdd-opt"><input type="checkbox" value="smp" data-lbl="SMP Digital" onchange="msddChange('valor-prod')">SMP Digital</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('valor-prod', event)">Limpar</button>
+        </div>
+      </div>
+      <div style="flex:1"></div>
       <div class="fsep"></div>
       <div class="fc" id="vg-l" onclick="filterValorGestor('l')" style="background:#e8edf2;color:#3d5166;border-color:#b0bfcc;font-size:9px;flex-shrink:0">Lilian</div>
       <div class="fc" id="vg-m" onclick="filterValorGestor('m')" style="background:#e4e8f0;color:#354a60;border-color:#a8b4c0;font-size:9px;flex-shrink:0">Marcos</div>
@@ -1250,6 +1257,14 @@ button,input,select,textarea{font-family:inherit;}
   </div>
 </div>
 
+<!-- ALAVANCA DETAIL MODAL -->
+<div class="kpi-mbg" id="alav-mbg" onclick="if(event.target.id==='alav-mbg')closeAlavModal()">
+  <div class="kpi-md" style="width:560px">
+    <div class="kpi-md-hd"><div class="kpi-md-ttl" id="alav-ttl">—</div><button class="kpi-md-x" onclick="closeAlavModal()">✕</button></div>
+    <div class="kpi-md-body" id="alav-body" style="max-height:74vh;overflow-y:auto"></div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div class="edit-mbg" id="edit-mbg" onclick="if(event.target.id==='edit-mbg')closeEdit()">
   <div class="edit-md">
@@ -1381,8 +1396,8 @@ const PRODS = {
     rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
   },
   ecopam: {
-    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 107M',
-    pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':33.9,'usinas':1.8,'desp_fin':15.3},
+    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 106M',
+    pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':32.7,'usinas':1.8,'desp_fin':15.3},
     desc:'Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM). Rollout 100% concluído (22 cidades).',
     ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
     riscos:[{nm:'Instabilidade técnica e alto volume de erros',desc:'Redesenho de arquitetura em curso. Perda de tração no rollout. Impacto no desligamento do sistema legado.',lvl:'alto'}],
@@ -1480,7 +1495,7 @@ const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
 // ECO-PAM permanece unificado (somando capturas); as IAs (Zé + Daeane) entram
 // unificadas como "IA". Os demais produtos seguem intactos nas outras abas.
 const CV_KEYS = ['sincroniza','compilador','ecopam','obra360','prateleira','ia','lego','smp'];
-const CV_POT  = {sincroniza:79,compilador:40,ecopam:107,obra360:69,prateleira:55,ia:21,lego:7,smp:23};
+const CV_POT  = {sincroniza:79,compilador:40,ecopam:106,obra360:69,prateleira:55,ia:21,lego:7,smp:23};
 function cvProd(key){
   if(key==='ia'){
     const z = PRODS.ze || {okrs:[],ambicoes:[]};
@@ -1494,6 +1509,150 @@ function cvProd(key){
     };
   }
   return PRODS[key];
+}
+
+// ── Dados do modal de alavanca: potencial (Imagem 1), % por produto (Imagem 2),
+//    e "lastro"/como capturar (Imagem 2 + memória de cálculo da planilha) ──
+const ALAV_FIN = {
+  seq_mo:  {fin:134400000, uh:3360,  lastro:'Economia por UH em equipes eficientes vs. equipes novas — início de obra com os 7 recursos críticos, sequenciamento, treino e retenção de MO e boas práticas de planejamento e execução. Premissa: até 3k/UH; 3 meses de prazo ganhos.'},
+  rccp:    {fin:120960000, uh:3024,  lastro:'Garantia da disponibilidade dos 7 recursos críticos no início de obra certo, evitando paradas, ociosidade e descontinuidade da produção.'},
+  nao_q:   {fin:44800000,  uh:1120,  lastro:'Custo incorrido em retrabalho (não qualidade) que deixa de acontecer com melhor planejamento e execução.'},
+  spot:    {fin:33600000,  uh:840,   lastro:'Redução de 17%→7% de compras spot no ano, via negociações estratégicas com fornecedores habilitadas pela antecipação do planejamento (maior visibilidade da necessidade de materiais, serviços e equipamentos).'},
+  hc:      {fin:24640000,  uh:616,   lastro:'Por automações feitas — redução e simplificação de atividades manuais (requisições, conferências, orçamentação, negociação), exigindo menos operadores por processo.'},
+  prazo:   {fin:22400000,  uh:560,   lastro:'Redução de multas por atraso na entrega de prazo ao cliente.'},
+  desp_fin:{fin:15340000,  uh:383.5, lastro:'Baseada na redução do ativo (estoque): menor montante físico/financeiro parado em obra reduz a captação de recursos de terceiros e o custo financeiro da CIA.'},
+  usinas:  {fin:12096000,  uh:302.4, lastro:'Redução do custo de concreto via usinas próprias (verticalização).'},
+};
+// % de captura por produto em cada alavanca (Imagem 2; ECO+PAM somados em ECO-PAM, IAs unificadas em IA)
+const ALAV_PCT = {
+  hc:      {sincroniza:0, compilador:26,ecopam:36, obra360:20,prateleira:2, ia:14,lego:2,smp:0},
+  nao_q:   {sincroniza:10,compilador:15,ecopam:5,  obra360:30,prateleira:10,ia:5, lego:5,smp:20},
+  prazo:   {sincroniza:20,compilador:5, ecopam:5,  obra360:30,prateleira:20,ia:10,lego:5,smp:5},
+  spot:    {sincroniza:0, compilador:5, ecopam:90, obra360:5, prateleira:0, ia:0, lego:0,smp:0},
+  seq_mo:  {sincroniza:25,compilador:0, ecopam:10, obra360:30,prateleira:25,ia:5, lego:0,smp:5},
+  rccp:    {sincroniza:30,compilador:20,ecopam:27, obra360:0, prateleira:10,ia:5, lego:3,smp:5},
+  desp_fin:{sincroniza:0, compilador:0, ecopam:100,obra360:0, prateleira:0, ia:0, lego:0,smp:0},
+  usinas:  {sincroniza:0, compilador:0, ecopam:15, obra360:15,prateleira:0, ia:0, lego:0,smp:0},
+};
+const CV_SHORT = {sincroniza:'Sincroniza',compilador:'Compilador BIM',ecopam:'ECO-PAM',obra360:'Obra 360',prateleira:'Prateleira MO',ia:'IA (Zé · Daeane)',lego:'Sistema LEGO',smp:'SMP Digital'};
+
+// ── Conteúdo integral da planilha de capturas (memória de cálculo por alavanca) ──
+const CAPTURE_DETAIL = {
+  seq_mo:{
+    frente:'Sequenciamento MO / Planej. e Exec.', tipo:'CPV — redução de prazo de obra e maior eficiência produtiva',
+    como:'Reduzir prazo de obra e custo via início de obra adequado (com os 7 recursos críticos), sequenciando, treinando e retendo a mão de obra e garantindo as melhores práticas de planejamento e execução no canteiro.',
+    premissa:'Economia de até 3k por UH em equipes eficientes vs. equipes novas.',
+    savingUH:'R$ 3.000/UH (base) → R$ 3.360/UH c/ financeiro',
+    acao:'Validar o resserviço atual e o gasto com afastamento por obra.',
+    obs:'3 meses de prazo ganhos com eficiência produtiva, redução de resserviço e de custos com contratações e SSMA.'
+  },
+  spot:{
+    frente:'Abastecimento', tipo:'CPV — redução de custos de materiais/serviços por maior previsibilidade',
+    como:'Negociações mais estratégicas com fornecedores, via antecipação do planejamento (maior visibilidade da necessidade de materiais, serviços e equipamentos das obras).',
+    premissa:'Redução de 17% → 7% de compras spot no ano.',
+    savingUH:'R$ 753/UH (base) → R$ 840/UH c/ financeiro',
+    acao:'Validar os R$ 150MM de acessório de forma; validar se o spot pode ficar < 7%; otimizar compra de aço e cabo.',
+    obs:'Em 12 meses há ~R$ 500MM/ano de compra spot (24% dos pedidos); R$ 150MM de acessório de forma seguirão spot.',
+    subitens:[{nm:'Custo de serviço',desc:'Redução do custo de grandes negociações (BG, terraplanagem, fundação, castelo d\'água, elevador, usina de concreto). Avaliar quanto o MRP habilitará essa redução.'}]
+  },
+  hc:{
+    frente:'Abastecimento / Orçamentos / Planej. e Exec.', tipo:'Automatização e simplificação de processos e sistemas',
+    como:'Redução e simplificação de atividades manuais, gerando processos mais ágeis que precisam de menos operadores.',
+    premissa:'Soma de todas as iniciativas de redução de HC.',
+    savingUH:'R$ 699/UH (base, soma das iniciativas)',
+    subitens:[
+      {nm:'Automatização das Compras — requisições',item:'1 braço direito / obra · 150 obras',saving:'R$ 7,1M · R$ 178/UH',obs:'Obra 360 + plano de abastecimento automático são habilitadores. Mais difícil de retirar.'},
+      {nm:'Automatização das Compras — aprovações',item:'20 aprovadores',saving:'R$ 0,95M · R$ 24/UH',obs:'Redução baseada em HC, independente da cadeira.'},
+      {nm:'Eficiência no processo orçamentário',item:'15% dos orçamentistas',saving:'R$ 0,22M · R$ 5/UH',obs:'Hoje 1,3 orçamentos/pessoa/mês; meta de eficiência p/ 20%.'},
+      {nm:'Eficiência no processo de negociação',item:'10% de suprimentos',saving:'R$ 5,4M · R$ 135/UH',obs:'Potencial de chegar a 20%; assumido 10% com segurança.'},
+      {nm:'Redução do excesso de conferência',item:'2 auxiliares · 150 obras',saving:'R$ 14,3M · R$ 356/UH',obs:'7 cargos similares a "auxiliar" orçados em obra.'}
+    ]
+  },
+  desp_fin:{
+    frente:'Abastecimento (Ativo)', tipo:'Redução do custo de capital para estoque de obra',
+    como:'Reduzir o montante físico e financeiro de material nas obras, reduzindo a captação de recursos de terceiros e viabilizando custos financeiros menores para a CIA.',
+    premissa:'Redução de gap de R$ 100MM por 1 ano.',
+    savingUH:'Base: estoque R$ 250MM · redução-alvo R$ 150MM',
+    acao:'Entender a real oportunidade de redução de estoque, com dimensionamento adequado por região.'
+  }
+};
+function buildCaptureDetailHtml(key){
+  const d = CAPTURE_DETAIL[key];
+  if(!d) return '';
+  const field = (lbl,val) => val ? '<div style="margin-bottom:6px"><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--t3)">'+lbl+': </span><span style="font-size:11px;color:var(--t2);line-height:1.5">'+val+'</span></div>' : '';
+  let sub = '';
+  if(d.subitens && d.subitens.length){
+    sub = '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--t3);margin:9px 0 5px">Itens / memória</div>';
+    sub += d.subitens.map(s=>{
+      const meta = [s.item,s.saving].filter(Boolean).join(' · ');
+      return '<div style="border-left:2px solid var(--gm);padding:4px 0 4px 9px;margin-bottom:6px">'
+        +'<div style="font-size:10.5px;font-weight:700;color:var(--tx)">'+s.nm+'</div>'
+        +(meta?'<div style="font-size:10px;color:var(--g);font-weight:700">'+meta+'</div>':'')
+        +(s.desc?'<div style="font-size:10px;color:var(--t2);line-height:1.4">'+s.desc+'</div>':'')
+        +(s.obs?'<div style="font-size:9.5px;color:var(--t3);font-style:italic;margin-top:2px">'+s.obs+'</div>':'')
+        +'</div>';
+    }).join('');
+  }
+  return '<details style="margin-top:12px;border:1px solid var(--bd);border-radius:9px;padding:9px 11px">'
+    +'<summary style="cursor:pointer;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--g)">Memória de cálculo · planilha de capturas</summary>'
+    +'<div style="margin-top:9px">'
+    + field('Frente', d.frente)
+    + field('Tipo de economia', d.tipo)
+    + field('Como', d.como)
+    + field('Premissa', d.premissa)
+    + field('Saving por UH', d.savingUH)
+    + field('Ação / validação', d.acao)
+    + field('Obs', d.obs)
+    + sub
+    +'</div></details>';
+}
+
+function openAlavModal(key){
+  const fin = ALAV_FIN[key], pct = ALAV_PCT[key];
+  if(!fin || !pct) return;
+  const nome = ALAVANCAS[key] || key;
+  const mM = v => 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + ' M';
+  const rows = CV_KEYS.map(k=>({short:CV_SHORT[k]||k, pct:pct[k]||0, val:(pct[k]||0)/100*fin.fin}))
+                      .filter(r=>r.pct>0).sort((a,b)=>b.val-a.val);
+  const somaPct = rows.reduce((s,r)=>s+r.pct,0);
+  const naoAtrib = Math.max(0, 100 - somaPct);
+  const rowsHtml = rows.map(r=>'<tr style="border-top:1px solid var(--bd)">'+
+      '<td style="padding:6px 0;font-weight:700;color:var(--tx)">'+r.short+'</td>'+
+      '<td style="padding:6px 0"><div style="display:flex;align-items:center;gap:7px"><div style="flex:1;height:7px;background:var(--gyb);border-radius:4px;overflow:hidden"><div style="width:'+r.pct+'%;height:100%;background:var(--g);border-radius:4px"></div></div><span style="font-weight:700;min-width:30px;text-align:right">'+r.pct+'%</span></div></td>'+
+      '<td style="padding:6px 0;text-align:right;font-weight:700;color:var(--g)">'+mM(r.val)+'</td></tr>').join('');
+  const naoAtribHtml = naoAtrib>0.5 ? '<tr style="border-top:1px solid var(--bd)"><td style="padding:6px 0;color:var(--t3)">Não atribuído / outros</td><td style="padding:6px 0;color:var(--t3)">'+naoAtrib+'%</td><td style="padding:6px 0;text-align:right;color:var(--t3)">'+mM(naoAtrib/100*fin.fin)+'</td></tr>' : '';
+  const body =
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">'+
+      '<div style="background:var(--gb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial c/ fin.</div><div style="font-size:15px;font-weight:800;color:var(--g);margin-top:2px">R$ '+Math.round(fin.fin).toLocaleString('pt-BR')+'</div></div>'+
+      '<div style="background:#f5f3ff;border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial por UH</div><div style="font-size:15px;font-weight:800;color:var(--a1);margin-top:2px">R$ '+fin.uh.toLocaleString('pt-BR',{maximumFractionDigits:1})+'</div></div>'+
+      '<div style="background:var(--gyb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Captura atribuída</div><div style="font-size:15px;font-weight:800;color:var(--tx);margin-top:2px">'+Math.min(100,somaPct)+'%</div></div>'+
+    '</div>'+
+    '<div style="background:#fff8ef;border:1px solid #ffe3bf;border-radius:9px;padding:9px 11px;margin-bottom:12px"><div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--o);margin-bottom:3px">Como se captura · lastro</div><div style="font-size:11px;color:var(--t2);line-height:1.5">'+fin.lastro+'</div></div>'+
+    '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);margin-bottom:4px">Captura por produto</div>'+
+    '<table style="width:100%;border-collapse:collapse;font-size:11px">'+
+      '<thead><tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px"><th style="padding:4px 0">Produto</th><th style="width:150px;padding:4px 0">% da alavanca</th><th style="text-align:right;padding:4px 0">Valor</th></tr></thead>'+
+      '<tbody>'+rowsHtml+naoAtribHtml+'</tbody>'+
+      '<tfoot><tr style="border-top:2px solid var(--tx);font-weight:800"><td style="padding:7px 0">Potencial total</td><td style="padding:7px 0">100%</td><td style="padding:7px 0;text-align:right;color:var(--g)">'+mM(fin.fin)+'</td></tr></tfoot>'+
+    '</table>'+
+    buildCaptureDetailHtml(key)+
+    '<div style="margin-top:14px;text-align:right"><button onclick="filtrarPorAlavancaDoModal(\''+key+'\')" style="border:1.5px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:7px 13px;font-size:10px;font-weight:800;cursor:pointer">Filtrar produtos por esta alavanca →</button></div>';
+  document.getElementById('alav-ttl').textContent = nome;
+  document.getElementById('alav-body').innerHTML = body;
+  document.getElementById('alav-mbg').classList.add('open');
+}
+function closeAlavModal(){ const el=document.getElementById('alav-mbg'); if(el) el.classList.remove('open'); }
+function filtrarPorAlavancaDoModal(key){
+  closeAlavModal();
+  if(activeAlavanca !== key) filterByAlavanca(key, null);
+}
+// Pick list de produtos (multi-seleção) — substitui os chips
+function applyValorProdFilter(){
+  activeValorProds = new Set(msddSel('valor-prod'));
+  const clearBtn = document.getElementById('clear-alav-btn');
+  if (clearBtn) clearBtn.style.display = (activeAlavanca || activeValorProds.size>0 || activeValorGestor) ? '' : 'none';
+  renderProdRows(activeAlavanca);
+  updateAlavancaTable();
+  updateValorChart();
 }
 
 // ── KR: % da meta atingida ──
@@ -1720,7 +1879,7 @@ const KPI_DATA = {
     {ic:'🔴',ttl:'MDM: 3,7% vs meta 90% até dez/26',desc:'Exige aceleração urgente. Bloqueia Compilador BIM e qualidade do ECO-PAM.',badge:'Alto',bc:'ko'},
     {ic:'🟡',ttl:'Sistema LEGO: prioridade redefinida por estratégia',desc:'KR2 em 56% vs meta de 90%. Tipologias modulares impactam roadmap.',badge:'Médio',bc:'kg'},
   ]},
-  potencial:{ttl:'R$ 434M de potencial anual',items:[
+  potencial:{ttl:'R$ 408M de potencial anual',items:[
     {ic:'💚',ttl:'Seq. MO e Produtividade',desc:'Redução de prazo e maior eficiência produtiva via sequenciamento e retenção de MO.',badge:'R$ 134M',bc:'kv'},
     {ic:'💚',ttl:'Disponibilidade Recursos Críticos',desc:'Garantia dos 7 recursos críticos no início de obra certo.',badge:'R$ 121M',bc:'kv'},
     {ic:'💚',ttl:'ECO-PAM (ECO + PAM)',desc:'Redução de compras spot, controle de custos e abastecimento planejado.',badge:'R$ 119M',bc:'kv'},
@@ -2034,37 +2193,23 @@ function buildValor(){
   new Chart(ctx,{data:{
     labels:['2025','2026','2027','2028','2029','2030'],
     datasets:[
-      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:[1.2,2.3,2.7,1.9,1.5,0.7],backgroundColor:'rgba(7,157,86,.75)',borderRadius:4,yAxisID:'y',order:3,
-        datalabels:{anchor:'end',align:'top',offset:1,color:'#079D56',font:{size:9,weight:700},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
-      {type:'bar',label:'Realizado Anual (R$/UH mil)',data:[1.8,null,null,null,null,null],backgroundColor:'#F58220',borderRadius:4,yAxisID:'y',order:3,
-        datalabels:{anchor:'end',align:'top',offset:1,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
+      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:[1.2,2.3,2.7,1.9,1.5,0.7],backgroundColor:'rgba(7,157,86,.42)',borderRadius:4,yAxisID:'y',order:3,
+        datalabels:{anchor:'end',align:'top',offset:1,color:'#0a8f50',font:{size:9,weight:700},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
+      {type:'bar',label:'Realizado Anual (R$/UH mil)',data:[1.8,null,null,null,null,null],backgroundColor:'#024d2a',borderRadius:4,yAxisID:'y',order:3,
+        datalabels:{anchor:'end',align:'top',offset:1,color:'#024d2a',font:{size:9,weight:800},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
       {type:'line',label:'Potencial Acumulado (R$ MM)',data:[46,139,246,320,380,408],borderColor:'#793F98',backgroundColor:'rgba(121,63,152,.06)',tension:.4,pointBackgroundColor:'#793F98',pointRadius:5,borderWidth:2.5,yAxisID:'y2',order:1,
         datalabels:{anchor:'end',align:'top',offset:8,color:'#793F98',font:{size:9,weight:700},formatter:v=>v==null?null:v+'MM'}},
       {type:'line',label:'Realizado Acum. (R$ MM)',data:[71,null,null,null,null,null],borderColor:'#F58220',pointBackgroundColor:'#F58220',pointBorderColor:'#fff',pointBorderWidth:1.5,pointRadius:7,pointStyle:'rectRot',showLine:false,yAxisID:'y2',order:0,
         datalabels:{anchor:'end',align:'top',offset:8,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v+'MM'}}
     ]},options:{responsive:true,maintainAspectRatio:false,
     layout:{padding:{top:20,right:10,left:4}},
-    plugins:{legend:{position:'top',labels:{font:{family:'Plus Jakarta Sans',size:10},boxWidth:10,padding:9}},datalabels:{clamp:true}},
+    plugins:{legend:{position:'top',labels:{font:{family:'Plus Jakarta Sans',size:10},boxWidth:10,padding:9}},datalabels:{clamp:true},tooltip:{callbacks:{afterLabel:function(ctx){if(ctx.dataset.label&&ctx.dataset.label.indexOf('Acum')>-1&&ctx.parsed.y!=null){return 'Por UH: R$ '+Math.round(ctx.parsed.y*25).toLocaleString('pt-BR');}return undefined;}}}},
     scales:{y:{position:'left',title:{display:true,text:'R$/UH (mil)',font:{size:9}},grid:{color:'#f1f5f9'},ticks:{font:{size:10}},grace:'15%'},
             y2:{position:'right',title:{display:true,text:'Acumulado (R$ MM)',font:{size:9}},grid:{drawOnChartArea:false},ticks:{font:{size:10}},grace:'12%'}}}});
   renderProdRows(null); // initial render, no filter
 
-  // Build product filter chips
-  const valorChips = document.getElementById('valor-prod-chips');
-  if (valorChips && !valorChips.dataset.built) {
-    valorChips.dataset.built = '1';
-    const prodKeys = CV_KEYS;
-    prodKeys.forEach(k => {
-      const p = cvProd(k);
-      const chip = document.createElement('div');
-      chip.className = 'fc';
-      chip.id = 'vchip-' + k;
-      chip.style.cssText = 'font-size:9px;background:#f1f5f9;color:var(--tx);border-color:var(--bd)';
-      chip.textContent = p.nm;
-      chip.onclick = () => filterValorProd(k);
-      valorChips.appendChild(chip);
-    });
-  }
+  // Filtro de produtos: pick list multi-seleção
+  msddInit('valor-prod', applyValorProdFilter, 'Todos');
 }
 
 // ══ CONEXÕES ══
@@ -3332,11 +3477,11 @@ function clearAllValorFilters() {
     document.getElementById('prod-filter-label').textContent = 'clique numa alavanca para filtrar';
     document.querySelectorAll('#trace-body tr').forEach(r => r.classList.remove('tr-highlight','tr-dim'));
   }
-  activeValorProds.forEach(k => {
-    const chip = document.getElementById('vchip-' + k);
-    if (chip) { chip.style.background='#f1f5f9'; chip.style.color='var(--tx)'; chip.style.borderColor='var(--bd)'; }
-  });
   activeValorProds.clear();
+  const md = document.getElementById('msdd-valor-prod');
+  if (md) md.querySelectorAll('.msdd-opt input').forEach(cb => { cb.checked = false; });
+  if (MSDD['valor-prod']) MSDD['valor-prod'].sel = new Set();
+  msddRefresh('valor-prod');
   activeValorGestor = null;
   ['l','m'].forEach(id => { const el=document.getElementById('vg-'+id); if(el) el.classList.remove('dim'); });
   renderProdRows(null);
@@ -3391,7 +3536,7 @@ function clearAlavancaFilter() {
 
 function renderProdRows(filterAlavanca) {
   const prodData = CV_KEYS.map(k => ({key:k, pot:CV_POT[k], etapa:cvProd(k).etapa}));
-  const maxV = 107;
+  const maxV = 106;
   const wrap = document.getElementById('prod-rows');
   if (!wrap) return;
   wrap.innerHTML = '';
@@ -3799,7 +3944,6 @@ function selectOKRevProd(key) {
   const p = PRODS[key];
   document.getElementById('okrev-detail-title').textContent = p.nm + ' · Evolução dos KRs';
   buildKRList(key);
-  buildKRTabs(key);
   // auto-select first KR
   if (p.okrs[0] && p.okrs[0].krs.length) selectKR(key, 0, 0);
 }
@@ -3819,6 +3963,8 @@ function buildKRList(key) {
       const u = krUnit(kr)||'%';
       const item = document.createElement('div');
       item.className = 'kr-item-ev';
+      item.id = `okrev-kritem-${oi}-${ki}`;
+      item.onclick = () => selectKR(key, oi, ki);
       item.innerHTML = `
         <span class="kr-dot-ev" style="background:${col}"></span>
         <div style="flex:1;min-width:0">
@@ -3858,14 +4004,20 @@ function buildKRTabs(key) {
 }
 
 function selectKR(key, oi, ki) {
-  document.querySelectorAll('[id^="okrev-krtab-"]').forEach(el => {
-    el.classList.remove('on');
-    el.style.background=''; el.style.color=el.style.borderColor;
+  // A lista de KRs agora é o filtro: realça o item selecionado
+  document.querySelectorAll('[id^="okrev-kritem-"]').forEach(el => {
+    el.classList.remove('on'); el.style.boxShadow = '';
   });
-  const tab = document.getElementById(`okrev-krtab-${oi}-${ki}`);
   const ci  = (oi*3+ki) % KR_COLS.length;
   const col = KR_COLS[ci];
-  if (tab) { tab.classList.add('on'); tab.style.background=col; tab.style.color='#fff'; }
+  const item = document.getElementById(`okrev-kritem-${oi}-${ki}`);
+  if (item) { item.classList.add('on'); item.style.boxShadow = `inset 3px 0 0 ${col}`; }
+  // Cabeçalho do gráfico mostra qual KR está sendo exibido (no lugar das abas-filtro)
+  const head = document.getElementById('okrev-kr-tabs');
+  if (head) {
+    const kr = PRODS[key].okrs[oi].krs[ki];
+    head.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:${col}"><span style="width:9px;height:9px;border-radius:2px;background:${col};display:inline-block"></span>${kr.lbl}</span>`;
+  }
   buildBarChart(key, oi, ki);
 }
 
