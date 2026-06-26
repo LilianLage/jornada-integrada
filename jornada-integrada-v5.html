@@ -1005,8 +1005,8 @@ button,input,select,textarea{font-family:inherit;}
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--gm)">
       <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Total Anual</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)">R$ 434M</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">c/ custo financeiro · 9 produtos</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)">R$ 408M</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px">c/ custo financeiro · 8 produtos</div>
     </div>
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--a1)">
       <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Acumulado 2026</div>
@@ -1043,18 +1043,18 @@ button,input,select,textarea{font-family:inherit;}
         <span style="font-size:9px;font-weight:400;color:var(--t3);margin-left:6px">clique para destacar produtos relacionados</span>
       </div>
       <table class="alav-tbl" id="alav-tbl">
-        <colgroup><col><col style="width:62px"><col style="width:74px"></colgroup>
-        <thead><tr><th>Alavanca</th><th>Pot. (M)</th><th>c/ fin. (M)</th></tr></thead>
+        <colgroup><col><col style="width:66px"><col style="width:74px"></colgroup>
+        <thead><tr><th>Alavanca</th><th>c/ fin. (M)</th><th>Pot./UH</th></tr></thead>
         <tbody>
-          <tr class="alav-row" data-alavanca="seq_mo" onclick="filterByAlavanca('seq_mo',this)"><td>Seq. MO e Produtividade</td><td>120,0</td><td>134,4</td></tr>
-          <tr class="alav-row" data-alavanca="rccp"   onclick="filterByAlavanca('rccp',this)"><td>Disp. Recursos Críticos</td><td>108,0</td><td>121,0</td></tr>
-          <tr class="alav-row" data-alavanca="nao_q"  onclick="filterByAlavanca('nao_q',this)"><td>Red. Custo Não Qualidade</td><td>40,0</td><td>44,8</td></tr>
-          <tr class="alav-row" data-alavanca="spot"   onclick="filterByAlavanca('spot',this)"><td>Red. Compra SPOT</td><td>30,0</td><td>33,6</td></tr>
-          <tr class="alav-row" data-alavanca="prazo"  onclick="filterByAlavanca('prazo',this)"><td>Red. Multa Atraso Prazo</td><td>20,0</td><td>22,4</td></tr>
-          <tr class="alav-row" data-alavanca="hc"     onclick="filterByAlavanca('hc',this)"><td>Red. HC: Automações</td><td>22,0</td><td>24,6</td></tr>
-          <tr class="alav-row" data-alavanca="orca"   onclick="filterByAlavanca('orca',this)"><td>Eficiência Orçamentária</td><td>22,0</td><td>24,6</td></tr>
-          <tr class="alav-row" data-alavanca="govern" onclick="filterByAlavanca('govern',this)"><td>Governança de Dados</td><td>10,8</td><td>12,1</td></tr>
-          <tr style="font-weight:800"><td>Total anual</td><td>350,8</td><td>408,2</td></tr>
+          <tr class="alav-row" data-alavanca="seq_mo" onclick="filterByAlavanca('seq_mo',this)"><td>Seq. MO e Produtividade</td><td>134,4</td><td>3360</td></tr>
+          <tr class="alav-row" data-alavanca="rccp"   onclick="filterByAlavanca('rccp',this)"><td>Disp. Recursos Críticos</td><td>121,0</td><td>3024</td></tr>
+          <tr class="alav-row" data-alavanca="nao_q"  onclick="filterByAlavanca('nao_q',this)"><td>Red. Custo Não Qualidade</td><td>44,8</td><td>1120</td></tr>
+          <tr class="alav-row" data-alavanca="spot"   onclick="filterByAlavanca('spot',this)"><td>Red. Compra SPOT</td><td>33,6</td><td>840</td></tr>
+          <tr class="alav-row" data-alavanca="hc"     onclick="filterByAlavanca('hc',this)"><td>Red. HC: Automações</td><td>24,6</td><td>616</td></tr>
+          <tr class="alav-row" data-alavanca="prazo"  onclick="filterByAlavanca('prazo',this)"><td>Red. Multa Atraso Prazo</td><td>22,4</td><td>560</td></tr>
+          <tr class="alav-row" data-alavanca="desp_fin" onclick="filterByAlavanca('desp_fin',this)"><td>Red. Desp. Financeira (Estoque)</td><td>15,3</td><td>383,5</td></tr>
+          <tr class="alav-row" data-alavanca="usinas" onclick="filterByAlavanca('usinas',this)"><td>Usinas de Concreto</td><td>12,1</td><td>302,4</td></tr>
+          <tr style="font-weight:800"><td>Total anual</td><td>408,2</td><td>10.205,9</td></tr>
         </tbody>
       </table>
     </div>
@@ -1080,7 +1080,7 @@ button,input,select,textarea{font-family:inherit;}
       <div class="fc" id="vg-m" onclick="filterValorGestor('m')" style="background:#e4e8f0;color:#354a60;border-color:#a8b4c0;font-size:9px;flex-shrink:0">Marcos</div>
     </div>
     <div class="prod-rows" id="prod-rows"></div>
-    <div style="margin-top:10px;font-size:10px;color:var(--t3);text-align:center">+ Nexus, MDM: potencial habilitador — sem captura financeira direta mapeada</div>
+    <div style="margin-top:10px;font-size:10px;color:var(--t3);text-align:center">+ Nexus, SIMURB, MDM, Iniciativas Inbound, Compras 360, Nova EAP: habilitadores — sem captura financeira direta mapeada</div>
   </div>
 
 
@@ -1289,18 +1289,18 @@ const ALAVANCAS = {
   rccp:    'Disp. Recursos Críticos',
   nao_q:   'Red. Custo Não Qualidade',
   spot:    'Red. Compra SPOT',
-  prazo:   'Red. Multa Atraso Prazo',
   hc:      'Red. HC: Automações',
-  orca:    'Eficiência Orçamentária',
-  govern:  'Governança de Dados (MDM)',
+  prazo:   'Red. Multa Atraso Prazo',
+  desp_fin:'Red. Desp. Financeira (Estoque)',
+  usinas:  'Usinas de Concreto',
 };
 
 const PRODS = {
   sincroniza: {
     nm:'Sincroniza', etapa:'est', gestor:'m', po:'Érika', status:'sv', pot:'R$ 79M',
-    pot_alav:{'seq_mo':50,'rccp':29},
+    pot_alav:{'seq_mo':33.6,'rccp':36.3,'nao_q':4.5,'prazo':4.5},
     desc:'Plataforma de planejamento integrado de MO e sequenciamento de fôrma. Permite simulações estratégicas com RO e VPL.',
-    ambicoes:['vp','gc'], alavancas:['seq_mo','rccp'],
+    ambicoes:['vp','gc'], alavancas:['seq_mo','rccp','nao_q','prazo'],
     riscos:[],
     notas:[],
     okrs:[
@@ -1316,7 +1316,7 @@ const PRODS = {
     nm:'Nexus + GCron', etapa:'est', gestor:'m', po:'Athaenar · Vivian', status:'sv', pot:'Habilitador',
     pot_alav:{},
     desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
-    ambicoes:['du','gc'], alavancas:['orca','rccp'],
+    ambicoes:['du','gc'], alavancas:['rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Aprimorar acuracidade e velocidade do processo orçamentário',
            krs:[{lbl:'Simulações ativas na plataforma',atual:80,meta:'—',real:'118',c:'v'},
@@ -1327,7 +1327,7 @@ const PRODS = {
     nm:'SIMURB', etapa:'est', gestor:'m', po:'Brenda', status:'sv', pot:'Habilitador',
     pot_alav:{},
     desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
-    ambicoes:['du','gc'], alavancas:['orca','rccp'],
+    ambicoes:['du','gc'], alavancas:['rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Aprimorar acuracidade e velocidade do processo orçamentário',
            krs:[{lbl:'Simulações ativas na plataforma',atual:80,meta:'—',real:'118',c:'v'},
@@ -1336,9 +1336,9 @@ const PRODS = {
   },
   compilador: {
     nm:'Compilador BIM', etapa:'pre', gestor:'l', po:'Larissa', status:'so', pot:'R$ 40M',
-    pot_alav:{'orca':22,'nao_q':18},
+    pot_alav:{'hc':6.4,'nao_q':6.7,'prazo':1.1,'spot':1.7,'rccp':24.2},
     desc:'Automação BIM que compila dados IFC e automatiza levantamento de quantitativos para orçamentação.',
-    ambicoes:['du','vp'], alavancas:['orca','nao_q'],
+    ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','rccp'],
     riscos:[{nm:'Alta dependência de padronização com projetistas',desc:'Ritmo de cobertura limitado pela negociação com projetistas para escalar além da hidráulica.',lvl:'med'}],
     notas:[],
     okrs:[{ttl:'Reduzir erros de quantitativos e agilizar orçamentação',
@@ -1348,9 +1348,9 @@ const PRODS = {
   },
   lego: {
     nm:'Sistema LEGO', etapa:'pre', gestor:'l', po:'Ana Luiza', status:'so', pot:'R$ 7M',
-    pot_alav:{'nao_q':4,'orca':3},
+    pot_alav:{'hc':0.5,'nao_q':2.2,'prazo':1.1,'rccp':3.6},
     desc:'Catálogo de peças padronizadas (SKUs 0) para industrialização construtiva.',
-    ambicoes:['du'], alavancas:['nao_q','orca'],
+    ambicoes:['du'], alavancas:['hc','nao_q','prazo','rccp'],
     riscos:[{nm:'Prioridade da squad redefinida por estratégia de produtos',desc:'Tipologias modulares e lazer no térreo impactam roadmap. KR2 em 56% vs meta 90%.',lvl:'med'}],
     notas:[],
     okrs:[{ttl:'Garantir governança e confiabilidade dos SKUs na produção',
@@ -1362,7 +1362,7 @@ const PRODS = {
   mdm: {
     nm:'MDM – Dados Mestres', etapa:'pre', gestor:'l', po:'André Carvalhais', status:'sg', pot:'Habilitador',
     desc:'Gestão de Dados Mestres e GMs. Habilita toda a cadeia de abastecimento e orçamentação.',
-    ambicoes:['du','vp'], alavancas:['govern','spot'],
+    ambicoes:['du','vp'], alavancas:['spot'],
     riscos:[{nm:'MDM em estágio inicial — 3,7% vs meta 90% até dez/26',desc:'Exige aceleração urgente. Bloqueia Compilador BIM e qualidade do ECO-PAM.',lvl:'alto'}],
     notas:[],
     okrs:[{ttl:'Estruturar base de GMs confiável para toda a esteira',
@@ -1381,10 +1381,10 @@ const PRODS = {
     rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
   },
   ecopam: {
-    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 106M',
-    pot_alav:{'spot':40,'seq_mo':44,'hc':22},
+    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 107M',
+    pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':33.9,'usinas':1.8,'desp_fin':15.3},
     desc:'Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM). Rollout 100% concluído (22 cidades).',
-    ambicoes:['du','vp'], alavancas:['spot','seq_mo','hc'],
+    ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
     riscos:[{nm:'Instabilidade técnica e alto volume de erros',desc:'Redesenho de arquitetura em curso. Perda de tração no rollout. Impacto no desligamento do sistema legado.',lvl:'alto'}],
     notas:['Prioridade jun/26: estabilização + aceleração MDM'],
     okrs:[{ttl:'Ser estrutura preditiva de custos e abastecimento confiável',
@@ -1415,9 +1415,9 @@ const PRODS = {
   },
   obra360: {
     nm:'Obra 360', etapa:'obra', gestor:'m', po:'Higor', status:'sv', pot:'R$ 69M',
-    pot_alav:{'seq_mo':30,'nao_q':22,'hc':17},
+    pot_alav:{'hc':4.9,'nao_q':13.4,'prazo':6.7,'spot':1.7,'seq_mo':40.3,'usinas':1.8},
     desc:'Portal de visão integrada 360° da obra. Jornada de materiais, medições e gestão de responsabilidades.',
-    ambicoes:['vp','nps'], alavancas:['seq_mo','nao_q','hc'],
+    ambicoes:['vp','nps'], alavancas:['hc','nao_q','prazo','spot','seq_mo','usinas'],
     riscos:[{nm:'Baixas financeiras ainda manuais nas obras',desc:'Top 10 obras com 90% por volume, mas sem reflexo financeiro. Curva de aprendizado em andamento.',lvl:'med'}],
     notas:[],
     okrs:[{ttl:'Aumentar VP 5% via produtividade nos canteiros',
@@ -1428,9 +1428,9 @@ const PRODS = {
   },
   prateleira: {
     nm:'Prateleira MO + Catracas', etapa:'obra', gestor:'m', po:'Tone', status:'sv', pot:'R$ 55M',
-    pot_alav:{'seq_mo':25,'rccp':18,'hc':12},
+    pot_alav:{'hc':0.5,'nao_q':4.5,'prazo':4.5,'seq_mo':33.6,'rccp':12.1},
     desc:'Gestão completa de MO empreiteiro. Sequenciamento por CPF, dossiê, integração HCM/ServiceNow e Catracas.',
-    ambicoes:['vp','du'], alavancas:['seq_mo','rccp','hc'],
+    ambicoes:['vp','du'], alavancas:['hc','nao_q','prazo','seq_mo','rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Reduzir déficit de MO via retenção de colaboradores eficientes',
            krs:[{lbl:'KR1: ≤ 20% CPFs eficientes desligados/mês até dez/26',atual:10,meta:'≤20%',real:'—',c:'g'},
@@ -1439,9 +1439,9 @@ const PRODS = {
   },
   smp: {
     nm:'SMP Digital', etapa:'obra', gestor:'l', po:'Júlia', status:'sv', pot:'R$ 23M',
-    pot_alav:{'nao_q':13,'hc':10},
+    pot_alav:{'nao_q':9.0,'prazo':1.1,'seq_mo':6.7,'rccp':6.0},
     desc:'Digitalização dos processos críticos do SMP. Plano de Ação (5W2H) e Máquina de Checklists.',
-    ambicoes:['nps','du'], alavancas:['nao_q','hc'],
+    ambicoes:['nps','du'], alavancas:['nao_q','prazo','seq_mo','rccp'],
     riscos:[],notas:[],
     okrs:[{ttl:'Otimizar governança da qualidade da esteira de produção',
            krs:[{lbl:'KR1: SMP em ≥ 5 processos críticos até dez/26',atual:20,meta:'5 proc.',real:'1/5',c:'g'},
@@ -1475,6 +1475,26 @@ const PRODS = {
 
 const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
+
+// ── Captura de Valor: apenas produtos que compartilham valor (Imagem 2) ──
+// ECO-PAM permanece unificado (somando capturas); as IAs (Zé + Daeane) entram
+// unificadas como "IA". Os demais produtos seguem intactos nas outras abas.
+const CV_KEYS = ['sincroniza','compilador','ecopam','obra360','prateleira','ia','lego','smp'];
+const CV_POT  = {sincroniza:79,compilador:40,ecopam:107,obra360:69,prateleira:55,ia:21,lego:7,smp:23};
+function cvProd(key){
+  if(key==='ia'){
+    const z = PRODS.ze || {okrs:[],ambicoes:[]};
+    const d = PRODS.daeans || {okrs:[],ambicoes:[]};
+    return {
+      nm:'IA (Zé da Obra · Daeane)', etapa:'obra', gestor:'m', po:'Camila', status:'sv', pot:'R$ 21M',
+      pot_alav:{'hc':3.4,'nao_q':2.2,'prazo':2.2,'seq_mo':6.7,'rccp':6.0},
+      alavancas:['hc','nao_q','prazo','seq_mo','rccp'],
+      ambicoes:[...new Set([...(z.ambicoes||[]),...(d.ambicoes||[])])],
+      okrs:[...(z.okrs||[]),...(d.okrs||[])]
+    };
+  }
+  return PRODS[key];
+}
 
 // ── KR: % da meta atingida ──
 // real/meta são texto livre na unidade do KR (ex: "56%", "200,4h", "2,05d", "≤5d").
@@ -2014,20 +2034,28 @@ function buildValor(){
   new Chart(ctx,{data:{
     labels:['2025','2026','2027','2028','2029','2030'],
     datasets:[
-      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:[1.2,2.3,2.7,1.9,1.5,0.7],backgroundColor:'rgba(7,157,86,.75)',borderRadius:4,yAxisID:'y'},
-      {type:'line',label:'Potencial Acumulado (R$ MM)',data:[46,139,246,320,380,408],borderColor:'#793F98',backgroundColor:'rgba(121,63,152,.06)',tension:.4,pointBackgroundColor:'#793F98',pointRadius:5,borderWidth:2.5,yAxisID:'y2'}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{family:'Plus Jakarta Sans',size:10},boxWidth:10,padding:12}}},
-    scales:{y:{position:'left',title:{display:true,text:'R$/UH (mil)',font:{size:9}},grid:{color:'#f1f5f9'},ticks:{font:{size:10}}},
-            y2:{position:'right',title:{display:true,text:'Acumulado (R$ MM)',font:{size:9}},grid:{drawOnChartArea:false},ticks:{font:{size:10}}}}}});
+      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:[1.2,2.3,2.7,1.9,1.5,0.7],backgroundColor:'rgba(7,157,86,.75)',borderRadius:4,yAxisID:'y',order:3,
+        datalabels:{anchor:'end',align:'top',offset:1,color:'#079D56',font:{size:9,weight:700},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
+      {type:'bar',label:'Realizado Anual (R$/UH mil)',data:[1.8,null,null,null,null,null],backgroundColor:'#F58220',borderRadius:4,yAxisID:'y',order:3,
+        datalabels:{anchor:'end',align:'top',offset:1,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
+      {type:'line',label:'Potencial Acumulado (R$ MM)',data:[46,139,246,320,380,408],borderColor:'#793F98',backgroundColor:'rgba(121,63,152,.06)',tension:.4,pointBackgroundColor:'#793F98',pointRadius:5,borderWidth:2.5,yAxisID:'y2',order:1,
+        datalabels:{anchor:'end',align:'top',offset:8,color:'#793F98',font:{size:9,weight:700},formatter:v=>v==null?null:v+'MM'}},
+      {type:'line',label:'Realizado Acum. (R$ MM)',data:[71,null,null,null,null,null],borderColor:'#F58220',pointBackgroundColor:'#F58220',pointBorderColor:'#fff',pointBorderWidth:1.5,pointRadius:7,pointStyle:'rectRot',showLine:false,yAxisID:'y2',order:0,
+        datalabels:{anchor:'end',align:'top',offset:8,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v+'MM'}}
+    ]},options:{responsive:true,maintainAspectRatio:false,
+    layout:{padding:{top:20,right:10,left:4}},
+    plugins:{legend:{position:'top',labels:{font:{family:'Plus Jakarta Sans',size:10},boxWidth:10,padding:9}},datalabels:{clamp:true}},
+    scales:{y:{position:'left',title:{display:true,text:'R$/UH (mil)',font:{size:9}},grid:{color:'#f1f5f9'},ticks:{font:{size:10}},grace:'15%'},
+            y2:{position:'right',title:{display:true,text:'Acumulado (R$ MM)',font:{size:9}},grid:{drawOnChartArea:false},ticks:{font:{size:10}},grace:'12%'}}}});
   renderProdRows(null); // initial render, no filter
 
   // Build product filter chips
   const valorChips = document.getElementById('valor-prod-chips');
   if (valorChips && !valorChips.dataset.built) {
     valorChips.dataset.built = '1';
-    const prodKeys = ['sincroniza','nexus','simurb','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans'];
+    const prodKeys = CV_KEYS;
     prodKeys.forEach(k => {
-      const p = PRODS[k];
+      const p = cvProd(k);
       const chip = document.createElement('div');
       chip.className = 'fc';
       chip.id = 'vchip-' + k;
@@ -3342,13 +3370,14 @@ function filterByAlavanca(alavancaKey, rowEl) {
   updateAlavancaTable();
   updateValorChart();
   document.getElementById('clear-alav-btn').style.display = '';
-  // Calc total pot for this alavanca
-  const alavTotal = Object.entries(PRODS).reduce((sum,[,p]) => {
+  // Calc total pot for this alavanca (apenas produtos da Captura de Valor)
+  const alavTotal = CV_KEYS.reduce((sum,k) => {
+    const p = cvProd(k);
     if (!p.alavancas.includes(alavancaKey)) return sum;
     return sum + (p.pot_alav && p.pot_alav[alavancaKey] ? p.pot_alav[alavancaKey] : 0);
   }, 0);
   document.getElementById('prod-filter-label').innerHTML =
-    `Filtrando por: <strong>${ALAVANCAS[alavancaKey]||alavancaKey}</strong> · Total: <strong style="color:var(--g)">R$ ${alavTotal}M</strong>`;
+    `Filtrando por: <strong>${ALAVANCAS[alavancaKey]||alavancaKey}</strong> · Total: <strong style="color:var(--g)">R$ ${alavTotal.toFixed(1).replace('.',',')}M</strong>`;
   // highlight matching trace rows
   highlightTraceByAlavanca(alavancaKey);
 }
@@ -3361,28 +3390,14 @@ function clearAlavancaFilter() {
 }
 
 function renderProdRows(filterAlavanca) {
-  const prodData = [
-    {key:'sincroniza',pot:79,etapa:'est'},
-    {key:'nexus',pot:0,etapa:'est'},
-    {key:'simurb',pot:0,etapa:'est'},
-    {key:'compilador',pot:40,etapa:'pre'},
-    {key:'lego',pot:7,etapa:'pre'},
-    {key:'mdm',pot:0,etapa:'pre'},
-    {key:'ecopam',pot:106,etapa:'obra'},
-    {key:'novaeap',pot:0,etapa:'obra'},
-    {key:'obra360',pot:69,etapa:'obra'},
-    {key:'prateleira',pot:55,etapa:'obra'},
-    {key:'smp',pot:23,etapa:'obra'},
-    {key:'ze',pot:14,etapa:'obra'},
-    {key:'daeans',pot:7,etapa:'obra'},
-  ];
-  const maxV = 106;
+  const prodData = CV_KEYS.map(k => ({key:k, pot:CV_POT[k], etapa:cvProd(k).etapa}));
+  const maxV = 107;
   const wrap = document.getElementById('prod-rows');
   if (!wrap) return;
   wrap.innerHTML = '';
 
   prodData.forEach(({key, pot, etapa}) => {
-    const p = PRODS[key];
+    const p = cvProd(key);
     const prog = calcProg(p);
     const pct = Math.round(pot / maxV * 100);
     const gs = p.gestor==='l'
@@ -4029,59 +4044,61 @@ function closeKREdit() {
 
 // ── Recompute alavanca table values based on active filters ──
 function updateAlavancaTable() {
-  const ALAV_ROWS = {
-    seq_mo: {base:120.0, fin:134.4},
-    rccp:   {base:108.0, fin:121.0},
-    nao_q:  {base:40.0,  fin:44.8},
-    spot:   {base:30.0,  fin:33.6},
-    prazo:  {base:20.0,  fin:22.4},
-    hc:     {base:22.0,  fin:24.6},
-    orca:   {base:22.0,  fin:24.6},
-    govern: {base:10.8,  fin:12.1},
+  // valores cheios (Imagem 1): c/ custo financeiro (M) e potencial por UH (R$)
+  const ALAV_DATA = {
+    seq_mo:  {fin:'134,4', uh:'3360'},
+    rccp:    {fin:'121,0', uh:'3024'},
+    nao_q:   {fin:'44,8',  uh:'1120'},
+    spot:    {fin:'33,6',  uh:'840'},
+    hc:      {fin:'24,6',  uh:'616'},
+    prazo:   {fin:'22,4',  uh:'560'},
+    desp_fin:{fin:'15,3',  uh:'383,5'},
+    usinas:  {fin:'12,1',  uh:'302,4'},
   };
+  const br = n => n.toFixed(1).replace('.',',');
   const anyFilter = activeValorProds.size > 0 || activeValorGestor;
   if (!anyFilter) {
     // Restore full values
-    Object.entries(ALAV_ROWS).forEach(([ak, v]) => {
+    Object.entries(ALAV_DATA).forEach(([ak, v]) => {
       const row = document.querySelector(`.alav-row[data-alavanca="${ak}"]`);
       if (!row) return;
       const cells = row.querySelectorAll('td');
-      if (cells[1]) cells[1].textContent = v.base.toFixed(1);
-      if (cells[2]) cells[2].textContent = v.fin.toFixed(1);
+      if (cells[1]) cells[1].textContent = v.fin;
+      if (cells[2]) cells[2].textContent = v.uh;
     });
-    // Restore total row
     const totalRow = document.querySelector('.alav-tbl tbody tr:last-child');
     if (totalRow) {
       const cells = totalRow.querySelectorAll('td');
-      if (cells[1]) cells[1].innerHTML = '<strong>350,8</strong>';
-      if (cells[2]) cells[2].innerHTML = '<strong>408,2</strong>';
+      if (cells[1]) cells[1].innerHTML = '<strong>408,2</strong>';
+      if (cells[2]) cells[2].innerHTML = '<strong>10.205,9</strong>';
     }
     return;
   }
-  // Recalculate per alavanca based on filtered products
-  let totalBase = 0, totalFin = 0;
-  Object.entries(ALAV_ROWS).forEach(([ak, v]) => {
+  // Recalcula por alavanca a partir dos produtos da Captura de Valor filtrados
+  let totalFin = 0, totalUh = 0;
+  Object.keys(ALAV_DATA).forEach(ak => {
     const row = document.querySelector(`.alav-row[data-alavanca="${ak}"]`);
     if (!row) return;
-    // Sum pot_alav[ak] for products that pass filters AND have this alavanca
     let sum = 0;
-    Object.entries(PRODS).forEach(([k, p]) => {
+    CV_KEYS.forEach(k => {
+      const p = cvProd(k);
       const pass = (activeValorProds.size===0||activeValorProds.has(k))
                 && (!activeValorGestor||p.gestor===activeValorGestor||p.gestor==='lm')
                 && p.alavancas.includes(ak);
       if (pass && p.pot_alav && p.pot_alav[ak]) sum += p.pot_alav[ak];
     });
+    const uh = sum * 25; // R$ M / 40.000 UH = M * 25 (por UH)
     const cells = row.querySelectorAll('td');
-    if (cells[1]) cells[1].textContent = sum > 0 ? sum.toFixed(0) : '—';
-    if (cells[2]) cells[2].textContent = sum > 0 ? (sum * 1.12).toFixed(0) : '—';
-    totalBase += sum;
-    totalFin  += sum > 0 ? sum * 1.12 : 0;
+    if (cells[1]) cells[1].textContent = sum > 0 ? br(sum) : '—';
+    if (cells[2]) cells[2].textContent = sum > 0 ? Math.round(uh).toLocaleString('pt-BR') : '—';
+    totalFin += sum;
+    totalUh  += uh;
   });
   const totalRow = document.querySelector('.alav-tbl tbody tr:last-child');
   if (totalRow) {
     const cells = totalRow.querySelectorAll('td');
-    if (cells[1]) cells[1].innerHTML = `<strong>${totalBase.toFixed(0)}</strong>`;
-    if (cells[2]) cells[2].innerHTML = `<strong>${totalFin.toFixed(0)}</strong>`;
+    if (cells[1]) cells[1].innerHTML = `<strong>${br(totalFin)}</strong>`;
+    if (cells[2]) cells[2].innerHTML = `<strong>${Math.round(totalUh).toLocaleString('pt-BR')}</strong>`;
   }
 }
 
@@ -4097,14 +4114,15 @@ function updateValorChart() {
   if (!anyFilter) {
     // Restore original data
     chartInst.data.datasets[0].data = [1.2,2.3,2.7,1.9,1.5,0.7];
-    chartInst.data.datasets[1].data = [46,139,246,320,380,408];
+    chartInst.data.datasets[2].data = [46,139,246,320,380,408];
     chartInst.update();
     return;
   }
 
-  // Calculate filtered total potential
+  // Calculate filtered total potential (produtos da Captura de Valor)
   let filteredTotal = 0;
-  Object.entries(PRODS).forEach(([k, p]) => {
+  CV_KEYS.forEach(k => {
+    const p = cvProd(k);
     const pass = (activeValorProds.size===0||activeValorProds.has(k))
               && (!activeValorGestor||p.gestor===activeValorGestor||p.gestor==='lm');
     if (pass) {
@@ -4114,12 +4132,12 @@ function updateValorChart() {
   });
 
   // Scale chart data proportionally
-  const fullTotal = 434;
+  const fullTotal = 408;
   const ratio = filteredTotal / fullTotal;
   const baseBarData   = [1.2,2.3,2.7,1.9,1.5,0.7].map(v => +(v*ratio).toFixed(2));
   const baseLineData  = [46,139,246,320,380,408].map(v  => +(v*ratio).toFixed(0));
   chartInst.data.datasets[0].data = baseBarData;
-  chartInst.data.datasets[1].data = baseLineData;
+  chartInst.data.datasets[2].data = baseLineData;
   chartInst.update();
 }
 
