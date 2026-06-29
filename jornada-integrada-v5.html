@@ -732,6 +732,8 @@ button,input,select,textarea{font-family:inherit;}
         if (window.setSyncStatus) window.setSyncStatus('ok');
         // Corrige nomes legados persistidos (ex.: "DAEane" → "Daeane") e re-salva docs alterados
         if (typeof window.fixLegacyNames === 'function') window.fixLegacyNames();
+        // Migrações pontuais (ex.: inclusão definitiva de PO no ECO-PAM)
+        if (typeof window.applyPendingMigrations === 'function') await window.applyPendingMigrations();
         // Reconcile KR_DATA shape with loaded PRODS and rebuild the active tab
         if (typeof window.refreshAfterLoad === 'function') window.refreshAfterLoad();
         else if (typeof buildPort === 'function') buildPort();
@@ -905,7 +907,7 @@ button,input,select,textarea{font-family:inherit;}
     </div>
     <div class="kc obra" id="kc-obra">
       <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">8</div></div>
-      <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM</div><div class="pc-sq">André R. · André C.</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M</span></div></div>
+      <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM</div><div class="pc-sq">André R. · André C. · Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('compras360')"><div class="pc-nm">Módulo de Compras 360</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('novaeap')"><div class="pc-nm">Nova EAP</div><div class="pc-sq">Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Acompanhar</div><span class="pb">Habilitadora</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('obra360')"><div class="pc-nm">Obra 360</div><div class="pc-sq">Higor</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 69M</span></div></div>
@@ -1396,7 +1398,7 @@ const PRODS = {
     rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
   },
   ecopam: {
-    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C.', status:'so', pot:'R$ 106M',
+    nm:'ECO-PAM', etapa:'obra', gestor:'l', po:'André R. · André C. · Ana Flávia', status:'so', pot:'R$ 106M',
     pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':32.7,'usinas':1.8,'desp_fin':15.3},
     desc:'Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM). Rollout 100% concluído (22 cidades).',
     ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
@@ -2483,7 +2485,7 @@ function delOKR(oi){
   fbSaveProd(editKey);
   fbSaveKRData(editKey);
 }
-function saveEdit(){
+async function saveEdit(){
   if(!editKey)return;
   const p=PRODS[editKey];
   p.po=document.getElementById('ep-po').value;
@@ -2505,10 +2507,13 @@ function saveEdit(){
         }
       });
     });
-    fbSaveKRData(editKey);
+    await fbSaveKRData(editKey);
   }
   setEditDetail('editou produto/OKRs', '');
-  fbSaveProd(editKey);
+  // AGUARDA a gravação concluir ANTES de fechar — sem isso, um F5 logo após
+  // salvar perdia o que foi digitado (ex.: PO), pois a escrita assíncrona no
+  // Firestore era cancelada pelo reload da página.
+  await fbSaveProd(editKey);
   setLastUpdated();
   closeEdit();
 }
@@ -4514,7 +4519,8 @@ function fbSaveProd(key) {
   const p = PRODS[key];
   if (!p) return;
   // Firestore doesn't like undefined - convert to plain object
-  fbSave('produtos', key, JSON.parse(JSON.stringify(p)));
+  // Retorna a promise para que `await fbSaveProd(...)` realmente aguarde a gravação.
+  return fbSave('produtos', key, JSON.parse(JSON.stringify(p)));
 }
 
 // Save RDMAP entry for a product
@@ -4555,6 +4561,36 @@ function fixLegacyNames(){
   });
 }
 window.fixLegacyNames = fixLegacyNames;
+
+// ── Migrações pontuais aplicadas uma única vez após o load ──
+// O load faz Object.assign do Firestore por cima do seed do HTML. Se o doc do
+// produto já existe no Firestore, alterar o seed não tem efeito. Para incluir
+// um PO de forma definitiva (ex.: Ana Flávia no ECO-PAM) usamos uma migração
+// idempotente, marcada como aplicada em `migrations/<id>`, para que rode só uma
+// vez e NÃO reverta uma eventual remoção manual futura.
+async function _poInclui(p, nome){
+  const cur = (p && p.po ? String(p.po) : '').trim();
+  const ja  = cur.split('·').map(function(s){return s.trim();}).indexOf(nome) >= 0;
+  if (ja) return false;
+  p.po = cur ? (cur + ' · ' + nome) : nome;
+  return true;
+}
+async function applyPendingMigrations(){
+  try {
+    if (!window._fbReady || !window._db) return;
+    const MIG_ID = 'ecopam_po_anaflavia';
+    const ref = window._fsDoc(window._db, 'migrations', MIG_ID);
+    let done = false;
+    try { const snap = await window._fsGetDoc(ref); done = !!(snap && typeof snap.exists === 'function' && snap.exists()); } catch(_e){}
+    if (done) return; // já aplicada
+    const p = PRODS.ecopam;
+    if (p && await _poInclui(p, 'Ana Flávia')) {
+      _suppressLog = true; await fbSaveProd('ecopam'); _suppressLog = false;
+    }
+    try { await window._fsSetDoc(ref, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
+  } catch(e){ console.warn('Migration error:', e); }
+}
+window.applyPendingMigrations = applyPendingMigrations;
 
 // Save KR_DATA entry for a product
 // Firestore doesn't support nested arrays — flatten to object
@@ -4633,7 +4669,8 @@ function refreshAfterLoad() {
 function fbSaveKRData(key) {
   if (!KR_DATA[key]) return;
   const flat = flattenKRData(KR_DATA[key]);
-  fbSave('kr_data', key, flat);
+  // Retorna a promise para permitir await real.
+  return fbSave('kr_data', key, flat);
 }
 
 // ── Roadmap: expandable quarter state (starts collapsed for non-current Qs)
