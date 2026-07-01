@@ -888,6 +888,16 @@ button,input,select,textarea{font-family:inherit;}
           <button type="button" class="msdd-clr" onclick="msddClear('kb-status', event)">Limpar</button>
         </div>
       </div>
+      <div class="msdd" id="msdd-kb-fase">
+        <button class="msdd-btn" type="button" onclick="msddOpen('kb-fase', event)">
+          <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('kb-fase')">JIP · Fase 1</label>
+          <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('kb-fase')">JIP · Gestão</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('kb-fase', event)">Limpar</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -899,11 +909,14 @@ button,input,select,textarea{font-family:inherit;}
       <div class="pc pv" data-g="m" onclick="openEdit('simurb')"><div class="pc-nm">SIMURB</div><div class="pc-sq">Brenda</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">Habilitador</span></div></div>
     </div>
     <div class="kc pre" id="kc-pre">
-      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">4</div></div>
+      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">7</div></div>
       <div class="pc po" data-g="l" onclick="openEdit('compilador')"><div class="pc-nm">Compilador BIM</div><div class="pc-sq">Larissa</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 40M</span></div></div>
       <div class="pc po" data-g="l" onclick="openEdit('lego')"><div class="pc-nm">Sistema LEGO</div><div class="pc-sq">Ana Luiza</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Prioridade redefinida</div><span class="pb">Estratégico</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('mdm')"><div class="pc-nm">MDM – Dados Mestres</div><div class="pc-sq">André Carvalhais</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Aceleração urgente</div><span class="pb">Habilitador</span></div></div>
-      <div class="pc pg" data-g="l" onclick="openEdit('inbound')"><div class="pc-nm">Iniciativas Inbound, CD, COMEX</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('inbound')"><div class="pc-nm">Inbound</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('comex')"><div class="pc-nm">Comex</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('cd')"><div class="pc-nm">CD</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('reformatrib')"><div class="pc-nm">Reforma Tributária</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
     </div>
     <div class="kc obra" id="kc-obra">
       <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">8</div></div>
@@ -986,6 +999,17 @@ button,input,select,textarea{font-family:inherit;}
         <label class="msdd-opt"><input type="checkbox" value="so" data-lbl="Atenção" onchange="msddChange('port-status')"><span class="msdd-dot" style="background:var(--o)"></span>Risco / Atenção</label>
         <label class="msdd-opt"><input type="checkbox" value="sg" data-lbl="Acompanhar" onchange="msddChange('port-status')"><span class="msdd-dot" style="background:var(--gy)"></span>Acompanhar</label>
         <button type="button" class="msdd-clr" onclick="msddClear('port-status', event)">Limpar</button>
+      </div>
+    </div>
+
+    <div class="msdd" id="msdd-port-fase">
+      <button class="msdd-btn" type="button" onclick="msddOpen('port-fase', event)">
+        <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+      </button>
+      <div class="msdd-panel">
+        <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('port-fase')">JIP · Fase 1</label>
+        <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('port-fase')">JIP · Gestão</label>
+        <button type="button" class="msdd-clr" onclick="msddClear('port-fase', event)">Limpar</button>
       </div>
     </div>
   </div>
@@ -1135,6 +1159,16 @@ button,input,select,textarea{font-family:inherit;}
           <label class="msdd-opt"><input type="checkbox" value="pre" data-lbl="Pré-Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--pre)"></span>Pré-Obra</label>
           <label class="msdd-opt"><input type="checkbox" value="obra" data-lbl="Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--obra)"></span>Obra</label>
           <button type="button" class="msdd-clr" onclick="msddClear('rd-etapa', event)">Limpar</button>
+        </div>
+      </div>
+      <div class="msdd" id="msdd-rd-fase">
+        <button class="msdd-btn" type="button" onclick="msddOpen('rd-fase', event)">
+          <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+        </button>
+        <div class="msdd-panel">
+          <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('rd-fase')">JIP · Fase 1</label>
+          <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('rd-fase')">JIP · Gestão</label>
+          <button type="button" class="msdd-clr" onclick="msddClear('rd-fase', event)">Limpar</button>
         </div>
       </div>
     </div>
@@ -1388,9 +1422,39 @@ const PRODS = {
     rd:{done:['Piloto metais · Saneamento · PDM/códigos'],doing:['Acab. Elétricos · Argamassa · Concreto (2T26)'],todo:['Aço · Esquadrias · PEX (3T26)']}
   },
   inbound: {
-    nm:'Iniciativas Inbound, CD, COMEX', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    nm:'Inbound', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
     pot_alav:{},
-    desc:'Iniciativas de Inbound, Centro de Distribuição (CD) e Comércio Exterior (COMEX). Escopo em definição.',
+    desc:'Iniciativas de Inbound. Escopo em definição.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
+  },
+  comex: {
+    nm:'Comex', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Comércio Exterior (COMEX). Escopo em definição.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
+  },
+  cd: {
+    nm:'CD', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Centro de Distribuição (CD). Escopo em definição.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a PO',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
+  },
+  reformatrib: {
+    nm:'Reforma Tributária', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Adequações à Reforma Tributária. Escopo em definição.',
     ambicoes:[], alavancas:[],
     riscos:[], notas:[],
     okrs:[{ttl:'A definir com a PO',
@@ -1492,6 +1556,16 @@ const PRODS = {
 
 const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
+
+// ── JIP: agrupamento por FASE (dimensão ortogonal à etapa) ──
+// Fonte única da verdade. Referenciada por Mapa, Portfólio, Roadmap e Evolução de KRs.
+// Não persiste no Firebase (é constante de código) — sobrevive a edições de produto.
+const FASE_LABEL = {f1:'JIP · Fase 1', gestao:'JIP · Gestão'};
+const FASE = {
+  f1:     new Set(['sincroniza','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans']),
+  gestao: new Set(['nexus','simurb','compras360','inbound','comex','cd','reformatrib']),
+};
+function faseOf(key){ return FASE.f1.has(key) ? 'f1' : (FASE.gestao.has(key) ? 'gestao' : ''); }
 
 // ── Captura de Valor: apenas produtos que compartilham valor (Imagem 2) ──
 // ECO-PAM permanece unificado (somando capturas); as IAs (Zé + Daeane) entram
@@ -1824,21 +1898,29 @@ function pcStatus(c){
   if(c.classList.contains('pg')) return 'sg';
   return null;
 }
+// extrai a chave do produto a partir do onclick do card (openEdit('chave'))
+function pcKey(c){
+  const m = (c.getAttribute('onclick')||'').match(/openEdit\('([^']+)'\)/);
+  return m ? m[1] : '';
+}
 
 function initKbFilters(){
   msddInit('kb-gestor', applyKbFilters, 'Todos');
   msddInit('kb-status', applyKbFilters, 'Todos');
+  msddInit('kb-fase',   applyKbFilters, 'Todas');
 }
 
 function applyKbFilters(){
   const gSel = msddSel('kb-gestor');
   const sSel = msddSel('kb-status');
-  const active = gSel.size>0 || sSel.size>0;
+  const fSel = msddSel('kb-fase');
+  const active = gSel.size>0 || sSel.size>0 || fSel.size>0;
   document.querySelectorAll('.pc').forEach(c=>{
     const g=(c.dataset.g||'');
     const gMatch = gSel.size===0 || [...gSel].some(x=>g.includes(x));
     const sMatch = sSel.size===0 || sSel.has(pcStatus(c));
-    c.classList.toggle('kb-hidden', !(gMatch && sMatch));
+    const fMatch = fSel.size===0 || fSel.has(faseOf(pcKey(c)));
+    c.classList.toggle('kb-hidden', !(gMatch && sMatch && fMatch));
   });
   // hide/show empty columns and update counts
   ['est','pre','obra'].forEach(col=>{
@@ -2009,7 +2091,7 @@ function buildPort(){
       }).join('');
 
       return `
-      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}">
+      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}" data-fase="${faseOf(key)}">
         <div class="port-hd" onclick="togglePort('pb-${key}','arr-${key}')">
           <div class="phd-cell">
             <div class="phd-nm">${p.nm}</div>
@@ -2138,6 +2220,7 @@ function initPortFilters(){
   msddInit('port-etapa',  applyPortFilt, 'Todas');
   msddInit('port-gestor', applyPortFilt, 'Todos');
   msddInit('port-status', applyPortFilt, 'Todos');
+  msddInit('port-fase',   applyPortFilt, 'Todas');
 }
 
 function setNavActive(group, activeId) {
@@ -2154,12 +2237,14 @@ function applyPortFilt() {
   const eSel = msddSel('port-etapa');
   const gSel = msddSel('port-gestor');
   const sSel = msddSel('port-status');
+  const fSel = msddSel('port-fase');
   document.querySelectorAll('.port-card').forEach(c => {
-    const g = c.dataset.g, s = c.dataset.s, e = c.dataset.e;
+    const g = c.dataset.g, s = c.dataset.s, e = c.dataset.e, f = c.dataset.fase;
     const gOk = gSel.size === 0 || g === 'lm' || gSel.has(g);
     const sOk = sSel.size === 0 || sSel.has(s);
     const eOk = eSel.size === 0 || eSel.has(e);
-    c.style.display = (gOk && sOk && eOk) ? '' : 'none';
+    const fOk = fSel.size === 0 || fSel.has(f);
+    c.style.display = (gOk && sOk && eOk && fOk) ? '' : 'none';
   });
   // Hide entire etapa group if all its cards are hidden
   ['est','pre','obra','pos'].forEach(ek => {
@@ -2829,17 +2914,19 @@ const _NM  = new Date().getMonth();
 const CURRENT_PERIOD = _M2P[_NM] || 'MAI';
 const EXPANDED_Q = _NM<=2?[]:_NM<=5?['ABR','MAI','JUN']:_NM<=8?['JUL','AGO','SET']:['OUT','NOV','DEZ'];
 
-let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set()};
+let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set(), fase:new Set()};
 
 // Helpers de visibilidade (filtros multisseleção; Set vazio = sem filtro)
 function rdEtapaHidden(et){ const s = rdFiltState.etapa; return s.size > 0 && !s.has(et); }
 function rdGestorHidden(g){ const s = rdFiltState.gestor; if (s.size === 0) return false; if (g === 'lm') return false; return !s.has(g); }
+function rdFaseHidden(key){ const s = rdFiltState.fase; return s.size > 0 && !s.has(faseOf(key)); }
 
 // aplica seleção dos dropdowns ao estado e re-renderiza a view ativa (matriz/gantt)
 function rdApplyFilters(){
   rdFiltState.prods  = new Set(msddSel('rd-prod'));
   rdFiltState.gestor = new Set(msddSel('rd-gestor'));
   rdFiltState.etapa  = new Set(msddSel('rd-etapa'));
+  rdFiltState.fase   = new Set(msddSel('rd-fase'));
   renderRdmap();
 }
 
@@ -2857,6 +2944,7 @@ function buildRdmap() {
   msddInit('rd-prod',   rdApplyFilters, 'Todos');
   msddInit('rd-gestor', rdApplyFilters, 'Todos');
   msddInit('rd-etapa',  rdApplyFilters, 'Todas');
+  msddInit('rd-fase',   rdApplyFilters, 'Todas');
 
   renderRdmap();
 }
@@ -2879,7 +2967,8 @@ function renderRdmap() {
     const hideProd = rdFiltState.prods.size > 0 && !rdFiltState.prods.has(key);
     const hideEtapa = rdEtapaHidden(p.etapa);
     const hideGestor = rdGestorHidden(p.gestor);
-    const hidden = hideProd || hideEtapa || hideGestor;
+    const hideFase = rdFaseHidden(key);
+    const hidden = hideProd || hideEtapa || hideGestor || hideFase;
 
     const gs = p.gestor==='l'
       ? `<span class="tg tl" style="font-size:8px">Lilian</span>`
@@ -3182,7 +3271,8 @@ function renderRdmap() {
   function isVisible(p, key) {
     const hideProd   = rdFiltState.prods.size>0 && !rdFiltState.prods.has(key);
     const hideGestor = rdGestorHidden(p.gestor);
-    return !hideProd && !hideGestor;
+    const hideFase   = rdFaseHidden(key);
+    return !hideProd && !hideGestor && !hideFase;
   }
 
   let tbodyHtml = '';
@@ -3243,7 +3333,8 @@ const RD_STATUS_COL = {done:'var(--gm)', doing:'var(--o)', todo:'#cbd5e1'};
 function rdGanttVisible(key,p){
   const hideProd   = rdFiltState.prods.size>0 && !rdFiltState.prods.has(key);
   const hideGestor = rdGestorHidden(p.gestor);
-  return !hideProd && !hideGestor;
+  const hideFase   = rdFaseHidden(key);
+  return !hideProd && !hideGestor && !hideFase;
 }
 function rdPeriodStatus(marcos){
   if(!marcos||!marcos.length) return null;
@@ -3929,14 +4020,29 @@ function buildOKRev() {
   if (okrevBuilt) return;
   okrevBuilt = true;
   const chips = document.getElementById('okrev-prod-chips');
-  Object.entries(PRODS).forEach(([key, p]) => {
-    const item = document.createElement('div');
-    item.className = 'etapa-nav-item';
-    item.id = 'okrev-chip-' + key;
-    const etaCol = p.etapa==='est'?'var(--est)':p.etapa==='pre'?'var(--pre)':'var(--obra)';
-    item.innerHTML = `<span class="etapa-nav-dot" style="background:${etaCol}"></span>${p.nm}`;
-    item.onclick = () => selectOKRevProd(key);
-    chips.appendChild(item);
+
+  // Agrupa por FASE, mantendo a ordem original de PRODS dentro de cada grupo
+  const groups = [
+    {fase:'f1',     label:FASE_LABEL.f1},
+    {fase:'gestao', label:FASE_LABEL.gestao},
+  ];
+  groups.forEach(({fase, label}) => {
+    const entries = Object.entries(PRODS).filter(([key]) => faseOf(key) === fase);
+    if (!entries.length) return;
+    const hd = document.createElement('div');
+    hd.className = 'okrev-fase-hd';
+    hd.textContent = label;
+    hd.style.cssText = 'padding:6px 12px;background:var(--gyb);color:var(--t3);font-size:8px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;position:sticky;top:0;z-index:1';
+    chips.appendChild(hd);
+    entries.forEach(([key, p]) => {
+      const item = document.createElement('div');
+      item.className = 'etapa-nav-item';
+      item.id = 'okrev-chip-' + key;
+      const etaCol = p.etapa==='est'?'var(--est)':p.etapa==='pre'?'var(--pre)':'var(--obra)';
+      item.innerHTML = `<span class="etapa-nav-dot" style="background:${etaCol}"></span>${p.nm}`;
+      item.onclick = () => selectOKRevProd(key);
+      chips.appendChild(item);
+    });
   });
   selectOKRevProd('sincroniza');
 }
