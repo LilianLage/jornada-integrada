@@ -715,6 +715,14 @@ button,input,select,textarea{font-family:inherit;}
 .cx-bar{height:10px;background:var(--gyb);border-radius:6px;overflow:hidden;}
 .cx-bar i{display:block;height:100%;border-radius:6px;}
 .cx-pot{font-size:14px;font-weight:800;color:var(--t2);text-align:right;}
+.cx-krs{background:#fff;border:1.5px solid var(--bd);border-top:none;border-radius:0 0 12px 12px;margin:-8px 14px 12px;padding:14px 22px 10px;}
+.cx-obj{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);padding:6px 0 3px;}
+.cx-kr{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--bg);}
+.cx-kr:last-child{border-bottom:none;}
+.cx-kr-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.cx-kr-lbl{font-size:13.5px;color:var(--tx);flex:1;line-height:1.4;}
+.cx-kr-val{font-size:12.5px;font-weight:700;color:var(--t2);white-space:nowrap;}
+.cx-kr-pct{font-size:13px;font-weight:800;min-width:44px;text-align:right;}
 .cx-risk{background:#fff;border:1.5px solid var(--bd);border-left:5px solid var(--o);border-radius:12px;padding:18px 22px;margin-bottom:12px;}
 .cx-risk.alto{border-left-color:#dc2626;}
 .cx-risk-t{font-size:16px;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -5294,15 +5302,40 @@ function cxPagePortfolio(){
     h+='<div class="cx-et" style="background:'+g.c+'">'+ET_LABEL[g.k]+'</div>';
     items.forEach(function(k){
       const p=PRODS[k];
-      let prog=0; try{ const cp=calcProg(p); prog=Math.max(0,Math.min(100,Math.round((cp&&cp.pct)||0))); }catch(e){ prog=0; }
+      let prog=0, plbl='';
+      try{ const cp=calcProg(p); prog=Math.max(0,Math.min(100,Math.round((cp&&cp.pct)||0))); plbl=(cp&&cp.label)||''; }catch(e){ prog=0; }
       const barc=prog>=80?'var(--gm)':prog>=40?'var(--o)':'var(--gy)';
       h+='<div class="cx-prow">'
         +'<div><div class="nm">'+cxEsc(p.nm)+'</div></div>'
         +'<div class="po">'+cxEsc(p.po||'—')+'<br><span style="font-size:11px;color:var(--t3)">'+(CX_G_LBL[p.gestor]||'—')+'</span></div>'
         +'<div>'+cxStPill(p.status)+'</div>'
-        +'<div><div class="cx-bar"><i style="width:'+prog+'%;background:'+barc+'"></i></div><div style="font-size:11px;font-weight:700;color:var(--t3);margin-top:4px">'+prog+'% OKRs</div></div>'
+        +'<div><div class="cx-bar"><i style="width:'+prog+'%;background:'+barc+'"></i></div><div style="font-size:11px;font-weight:700;color:var(--t3);margin-top:4px">'+prog+'% OKRs'+(plbl?' · '+cxEsc(plbl):'')+'</div></div>'
         +'<div class="cx-pot">'+cxEsc(p.pot||'—')+'</div>'
         +'</div>';
+      // Detalhamento: objetivos e KRs (evidência do %)
+      let krh='';
+      (p.okrs||[]).forEach(function(o){
+        const krs=o.krs||[];
+        if(!krs.length) return;
+        krh+='<div class="cx-obj">🎯 '+cxEsc(o.ttl)+'</div>';
+        krs.forEach(function(kr){
+          let pct=0; try{ pct=krPct(kr); }catch(e){ pct=0; }
+          const dc=pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)';
+          const meta=(kr.meta&&kr.meta!=='—')?kr.meta:null;
+          const real=(kr.real&&kr.real!=='—')?kr.real:null;
+          let val='';
+          if(real&&meta) val=cxEsc(real)+' <span style="color:var(--t3);font-weight:400">/ meta '+cxEsc(meta)+'</span>';
+          else if(real) val=cxEsc(real);
+          else if(meta) val='<span style="color:var(--t3);font-weight:400">meta '+cxEsc(meta)+'</span>';
+          krh+='<div class="cx-kr">'
+            +'<span class="cx-kr-dot" style="background:'+dc+'"></span>'
+            +'<div class="cx-kr-lbl">'+cxEsc(kr.lbl)+'</div>'
+            +(val?'<div class="cx-kr-val">'+val+'</div>':'')
+            +'<div class="cx-kr-pct" style="color:'+dc+'">'+pct+'%</div>'
+            +'</div>';
+        });
+      });
+      if(krh) h+='<div class="cx-krs">'+krh+'</div>';
     });
   });
   return h;
