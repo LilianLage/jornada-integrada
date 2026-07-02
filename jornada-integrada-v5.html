@@ -2601,7 +2601,7 @@ function epMidiaUpload(inp){
   inp.value='';
 }
 function epCompressImage(img){
-  const tries=[[1000,0.8],[800,0.65],[640,0.5],[520,0.4]];
+  const tries=[[900,0.72],[720,0.55],[560,0.42],[440,0.35]];
   let out=null;
   for(let i=0;i<tries.length;i++){
     const w=Math.min(tries[i][0],img.width||tries[i][0]);
@@ -2609,9 +2609,9 @@ function epCompressImage(img){
     const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
     cv.getContext('2d').drawImage(img,0,0,w,h);
     out=cv.toDataURL('image/jpeg',tries[i][1]);
-    if(out.length<500000) return out;
+    if(out.length<300000) return out;
   }
-  return (out&&out.length<700000)?out:null;
+  return (out&&out.length<450000)?out:null;
 }
 function epMidiaPreview(){
   const pv=document.getElementById('ep-midia-prev');
@@ -2767,23 +2767,24 @@ async function saveEdit(){
   p.desc=document.getElementById('ep-desc').value;
   // Mídia: imagem carregada vai para a coleção produto_midia (aguarda e avisa se falhar)
   const _midiaUrl=document.getElementById('ep-midia').value.trim();
-  try{
-    if(epMidiaData){
+  if(epMidiaData){
+    try{
       await fbSaveMidia(editKey, epMidiaData);
       window.PROD_MIDIA=window.PROD_MIDIA||{};
       window.PROD_MIDIA[editKey]=epMidiaData;
       p.midia='@fs';
-    } else {
-      p.midia=_midiaUrl;
-      if(window.PROD_MIDIA&&window.PROD_MIDIA[editKey]){
-        delete window.PROD_MIDIA[editKey];
-        fbSaveMidia(editKey,'').catch(function(e){console.warn('limpeza produto_midia:',e);});
-      }
+    }catch(e){
+      // Fallback: regras do Firestore podem não permitir a coleção produto_midia.
+      // Embute a imagem no próprio doc do produto (comprimida a ~300KB, cabe no limite de 1MB).
+      console.warn('produto_midia indisponível ('+(e&&e.message?e.message:'erro')+') — usando fallback no doc do produto');
+      p.midia=epMidiaData;
     }
-  }catch(e){
-    console.error('Falha ao salvar imagem do produto:',e);
-    alert('⚠️ A imagem não pôde ser salva no banco ('+(e&&e.message?e.message:'erro')+'). Os demais campos do produto serão salvos normalmente — tente novamente com uma imagem menor.');
+  } else {
     p.midia=_midiaUrl;
+    if(window.PROD_MIDIA&&window.PROD_MIDIA[editKey]){
+      delete window.PROD_MIDIA[editKey];
+      fbSaveMidia(editKey,'').catch(function(e){console.warn('limpeza produto_midia:',e);});
+    }
   }
   // refresh built pages
   document.getElementById('port-grid').innerHTML='';buildPort();
@@ -2805,7 +2806,10 @@ async function saveEdit(){
   // AGUARDA a gravação concluir ANTES de fechar — sem isso, um F5 logo após
   // salvar perdia o que foi digitado (ex.: PO), pois a escrita assíncrona no
   // Firestore era cancelada pelo reload da página.
-  await fbSaveProd(editKey);
+  const _ok = await fbSaveProd(editKey);
+  if(_ok===false){
+    alert('⚠️ O produto NÃO foi salvo no banco (veja o console: F12 → Console → "Firebase save error"). Causas comuns: documento acima de 1 MB (imagem grande) ou regras do Firestore. As alterações estão apenas nesta tela e serão perdidas ao atualizar.');
+  }
   setLastUpdated();
   closeEdit();
 }
@@ -4821,9 +4825,11 @@ async function fbSave(collName, docId, data) {
     if (collName !== 'audit_log' && !_logSuppress) {
       logEdit(collName, docId, _logInfo ? _logInfo.action : 'editou', _logInfo ? _logInfo.detail : '');
     }
+    return true;
   } catch(e) {
     console.error('Firebase save error:', e);
     setSyncStatus('error');
+    return false;
   }
 }
 
@@ -5419,6 +5425,23 @@ function cxProdKeys(){
 }
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
 function cxEtColor(et){ return et==='est'?'var(--est)':et==='pre'?'var(--pre)':'var(--obra)'; }
+// Potencial por UH do produto: soma de ALAV_FIN[a].uh × ALAV_PCT[a][produto]
+// (mesma base que totaliza os R$ 10,2k/UH da estratégia)
+function cxProdUH(k){
+  let uh=0;
+  Object.keys(ALAV_PCT).forEach(function(a){
+    const pct=(ALAV_PCT[a]&&ALAV_PCT[a][k])||0;
+    if(pct&&ALAV_FIN[a]) uh+=ALAV_FIN[a].uh*pct/100;
+  });
+  return uh;
+}
+function cxProdUHLabel(k){
+  const uh=cxProdUH(k);
+  if(uh>=1000) return 'R$ '+(uh/1000).toFixed(1).replace('.',',')+'k';
+  if(uh>=1) return 'R$ '+Math.round(uh);
+  const p=PRODS[k];
+  return (p&&p.pot==='Habilitador')?'Habilitador':'—';
+}
 function cxRdItems(k, qp){
   const items=[];
   qp.keys.forEach(function(per){
@@ -5514,7 +5537,9 @@ function cxPageProduto(k){
     +(p.desc?'<div class="cx-phd-desc">'+cxEsc(p.desc)+'</div>':'')
     +'</div>'
     +(media?'<div class="cx-phd-media">'+media+'</div>':'')
-    +'<div class="cx-phd-pot"><div class="l">Potencial anual</div><div class="v">'+cxEsc(p.pot||'—')+'</div></div>'
+    +'<div class="cx-phd-pot"><div class="l">Potencial por UH</div><div class="v">'+cxProdUHLabel(k)+(cxProdUH(k)>=1?'<span style="font-size:15px;color:var(--t3);font-weight:700">/UH</span>':'')+'</div>'
+    +(cxProdUH(k)>=1?'<div style="font-size:10px;font-weight:700;color:var(--t3);margin-top:5px">da estratégia R$ '+cxPotTotal().uh+'/UH</div>':'<div style="font-size:10px;font-weight:700;color:var(--t3);margin-top:5px">sem captura financeira direta</div>')
+    +'</div>'
     +'</div>';
 
   // coluna esquerda: OKRs · coluna direita: roadmap do tri + riscos
@@ -5686,11 +5711,26 @@ function cxStHex(s){ return s==='sv'?CXP.gm:s==='so'?CXP.o:CXP.gy; }
 function cxPctHex(pct){ return pct>=80?CXP.gm:pct>=40?CXP.o:CXP.gy; }
 function cxLoadPptx(cb){
   if(window.PptxGenJS){ cb(); return; }
-  const s=document.createElement('script');
-  s.src='https://cdnjs.cloudflare.com/ajax/libs/pptxgen.js/3.12.0/pptxgen.bundle.js';
-  s.onload=cb;
-  s.onerror=function(){ alert('Não foi possível carregar a biblioteca de PowerPoint. Verifique a conexão e tente novamente.'); };
-  document.head.appendChild(s);
+  // Redes corporativas costumam bloquear alguns CDNs — tenta em sequência
+  const urls=[
+    'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    'https://unpkg.com/pptxgenjs@3.12.0/dist/pptxgen.bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pptxgen.js/3.12.0/pptxgen.bundle.js'
+  ];
+  let i=0;
+  function tryNext(){
+    if(window.PptxGenJS){ cb(); return; }
+    if(i>=urls.length){
+      alert('Não foi possível carregar a biblioteca de PowerPoint por nenhum dos 3 servidores (jsdelivr, unpkg, cdnjs) — a rede corporativa provavelmente bloqueia esses domínios. Alternativas: usar 🖨 Imprimir / PDF, tentar fora da VPN, ou pedir à TI a liberação de cdn.jsdelivr.net.');
+      return;
+    }
+    const s=document.createElement('script');
+    s.src=urls[i]; i++;
+    s.onload=function(){ if(window.PptxGenJS) cb(); else tryNext(); };
+    s.onerror=tryNext;
+    document.head.appendChild(s);
+  }
+  tryNext();
 }
 function exportComexPpt(){
   cxLoadPptx(function(){
@@ -5755,7 +5795,7 @@ function cxBuildPpt(){
     s2.addShape('rect',{x:0,y:0,w:0.18,h:7.5,fill:{color:cxEtHex(p.etapa)}});
     s2.addText(p.nm,{x:0.45,y:0.18,w:8.6,h:0.6,fontSize:26,bold:true,color:CXP.tx});
     s2.addText((CX_ST_LBL[p.status]||'—')+'  ·  '+(ET_LABEL[p.etapa]||''),{x:0.47,y:0.75,w:6,h:0.3,fontSize:11,bold:true,color:cxStHex(p.status)});
-    s2.addText('PO: '+(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+' · Potencial: '+(p.pot||'—'),{x:0.47,y:1.05,w:8.5,h:0.3,fontSize:10,color:CXP.t2});
+    s2.addText('PO: '+(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+' · Potencial: '+cxProdUHLabel(k)+(cxProdUH(k)>=1?'/UH':''),{x:0.47,y:1.05,w:8.5,h:0.3,fontSize:10,color:CXP.t2});
     if(p.desc) s2.addText(p.desc,{x:0.47,y:1.38,w:8.5,h:0.7,fontSize:9.5,italic:true,color:CXP.t3,fit:'shrink',valign:'top'});
     const _pm=prodMidiaSrc(k);
     if(_pm&&_pm.indexOf('data:image')===0){
