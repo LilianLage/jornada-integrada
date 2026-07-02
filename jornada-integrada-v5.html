@@ -2782,10 +2782,14 @@ async function saveEdit(){
       fbSaveMidia(editKey,'').catch(function(e){console.warn('limpeza produto_midia:',e);});
     }
   }
-  // refresh built pages
-  document.getElementById('port-grid').innerHTML='';buildPort();
-  cvBuilt=false; if(document.getElementById('pg-valor').classList.contains('on'))buildValor();
-  connBuilt=false; if(document.getElementById('pg-conn').classList.contains('on'))buildConn();
+  // refresh built pages — protegido: um erro de UI aqui NUNCA pode impedir a gravação abaixo
+  try{
+    document.getElementById('port-grid').innerHTML='';buildPort();
+    const _pgv=document.getElementById('pg-valor');
+    cvBuilt=false; if(_pgv&&_pgv.classList.contains('on'))buildValor();
+    const _pgc=document.getElementById('pg-conn');
+    connBuilt=false; if(_pgc&&_pgc.classList.contains('on'))buildConn();
+  }catch(e){ console.warn('saveEdit: erro ao reconstruir UI (gravação segue):',e); }
   // Sync kr.atual → KR_DATA realizado for current month
   const _sp = PRODS[editKey];
   if (_sp && KR_DATA[editKey]) {
@@ -5375,7 +5379,7 @@ function applyAutoStatus(prodKey) {
 // ══════════════════════════════════════════
 //  MODO COMEX — report executivo derivado dos dados vivos
 // ══════════════════════════════════════════
-console.log('[JIP] build i4 — verificação de imagem ativa');
+console.log('[JIP] build i5 — correção do crash em saveEdit (pg-conn)');
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
@@ -5690,7 +5694,7 @@ function openComex(){
   cxSyncQBtns();
   buildComexPages();
   const d=new Date();
-  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i4';
+  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i5';
   document.getElementById('comex-ov').classList.add('open');
   document.body.classList.add('cx-open');
   document.addEventListener('keydown',cxKeyHandler);
