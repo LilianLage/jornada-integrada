@@ -5537,7 +5537,7 @@ function cxPageCapa(keys){
         krv=(kr.real&&kr.real!=='—')?cxEsc(kr.real):'—';
         krl=cxEsc(kr.lbl||'');
       }
-      tiles+='<div class="cx-tile '+p.status+'" onclick="cxGo('+(i+1)+')">'
+      tiles+='<div class="cx-tile" style="border-top-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'
         +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
         +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+'</div>'
         +'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>'
