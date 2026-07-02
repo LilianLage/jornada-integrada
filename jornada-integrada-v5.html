@@ -685,10 +685,13 @@ button,input,select,textarea{font-family:inherit;}
 .cx-qbtn:hover{background:rgba(255,255,255,.18);color:#fff;}
 .cx-qbtn.on{background:var(--o);color:#fff;}
 .cx-body{flex:1;min-height:0;position:relative;overflow:hidden;}
-.cx-strip{display:flex;gap:8px;align-items:center;padding:10px 20px;background:#fff;border-bottom:1.5px solid var(--bd);overflow-x:auto;flex-shrink:0;scrollbar-width:thin;}
-.cx-pill{display:inline-flex;align-items:center;padding:7px 16px 7px 13px;border:1.5px solid var(--bd);border-left:6px solid var(--gy);border-radius:20px;background:#fff;font-size:12px;font-weight:800;color:var(--tx);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
-.cx-pill:hover{border-color:var(--g);}
-.cx-pill.on{background:var(--g);color:#fff;border-color:var(--g);}
+.cx-strip{display:flex;gap:3px;align-items:center;padding:10px 20px 8px;background:var(--bg);overflow-x:auto;flex-shrink:0;scrollbar-width:thin;scrollbar-color:#dde4ec var(--bg);}
+.cx-strip::-webkit-scrollbar{height:6px;}
+.cx-strip::-webkit-scrollbar-track{background:var(--bg);}
+.cx-strip::-webkit-scrollbar-thumb{background:#dde4ec;border-radius:3px;}
+.cx-pill{display:inline-flex;align-items:center;padding:7px 16px 7px 13px;border:1.5px solid var(--bd);border-left-width:6px;border-radius:5px;background:transparent;font-size:12px;font-weight:800;color:var(--t2);cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0;opacity:.38;filter:grayscale(.5);}
+.cx-pill:hover{opacity:.8;filter:grayscale(0);}
+.cx-pill.on{opacity:1;filter:none;background:#fff;color:var(--tx);box-shadow:0 2px 8px rgba(15,23,42,.08);}
 .cx-page{display:none;position:absolute;inset:0;overflow-y:auto;padding:34px 56px 90px;}
 .cx-page.on{display:block;}
 .cx-pg-ttl{font-size:30px;font-weight:800;letter-spacing:-1px;color:var(--tx);margin-bottom:4px;}
@@ -713,6 +716,10 @@ button,input,select,textarea{font-family:inherit;}
 .cx-st{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;padding:6px 13px;border-radius:20px;}
 .cx-st.sv{background:var(--gb);color:var(--g);} .cx-st.so{background:var(--ob);color:#c05f00;} .cx-st.sg{background:var(--gyb);color:var(--gy);}
 .cx-st .d{width:9px;height:9px;border-radius:50%;}
+.cx-st.sm{font-size:10.5px;padding:3px 9px;gap:5px;}
+.cx-st.sm .d{width:7px;height:7px;}
+.cx-tile-krv{font-size:21px;font-weight:800;letter-spacing:-.5px;line-height:1.1;}
+.cx-tile-krl{font-size:10.5px;color:var(--t3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0 9px;}
 .cx-st.sv .d{background:var(--gm);} .cx-st.so .d{background:var(--o);} .cx-st.sg .d{background:var(--gy);}
 .cx-bar{height:10px;background:var(--gyb);border-radius:6px;overflow:hidden;}
 .cx-bar i{display:block;height:100%;border-radius:6px;}
@@ -862,7 +869,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div id="hd-menu" style="display:none;position:absolute;right:0;top:42px;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);border:1.5px solid var(--bd);min-width:220px;z-index:999;overflow:hidden">
         <div onclick="openComex()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
           <span style="font-size:16px">📊</span>
-          <div><div>Modo Comex</div><div style="font-size:9px;color:var(--t3);font-weight:400">Report executivo · tela cheia · imprimível</div></div>
+          <div><div>Modo Apresentação</div><div style="font-size:9px;color:var(--t3);font-weight:400">Report executivo · tela cheia · PPT / PDF</div></div>
         </div>
         <div style="border-top:1px solid var(--bd)"></div>
         <div style="padding:8px 14px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bd)">Exportar dados</div>
@@ -928,13 +935,14 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 <div id="comex-ov">
   <div class="cx-hd">
     <div>
-      <div class="cx-hd-t">📊 Modo Comex · Jornada Integrada da Produção</div>
+      <div class="cx-hd-t">📊 Modo Apresentação · Jornada Integrada da Produção</div>
       <div class="cx-hd-s" id="cx-hd-date">—</div>
     </div>
     <div class="cx-hd-r">
       <div class="cx-qgrp" id="cx-qgrp">
         <button class="cx-qbtn" onclick="cxSetQ(0)">1T</button><button class="cx-qbtn" onclick="cxSetQ(1)">2T</button><button class="cx-qbtn" onclick="cxSetQ(2)">3T</button><button class="cx-qbtn" onclick="cxSetQ(3)">4T</button>
       </div>
+      <button class="cx-btn" onclick="exportComexPpt()">⬇ Exportar PPT</button>
       <button class="cx-btn" onclick="printComex()">🖨 Imprimir / PDF</button>
       <button class="cx-btn" onclick="closeComex()">✕ Sair</button>
     </div>
@@ -1435,7 +1443,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <div class="fg"><label>Status</label><select id="ep-s"><option value="sv">No prazo</option><option value="so">Atenção / Atenção</option><option value="sg">Acompanhar</option></select></div>
       </div>
       <div class="fg"><label>Descrição</label><textarea id="ep-desc" rows="2" style="resize:vertical"></textarea></div>
-      <div class="fg"><label>Mídia do produto · aparece no Modo Comex</label>
+      <div class="fg"><label>Mídia do produto · aparece no Modo Apresentação</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input id="ep-midia" placeholder="URL de vídeo (YouTube, Drive, .mp4) ou imagem…" style="flex:1">
           <button class="btn-sm" type="button" onclick="document.getElementById('ep-midia-file').click()">📷 Carregar imagem</button>
@@ -2261,10 +2269,8 @@ function buildPort(){
               ${rdHtml}
             </div>
             <div class="pb-section">
-              <div class="pb-sec-ttl">⚠️ Riscos</div>
-              <textarea class="pb-ta" placeholder="Descreva os riscos do produto..." onblur="savePbField('${key}','riscos_txt',this.value)">${p.riscos_txt||p.notas_riscos||''}</textarea>
-              <div class="pb-sec-ttl" style="margin-top:8px;color:var(--a1)">🎯 Plano de Ação</div>
-              <textarea class="pb-ta pb-ta-purple" placeholder="Ações planejadas para resolver riscos ou melhorar o resultado..." onblur="savePbField('${key}','plano_acao',this.value)">${p.plano_acao||''}</textarea>
+              <div class="pb-sec-ttl">⚠️ Riscos + Plano de Ação</div>
+              <textarea class="pb-ta" placeholder="Riscos do produto e ações planejadas para tratá-los..." onblur="savePbRiscoPlano('${key}',this.value)">${((p.riscos_txt||p.notas_riscos||'')+(p.plano_acao&&p.plano_acao.trim()?'\n'+p.plano_acao:'')).trim()}</textarea>
               <div class="pb-sec-ttl" style="margin-top:8px;color:var(--gm)">⭐ Destaques</div>
               <textarea class="pb-ta pb-ta-green" placeholder="Conquistas, entregas concluídas, pontos positivos..." onblur="savePbField('${key}','destaques',this.value)">${p.destaques||''}</textarea>
             </div>
@@ -2654,6 +2660,13 @@ function updateKRFromFields(oi, ki) {
   }
 }
 
+function toggleKRDq(oi,ki){
+  const p=PRODS[editKey];
+  if(!p) return;
+  const cur=!!(p.okrs[oi]&&p.okrs[oi].krs[ki]&&p.okrs[oi].krs[ki].dq);
+  p.okrs.forEach(function(o,i){ (o.krs||[]).forEach(function(kr,j){ kr.dq=(i===oi&&j===ki)?!cur:false; }); });
+  renderEditOKRs(p);
+}
 function renderEditOKRs(p){
   const cont=document.getElementById('ep-okrs');
   cont.innerHTML='';
@@ -2671,6 +2684,7 @@ function renderEditOKRs(p){
       <div style="background:var(--gyb);border-radius:6px;padding:8px 10px;margin-bottom:6px">
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
           <input type="text" value="${kr.lbl}" onchange="PRODS[editKey].okrs[${oi}].krs[${ki}].lbl=this.value" placeholder="Descrição do KR" style="flex:1;border:1px solid var(--bd);border-radius:5px;padding:4px 7px;font-size:10px;outline:none">
+          <button type="button" title="KR destaque — resultado aparece no card da Visão Geral do Modo Apresentação" onclick="toggleKRDq(${oi},${ki})" style="border:none;background:none;cursor:pointer;font-size:14px;color:${kr.dq?'var(--a4)':'var(--t3)'};padding:0 2px">${kr.dq?'★':'☆'}</button>
           <button class="btn-del" onclick="delKR(${oi},${ki})">✕</button>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
@@ -5203,6 +5217,17 @@ function savePbField(key,field,value){
   fbSaveProd(key);
 }
 
+// Campo unificado Riscos + Plano de Ação: grava em riscos_txt e zera o legado
+// plano_acao (já incorporado ao texto exibido) para não duplicar na próxima renderização.
+function savePbRiscoPlano(key,value){
+  if(!PRODS[key])return;
+  if(!requireEditor(()=>savePbRiscoPlano(key,value)))return;
+  PRODS[key].riscos_txt=value;
+  PRODS[key].plano_acao='';
+  setEditDetail('editou campo', 'riscos + plano de ação');
+  fbSaveProd(key);
+}
+
 // ══════════════════════════════════════════
 //  STATUS AUTOMÁTICO
 // ══════════════════════════════════════════
@@ -5340,8 +5365,18 @@ function cxPeriodsFor(q){
 function cxQuarterPeriods(){
   return {q:cxQ+1, keys:cxPeriodsFor(cxQ)};
 }
-function cxStPill(s){
-  return '<span class="cx-st '+s+'"><span class="d"></span>'+(CX_ST_LBL[s]||'—')+'</span>';
+function cxStPill(s,sm){
+  return '<span class="cx-st '+s+(sm?' sm':'')+'"><span class="d"></span>'+(CX_ST_LBL[s]||'—')+'</span>';
+}
+function cxDqKR(p){
+  let first=null, found=null;
+  (p.okrs||[]).forEach(function(o){
+    (o.krs||[]).forEach(function(kr){
+      if(!first) first=kr;
+      if(kr.dq&&!found) found=kr;
+    });
+  });
+  return found||first;
 }
 
 function cxProdKeys(){
@@ -5352,9 +5387,6 @@ function cxProdKeys(){
   });
   Object.keys(PRODS).forEach(function(k){ if(order.indexOf(PRODS[k].etapa)<0) keys.push(k); });
   return keys;
-}
-function cxProg(p){
-  try{ const cp=calcProg(p); return {pct:Math.max(0,Math.min(100,Math.round((cp&&cp.pct)||0))), lbl:(cp&&cp.label)||''}; }catch(e){ return {pct:0,lbl:''}; }
 }
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
 function cxEtColor(et){ return et==='est'?'var(--est)':et==='pre'?'var(--pre)':'var(--obra)'; }
@@ -5369,31 +5401,30 @@ function cxRdItems(k, qp){
 // ── Página 1: Visão Geral ──
 function cxPageCapa(keys){
   const c=cxStatusCounts(), pot=cxPotTotal(), qp=cxQuarterPeriods();
-  // Destaques: entregas concluídas no trimestre selecionado
+  // Destaques: campo ⭐ preenchido pelos times no card de cada produto
   const hi=[];
-  Object.keys(RDMAP).forEach(function(k){
-    const p=PRODS[k]; if(!p) return;
-    cxRdItems(k,qp).forEach(function(m){
-      if(m.s==='done' && hi.length<4) hi.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(m.txt));
+  Object.keys(PRODS).forEach(function(k){
+    const p=PRODS[k];
+    const t=(p.destaques||'').trim();
+    if(!t) return;
+    t.split(/\n+/).forEach(function(ln){
+      if(ln.trim()&&hi.length<6) hi.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(ln.trim()));
     });
   });
-  if(!hi.length) hi.push('Sem entregas concluídas registradas no '+qp.q+'T26.');
-  // Alertas
+  if(!hi.length) hi.push('Sem destaques registrados pelos times.');
+  // Riscos: campo ⚠️ dos cards + riscos estruturados
   const al=[];
   Object.keys(PRODS).forEach(function(k){
     const p=PRODS[k];
-    if(p.status==='so' && al.length<4){
-      const r=(p.riscos&&p.riscos[0])?cxEsc(p.riscos[0].nm):'Status: Atenção';
-      al.push('<b>'+cxEsc(p.nm)+'</b> · '+r);
-    }
-  });
-  Object.keys(PRODS).forEach(function(k){
-    const p=PRODS[k];
+    const t=(p.riscos_txt||p.notas_riscos||'').trim();
+    if(t) t.split(/\n+/).forEach(function(ln){
+      if(ln.trim()&&al.length<6) al.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(ln.trim()));
+    });
     (p.riscos||[]).forEach(function(r){
-      if(r.lvl==='alto' && p.status!=='so' && al.length<4) al.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(r.nm));
+      if(al.length<6) al.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(r.nm));
     });
   });
-  if(!al.length) al.push('Nenhum ponto de atenção mapeado.');
+  if(!al.length) al.push('Nenhum risco registrado pelos times.');
 
   let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
     +'<div class="cx-pg-sub">Jornada Integrada da Produção · Plataformas e Sistemas · '+qp.q+'T26</div>'
@@ -5401,28 +5432,37 @@ function cxPageCapa(keys){
     +'<div class="cx-kpi n"><div class="cx-kpi-l">Produtos & Processos</div><div class="cx-kpi-v">'+c.total+'</div><div class="cx-kpi-s">Em andamento · 2 gestores</div></div>'
     +'<div class="cx-kpi v"><div class="cx-kpi-l">No prazo</div><div class="cx-kpi-v v">'+c.sv+'</div><div class="cx-kpi-s">Status verde</div></div>'
     +'<div class="cx-kpi o"><div class="cx-kpi-l">Em atenção</div><div class="cx-kpi-v o">'+c.so+'</div><div class="cx-kpi-s">Exigem acompanhamento</div></div>'
-    +'<div class="cx-kpi a"><div class="cx-kpi-l">Potencial anual</div><div class="cx-kpi-v a" style="font-size:40px">R$ '+pot.m+'M</div><div class="cx-kpi-s">'+pot.uh+' por UH · c/ custo financeiro</div></div>'
+    +'<div class="cx-kpi a"><div class="cx-kpi-l">Potencial de captura total</div><div class="cx-kpi-v a" style="font-size:40px">R$ '+pot.uh+'</div><div class="cx-kpi-s">por UH · c/ custo financeiro</div></div>'
     +'</div>';
 
-  // Semáforo em grade, por etapa — tiles clicáveis levam à página do produto
+  // Semáforo em grade — cada tile destaca o resultado do KR marcado como destaque
   const groups=[{k:'est',c:'var(--est)'},{k:'pre',c:'var(--pre)'},{k:'obra',c:'var(--obra)'}];
   groups.forEach(function(g){
     let tiles='';
     keys.forEach(function(k,i){
       const p=PRODS[k]; if(p.etapa!==g.k) return;
-      const pr=cxProg(p);
+      const kr=cxDqKR(p);
+      let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)';
+      if(kr){
+        let pct=0; try{ pct=krPct(kr); }catch(e){ pct=0; }
+        krc=cxProgColor(pct);
+        krv=(kr.real&&kr.real!=='—')?cxEsc(kr.real):'—';
+        krl=cxEsc(kr.lbl||'');
+      }
       tiles+='<div class="cx-tile '+p.status+'" onclick="cxGo('+(i+1)+')">'
         +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
-        +'<div class="cx-tile-ft">'+cxStPill(p.status)+'<span style="color:'+cxProgColor(pr.pct)+'">'+pr.pct+'% OKRs</span></div>'
+        +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+'</div>'
+        +'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>'
+        +'<div class="cx-tile-ft">'+cxStPill(p.status,true)+'</div>'
         +'</div>';
     });
     if(tiles) h+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
   });
 
   h+='<div class="cx-cols2" style="margin-top:18px">'
-    +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Destaques do trimestre · '+qp.q+'T26</div>'
-    +hi.map(function(x){return '<div class="cx-li"><span class="cx-li-ic" style="color:var(--gm)">●</span><div>'+x+'</div></div>';}).join('')+'</div>'
-    +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Pontos de atenção</div>'
+    +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">⭐ Destaques</div>'
+    +hi.map(function(x){return '<div class="cx-li"><span class="cx-li-ic" style="color:var(--gm)">★</span><div>'+x+'</div></div>';}).join('')+'</div>'
+    +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'
     +al.map(function(x){return '<div class="cx-li"><span class="cx-li-ic" style="color:var(--o)">●</span><div>'+x+'</div></div>';}).join('')+'</div>'
     +'</div>';
   return h;
@@ -5556,11 +5596,11 @@ function buildComexPages(){
   body.innerHTML=pages.map(function(p,i){return '<div class="cx-page'+(i===cxPage?' on':'')+'" id="cx-p'+i+'">'+p+'</div>';}).join('');
   const dots=document.getElementById('cx-dots');
   dots.innerHTML=pages.map(function(_,i){return '<div class="cx-dot'+(i===cxPage?' on':'')+'" onclick="cxGo('+i+')" title="'+cxEsc(CX_LBLS[i])+'"></div>';}).join('');
-  // faixa de cards no topo — arco lateral na cor da etapa
-  let strip='<div class="cx-pill'+(cxPage===0?' on':'')+'" onclick="cxGo(0)">🏠 Visão Geral</div>';
+  // faixa de cards no topo — borda na cor da etapa; não-selecionados em fade
+  let strip='<div class="cx-pill'+(cxPage===0?' on':'')+'" style="border-color:var(--gy)" onclick="cxGo(0)">🏠 Visão Geral</div>';
   keys.forEach(function(k,i){
     const p=PRODS[k];
-    strip+='<div class="cx-pill'+(cxPage===i+1?' on':'')+'" style="border-left-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'+cxEsc(p.nm)+'</div>';
+    strip+='<div class="cx-pill'+(cxPage===i+1?' on':'')+'" style="border-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'+cxEsc(p.nm)+'</div>';
   });
   document.getElementById('cx-strip').innerHTML=strip;
   cxUpdateNum();
@@ -5617,6 +5657,142 @@ function closeComex(){
   document.removeEventListener('keydown',cxKeyHandler);
 }
 function printComex(){ window.print(); }
+
+// ── Exportação PPTX (pptxgenjs carregada sob demanda) ──
+const CXP={g:'006B3F',gm:'079D56',o:'FF8B22',gy:'64748B',tx:'0F172A',t2:'475569',t3:'94A3B8',bd:'E2E8F0',bg:'F4F7FB',wh:'FFFFFF',est:'64748B',pre:'FF8B22',obra:'079D56'};
+function cxEtHex(et){ return et==='est'?CXP.est:et==='pre'?CXP.pre:CXP.obra; }
+function cxStHex(s){ return s==='sv'?CXP.gm:s==='so'?CXP.o:CXP.gy; }
+function cxPctHex(pct){ return pct>=80?CXP.gm:pct>=40?CXP.o:CXP.gy; }
+function cxLoadPptx(cb){
+  if(window.PptxGenJS){ cb(); return; }
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/pptxgen.js/3.12.0/pptxgen.bundle.js';
+  s.onload=cb;
+  s.onerror=function(){ alert('Não foi possível carregar a biblioteca de PowerPoint. Verifique a conexão e tente novamente.'); };
+  document.head.appendChild(s);
+}
+function exportComexPpt(){
+  cxLoadPptx(function(){
+    try{ cxBuildPpt(); }
+    catch(e){ console.error(e); alert('Erro ao gerar o PPT: '+e.message); }
+  });
+}
+function cxBuildPpt(){
+  const keys=cxProdKeys(), qp=cxQuarterPeriods();
+  const pptx=new PptxGenJS();
+  pptx.defineLayout({name:'W169',width:13.33,height:7.5});
+  pptx.layout='W169';
+
+  // ── Slide 1: Visão Geral ──
+  const c=cxStatusCounts(), pot=cxPotTotal();
+  let sl=pptx.addSlide();
+  sl.background={color:CXP.bg};
+  sl.addShape('rect',{x:0,y:0,w:13.33,h:1.1,fill:{color:CXP.g}});
+  sl.addText('Jornada Integrada da Produção — Visão Geral · '+qp.q+'T26',{x:0.4,y:0.12,w:11,h:0.6,fontSize:22,bold:true,color:CXP.wh});
+  sl.addText('Plataformas e Sistemas · gerado em '+new Date().toLocaleDateString('pt-BR'),{x:0.42,y:0.62,w:11,h:0.35,fontSize:10,color:'CFE8DC'});
+  const kpis=[
+    {l:'PRODUTOS & PROCESSOS',v:String(c.total),s:'Em andamento · 2 gestores',ac:CXP.gy,vc:CXP.tx},
+    {l:'NO PRAZO',v:String(c.sv),s:'Status verde',ac:CXP.gm,vc:CXP.g},
+    {l:'EM ATENÇÃO',v:String(c.so),s:'Exigem acompanhamento',ac:CXP.o,vc:CXP.o},
+    {l:'POTENCIAL DE CAPTURA TOTAL',v:'R$ '+pot.uh,s:'por UH · c/ custo financeiro',ac:CXP.g,vc:CXP.g}
+  ];
+  kpis.forEach(function(kp,i){
+    const x=0.4+i*3.22;
+    sl.addShape('roundRect',{x:x,y:1.45,w:2.98,h:1.7,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+    sl.addShape('rect',{x:x,y:1.45,w:2.98,h:0.07,fill:{color:kp.ac}});
+    sl.addText(kp.l,{x:x+0.15,y:1.6,w:2.7,h:0.3,fontSize:9,bold:true,color:CXP.t3,charSpacing:1});
+    sl.addText(kp.v,{x:x+0.15,y:1.92,w:2.7,h:0.75,fontSize:34,bold:true,color:kp.vc});
+    sl.addText(kp.s,{x:x+0.15,y:2.72,w:2.7,h:0.3,fontSize:8.5,color:CXP.t3});
+  });
+  // destaques e atenção
+  const hi=[], al=[];
+  Object.keys(PRODS).forEach(function(k){
+    const p=PRODS[k];
+    const dt=(p.destaques||'').trim();
+    if(dt) dt.split(/\n+/).forEach(function(ln){ if(ln.trim()&&hi.length<6) hi.push(p.nm+' · '+ln.trim()); });
+  });
+  if(!hi.length) hi.push('Sem destaques registrados pelos times.');
+  Object.keys(PRODS).forEach(function(k){
+    const p=PRODS[k];
+    const rt=(p.riscos_txt||p.notas_riscos||'').trim();
+    if(rt) rt.split(/\n+/).forEach(function(ln){ if(ln.trim()&&al.length<6) al.push(p.nm+' · '+ln.trim()); });
+    (p.riscos||[]).forEach(function(r){ if(al.length<6) al.push(p.nm+' · '+r.nm); });
+  });
+  if(!al.length) al.push('Nenhum risco registrado pelos times.');
+  sl.addShape('roundRect',{x:0.4,y:3.45,w:6.2,h:3.6,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+  sl.addText('⭐ DESTAQUES',{x:0.6,y:3.6,w:5.8,h:0.35,fontSize:11,bold:true,color:CXP.g});
+  sl.addText(hi.map(function(t){return {text:t,options:{bullet:{code:'25CF',indent:12},color:CXP.tx,fontSize:11,breakLine:true}};}),{x:0.6,y:4.0,w:5.8,h:2.9,valign:'top',fit:'shrink'});
+  sl.addShape('roundRect',{x:6.75,y:3.45,w:6.2,h:3.6,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+  sl.addText('⚠ RISCOS',{x:6.95,y:3.6,w:5.8,h:0.35,fontSize:11,bold:true,color:CXP.o});
+  sl.addText(al.map(function(t){return {text:t,options:{bullet:{code:'25CF',indent:12},color:CXP.tx,fontSize:11,breakLine:true}};}),{x:6.95,y:4.0,w:5.8,h:2.9,valign:'top',fit:'shrink'});
+
+  // ── Um slide por produto ──
+  keys.forEach(function(k){
+    const p=PRODS[k];
+    const s2=pptx.addSlide();
+    s2.background={color:CXP.bg};
+    s2.addShape('rect',{x:0,y:0,w:0.18,h:7.5,fill:{color:cxEtHex(p.etapa)}});
+    s2.addText(p.nm,{x:0.45,y:0.18,w:8.6,h:0.6,fontSize:26,bold:true,color:CXP.tx});
+    s2.addText((CX_ST_LBL[p.status]||'—')+'  ·  '+(ET_LABEL[p.etapa]||''),{x:0.47,y:0.75,w:6,h:0.3,fontSize:11,bold:true,color:cxStHex(p.status)});
+    s2.addText('PO: '+(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+' · Potencial: '+(p.pot||'—'),{x:0.47,y:1.05,w:8.5,h:0.3,fontSize:10,color:CXP.t2});
+    if(p.desc) s2.addText(p.desc,{x:0.47,y:1.38,w:8.5,h:0.7,fontSize:9.5,italic:true,color:CXP.t3,fit:'shrink',valign:'top'});
+    if(p.midia&&String(p.midia).indexOf('data:image')===0){
+      try{ s2.addImage({data:p.midia,x:9.55,y:0.25,w:3.4,h:1.9,sizing:{type:'contain',w:3.4,h:1.9}}); }catch(e){}
+    }
+    // três colunas
+    const colY=2.25, colH=3.15;
+    function colBox(x,w,title,tc,arr){
+      s2.addShape('roundRect',{x:x,y:colY,w:w,h:colH,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+      s2.addText(title,{x:x+0.15,y:colY+0.1,w:w-0.3,h:0.3,fontSize:10.5,bold:true,color:tc});
+      if(arr.length) s2.addText(arr,{x:x+0.15,y:colY+0.45,w:w-0.3,h:colH-0.6,valign:'top',fit:'shrink'});
+    }
+    // OKRs
+    const okrArr=[];
+    (p.okrs||[]).forEach(function(o){
+      okrArr.push({text:'🎯 '+o.ttl,options:{bold:true,color:CXP.t2,fontSize:9,breakLine:true}});
+      (o.krs||[]).forEach(function(kr){
+        let pct=0; try{ pct=krPct(kr); }catch(e){ pct=0; }
+        okrArr.push({text:kr.lbl+' — '+pct+'%',options:{bullet:{code:'25CF',indent:10},color:cxPctHex(pct),fontSize:8.5,breakLine:true}});
+      });
+    });
+    if(!okrArr.length) okrArr.push({text:'Sem OKRs cadastrados.',options:{color:CXP.t3,fontSize:9}});
+    colBox(0.45,4.2,'📈 OKRs & KEY RESULTS',CXP.tx,okrArr);
+    // Entregue no tri anterior
+    const prevArr=[];
+    if(cxQ>0){
+      cxPeriodsFor(cxQ-1).forEach(function(per){
+        (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ if(m.s==='done') prevArr.push({text:'✓ '+m.txt,options:{color:CXP.gm,fontSize:9.5,breakLine:true}}); });
+      });
+      if(!prevArr.length) prevArr.push({text:'Sem entregas concluídas registradas no '+cxQ+'T26.',options:{color:CXP.t3,fontSize:9}});
+    } else prevArr.push({text:'1T26 é o primeiro trimestre do roadmap.',options:{color:CXP.t3,fontSize:9}});
+    colBox(4.8,4.15,'✓ ENTREGUE NO '+(cxQ>0?cxQ+'T26':'—'),CXP.g,prevArr);
+    // Roadmap do tri
+    const rdArr=[];
+    cxRdItems(k,qp).forEach(function(m){
+      const ic=m.s==='done'?'✓ ':m.s==='doing'?'▸ ':'○ ';
+      const cc=m.s==='done'?CXP.gm:m.s==='doing'?CXP.o:CXP.t3;
+      rdArr.push({text:ic+m.txt,options:{color:cc,fontSize:9.5,breakLine:true}});
+    });
+    if(!rdArr.length) rdArr.push({text:'Sem entregas registradas para o '+qp.q+'T26.',options:{color:CXP.t3,fontSize:9}});
+    colBox(9.1,3.8,'📅 ROADMAP · '+qp.q+'T26',CXP.tx,rdArr);
+    // destaques e riscos
+    const dtxt=(p.destaques||'').trim(), rtxt=(p.riscos_txt||p.notas_riscos||'').trim();
+    const dArr=dtxt?dtxt.split(/\n+/).filter(function(l){return l.trim();}).map(function(l){return {text:'★ '+l.trim(),options:{color:CXP.tx,fontSize:9.5,breakLine:true}};}):[];
+    let rArr=rtxt?rtxt.split(/\n+/).filter(function(l){return l.trim();}).map(function(l){return {text:l.trim(),options:{bullet:{code:'25CF',indent:10},color:CXP.tx,fontSize:9.5,breakLine:true}};}):[];
+    (p.riscos||[]).forEach(function(r){ rArr.push({text:r.nm+(r.lvl==='alto'?' (alta)':''),options:{bullet:{code:'25CF',indent:10},color:CXP.tx,fontSize:9.5,breakLine:true}}); });
+    if(dArr.length||rArr.length){
+      const bY=5.6, bH=1.7;
+      s2.addShape('roundRect',{x:0.45,y:bY,w:6.15,h:bH,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+      s2.addText('⭐ DESTAQUES',{x:0.6,y:bY+0.08,w:5.8,h:0.3,fontSize:10.5,bold:true,color:CXP.g});
+      s2.addText(dArr.length?dArr:[{text:'Sem destaques registrados pelo time.',options:{color:CXP.t3,fontSize:9}}],{x:0.6,y:bY+0.42,w:5.85,h:bH-0.55,valign:'top',fit:'shrink'});
+      s2.addShape('roundRect',{x:6.75,y:bY,w:6.15,h:bH,fill:{color:CXP.wh},line:{color:CXP.bd,width:1},rectRadius:0.08});
+      s2.addText('⚠ RISCOS',{x:6.9,y:bY+0.08,w:5.8,h:0.3,fontSize:10.5,bold:true,color:CXP.o});
+      s2.addText(rArr.length?rArr:[{text:'Sem riscos registrados pelo time.',options:{color:CXP.t3,fontSize:9}}],{x:6.9,y:bY+0.42,w:5.85,h:bH-0.55,valign:'top',fit:'shrink'});
+    }
+  });
+
+  pptx.writeFile({fileName:'JIP_Apresentacao_'+qp.q+'T26.pptx'});
+}
 
 </script>
 </body>
