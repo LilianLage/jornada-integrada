@@ -745,6 +745,10 @@ button,input,select,textarea{font-family:inherit;}
 .cx-phd-meta{font-size:13.5px;color:var(--t2);margin-top:8px;font-weight:600;}
 .cx-phd-desc{font-size:14.5px;color:var(--t2);margin-top:10px;line-height:1.55;max-width:760px;}
 .cx-phd-media{flex-shrink:0;}
+.cx-phd-tags{flex-shrink:0;max-width:320px;}
+.cx-phd-tags .tl{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin:0 0 6px;}
+.cx-phd-tags .tl+.tl-group+.tl{margin-top:12px;}
+.cx-tagchip{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:4px 9px;margin:0 4px 4px 0;border:1px solid;line-height:1.3;}
 .cx-media{display:block;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px solid var(--bd);object-fit:cover;background:#0b0f14;}
 iframe.cx-media{border:1.5px solid var(--bd);}
 .cx-media-link{display:flex;align-items:center;justify-content:center;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px dashed var(--bd);background:var(--gyb);font-size:13px;font-weight:800;color:var(--g);text-decoration:none;}
@@ -823,6 +827,8 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         if (window.setSyncStatus) window.setSyncStatus('ok');
         // Corrige nomes legados persistidos (ex.: "DAEane" → "Daeane") e re-salva docs alterados
         if (typeof window.fixLegacyNames === 'function') window.fixLegacyNames();
+        // Remove alavancas inválidas persistidas (ex.: chave legada 'orca')
+        if (typeof window.fixInvalidAlavancas === 'function') window.fixInvalidAlavancas();
         // Migrações pontuais (ex.: inclusão definitiva de PO no ECO-PAM)
         if (typeof window.applyPendingMigrations === 'function') await window.applyPendingMigrations();
         // Reconcile KR_DATA shape with loaded PRODS and rebuild the active tab
@@ -4920,6 +4926,31 @@ function fixLegacyNames(){
 }
 window.fixLegacyNames = fixLegacyNames;
 
+// Sanitiza alavancas inválidas persistidas no Firestore (ex.: chave legada 'orca'):
+// remove de p.alavancas e p.pot_alav toda chave que não exista no mapa canônico
+// ALAVANCAS, e re-salva apenas os docs alterados (sem poluir a auditoria).
+function fixInvalidAlavancas(){
+  const valid = Object.keys(ALAVANCAS);
+  Object.keys(PRODS).forEach(key => {
+    const p = PRODS[key]; if (!p) return;
+    let changed = false;
+    if (Array.isArray(p.alavancas)) {
+      const clean = p.alavancas.filter(ak => valid.indexOf(ak) >= 0);
+      if (clean.length !== p.alavancas.length) { p.alavancas = clean; changed = true; }
+    }
+    if (p.pot_alav && typeof p.pot_alav === 'object') {
+      Object.keys(p.pot_alav).forEach(ak => {
+        if (valid.indexOf(ak) < 0) { delete p.pot_alav[ak]; changed = true; }
+      });
+    }
+    if (changed) {
+      console.log('[JIP] alavancas inválidas removidas de', key);
+      _suppressLog = true; fbSaveProd(key); _suppressLog = false;
+    }
+  });
+}
+window.fixInvalidAlavancas = fixInvalidAlavancas;
+
 // ── Migrações pontuais aplicadas uma única vez após o load ──
 // O load faz Object.assign do Firestore por cima do seed do HTML. Se o doc do
 // produto já existe no Firestore, alterar o seed não tem efeito. Para incluir
@@ -5379,7 +5410,7 @@ function applyAutoStatus(prodKey) {
 // ══════════════════════════════════════════
 //  MODO COMEX — report executivo derivado dos dados vivos
 // ══════════════════════════════════════════
-console.log('[JIP] build i5 — correção do crash em saveEdit (pg-conn)');
+console.log('[JIP] build i6 — sanitização de alavancas + alavancas/ambições no header do produto');
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
@@ -5534,6 +5565,27 @@ function cxPageProduto(k){
 
   // header
   const media=cxMedia(prodMidiaSrc(k));
+  // Alavancas de valor e ambições que o produto potencializa (onde estava o potencial)
+  let alavChips='';
+  (p.alavancas||[]).forEach(function(ak){
+    if(!ALAVANCAS[ak]) return;
+    const v=(p.pot_alav&&p.pot_alav[ak])?' · R$ '+p.pot_alav[ak]+'M':'';
+    alavChips+='<span class="cx-tagchip" style="background:var(--ob);border-color:var(--o);color:#7a3d00">'+cxEsc(ALAVANCAS[ak])+cxEsc(v)+'</span>';
+  });
+  let ambChips='';
+  (p.ambicoes||[]).forEach(function(aid){
+    const a=AMBS[aid]; if(!a) return;
+    const bg=a.cls==='a1'?'#f3eef8':a.cls==='a2'?'#fff0f7':a.cls==='a3'?'#e6fdf5':'#fffae6';
+    const col=a.cls==='a1'?'var(--a1)':a.cls==='a2'?'var(--a2)':a.cls==='a3'?'var(--g)':'#a06000';
+    ambChips+='<span class="cx-tagchip" style="background:'+bg+';border-color:'+col+';color:'+col+'">'+cxEsc(a.lbl)+'</span>';
+  });
+  let tagsBlock='';
+  if(alavChips||ambChips){
+    tagsBlock='<div class="cx-phd-tags">'
+      +(alavChips?'<div class="tl">⚡ Alavancas de valor</div><div class="tl-group">'+alavChips+'</div>':'')
+      +(ambChips?'<div class="tl">🏆 Ambições que potencializa</div><div class="tl-group">'+ambChips+'</div>':'')
+      +'</div>';
+  }
   let h='<div class="cx-phd" style="border-left-color:'+cxEtColor(p.etapa)+'">'
     +'<div style="min-width:0;flex:1">'
     +'<div class="cx-phd-nm">'+cxEsc(p.nm)+' '+cxStPill(p.status)
@@ -5541,6 +5593,7 @@ function cxPageProduto(k){
     +'<div class="cx-phd-meta">PO: '+cxEsc(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+'</div>'
     +(p.desc?'<div class="cx-phd-desc">'+cxEsc(p.desc)+'</div>':'')
     +'</div>'
+    +tagsBlock
     +(media?'<div class="cx-phd-media">'+media+'</div>':'')
     +'</div>';
 
@@ -5694,7 +5747,7 @@ function openComex(){
   cxSyncQBtns();
   buildComexPages();
   const d=new Date();
-  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i5';
+  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i6';
   document.getElementById('comex-ov').classList.add('open');
   document.body.classList.add('cx-open');
   document.addEventListener('keydown',cxKeyHandler);
