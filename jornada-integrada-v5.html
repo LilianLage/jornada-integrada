@@ -5375,6 +5375,7 @@ function applyAutoStatus(prodKey) {
 // ══════════════════════════════════════════
 //  MODO COMEX — report executivo derivado dos dados vivos
 // ══════════════════════════════════════════
+console.log('[JIP] build i4 — verificação de imagem ativa');
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
@@ -5689,7 +5690,7 @@ function openComex(){
   cxSyncQBtns();
   buildComexPages();
   const d=new Date();
-  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i3';
+  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i4';
   document.getElementById('comex-ov').classList.add('open');
   document.body.classList.add('cx-open');
   document.addEventListener('keydown',cxKeyHandler);
