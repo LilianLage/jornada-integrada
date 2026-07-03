@@ -1444,6 +1444,10 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         </div>
         <div id="ep-midia-prev" style="margin-top:6px"></div>
       </div>
+      <div class="fg" style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" id="ep-cxshow" checked style="width:16px;height:16px;accent-color:var(--g);margin:0;flex-shrink:0">
+        <label for="ep-cxshow" style="margin:0;cursor:pointer">Exibir no Modo Apresentação — desmarcado, o produto sai da Visão Geral, da faixa do topo e não tem página própria</label>
+      </div>
       <div class="edit-sec-hd"><span>🎯 Objetivos e KRs</span><button class="btn-sm" onclick="addOKR()">+ OKR</button></div>
       <div id="ep-okrs"></div>
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
@@ -2574,6 +2578,7 @@ function openEdit(key){
   // Status is auto-calculated
   setTimeout(() => applyAutoStatus(key), 50);
   document.getElementById('ep-desc').value=p.desc;
+  const _cxs=document.getElementById('ep-cxshow'); if(_cxs) _cxs.checked=!p.cx_hide;
   const _m=prodMidiaSrc(key);
   if(_m&&String(_m).indexOf('data:image')===0){ epMidiaData=_m; document.getElementById('ep-midia').value=''; }
   else { epMidiaData=null; document.getElementById('ep-midia').value=_m||''; }
@@ -2767,6 +2772,7 @@ async function saveEdit(){
   p.etapa=document.getElementById('ep-e').value;
   p.status = calcAutoStatus(editKey);
   p.desc=document.getElementById('ep-desc').value;
+  const _cxs=document.getElementById('ep-cxshow'); if(_cxs) p.cx_hide=!_cxs.checked;
   // Mídia: imagem carregada vai para a coleção produto_midia (aguarda e avisa se falhar)
   const _midiaUrl=document.getElementById('ep-midia').value.trim();
   if(epMidiaData){
@@ -5470,10 +5476,11 @@ function cxDqKR(p){
 function cxProdKeys(){
   const order=['est','pre','obra'];
   const keys=[];
+  // Produtos com cx_hide=true ficam fora do Modo Apresentação (Visão Geral, faixa do topo e página própria)
   order.forEach(function(et){
-    Object.keys(PRODS).forEach(function(k){ if(PRODS[k].etapa===et) keys.push(k); });
+    Object.keys(PRODS).forEach(function(k){ if(PRODS[k].etapa===et&&!PRODS[k].cx_hide) keys.push(k); });
   });
-  Object.keys(PRODS).forEach(function(k){ if(order.indexOf(PRODS[k].etapa)<0) keys.push(k); });
+  Object.keys(PRODS).forEach(function(k){ if(order.indexOf(PRODS[k].etapa)<0&&!PRODS[k].cx_hide) keys.push(k); });
   return keys;
 }
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
@@ -5488,40 +5495,10 @@ function cxRdItems(k, qp){
 
 // ── Página 1: Visão Geral ──
 function cxPageCapa(keys){
-  const c=cxStatusCounts(), pot=cxPotTotal(), qp=cxQuarterPeriods();
-  // Destaques: campo ⭐ preenchido pelos times no card de cada produto
-  const hi=[];
-  Object.keys(PRODS).forEach(function(k){
-    const p=PRODS[k];
-    const t=(p.destaques||'').trim();
-    if(!t) return;
-    t.split(/\n+/).forEach(function(ln){
-      if(ln.trim()&&hi.length<6) hi.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(ln.trim()));
-    });
-  });
-  if(!hi.length) hi.push('Sem destaques registrados pelos times.');
-  // Riscos: campo ⚠️ dos cards + riscos estruturados
-  const al=[];
-  Object.keys(PRODS).forEach(function(k){
-    const p=PRODS[k];
-    const t=(p.riscos_txt||p.notas_riscos||'').trim();
-    if(t) t.split(/\n+/).forEach(function(ln){
-      if(ln.trim()&&al.length<6) al.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(ln.trim()));
-    });
-    (p.riscos||[]).forEach(function(r){
-      if(al.length<6) al.push('<b>'+cxEsc(p.nm)+'</b> · '+cxEsc(r.nm));
-    });
-  });
-  if(!al.length) al.push('Nenhum risco registrado pelos times.');
-
+  const qp=cxQuarterPeriods();
+  // Visão Geral enxuta: só a grade de produtos (KPIs e Destaques/Riscos removidos a pedido)
   let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
-    +'<div class="cx-pg-sub">Jornada Integrada da Produção · Plataformas e Sistemas · '+qp.q+'T26</div>'
-    +'<div class="cx-kpis">'
-    +'<div class="cx-kpi n"><div class="cx-kpi-l">Produtos & Processos</div><div class="cx-kpi-v">'+c.total+'</div><div class="cx-kpi-s">Em andamento · 2 gestores</div></div>'
-    +'<div class="cx-kpi v"><div class="cx-kpi-l">No prazo</div><div class="cx-kpi-v v">'+c.sv+'</div><div class="cx-kpi-s">Status verde</div></div>'
-    +'<div class="cx-kpi o"><div class="cx-kpi-l">Em atenção</div><div class="cx-kpi-v o">'+c.so+'</div><div class="cx-kpi-s">Exigem acompanhamento</div></div>'
-    +'<div class="cx-kpi a"><div class="cx-kpi-l">Potencial de captura total</div><div class="cx-kpi-v a" style="font-size:40px">R$ '+pot.uh+'</div><div class="cx-kpi-s">por UH · c/ custo financeiro</div></div>'
-    +'</div>';
+    +'<div class="cx-pg-sub">Jornada Integrada da Produção · Plataformas e Sistemas · '+qp.q+'T26</div>';
 
   // Semáforo em grade — cada tile destaca o resultado do KR marcado como destaque
   const groups=[{k:'est',c:'var(--est)'},{k:'pre',c:'var(--pre)'},{k:'obra',c:'var(--obra)'}];
@@ -5547,12 +5524,6 @@ function cxPageCapa(keys){
     if(tiles) h+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
   });
 
-  h+='<div class="cx-cols2" style="margin-top:18px">'
-    +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">⭐ Destaques</div>'
-    +hi.map(function(x){return '<div class="cx-li"><span class="cx-li-ic" style="color:var(--gm)">★</span><div>'+x+'</div></div>';}).join('')+'</div>'
-    +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'
-    +al.map(function(x){return '<div class="cx-li"><span class="cx-li-ic" style="color:var(--o)">●</span><div>'+x+'</div></div>';}).join('')+'</div>'
-    +'</div>';
   return h;
 }
 
@@ -5569,8 +5540,8 @@ function cxPageProduto(k){
   let alavChips='';
   (p.alavancas||[]).forEach(function(ak){
     if(!ALAVANCAS[ak]) return;
-    const v=(p.pot_alav&&p.pot_alav[ak])?' · R$ '+p.pot_alav[ak]+'M':'';
-    alavChips+='<span class="cx-tagchip" style="background:var(--ob);border-color:var(--o);color:#7a3d00">'+cxEsc(ALAVANCAS[ak])+cxEsc(v)+'</span>';
+    // Só o título da alavanca — sem valores no Modo Apresentação
+    alavChips+='<span class="cx-tagchip" style="background:var(--ob);border-color:var(--o);color:#7a3d00">'+cxEsc(ALAVANCAS[ak])+'</span>';
   });
   let ambChips='';
   (p.ambicoes||[]).forEach(function(aid){
@@ -5593,8 +5564,8 @@ function cxPageProduto(k){
     +'<div class="cx-phd-meta">PO: '+cxEsc(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+'</div>'
     +(p.desc?'<div class="cx-phd-desc">'+cxEsc(p.desc)+'</div>':'')
     +'</div>'
-    +tagsBlock
     +(media?'<div class="cx-phd-media">'+media+'</div>':'')
+    +tagsBlock
     +'</div>';
 
   // coluna esquerda: OKRs · coluna direita: roadmap do tri + riscos
