@@ -716,10 +716,10 @@ button,input,select,textarea{font-family:inherit;}
 .cx-st{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;padding:6px 13px;border-radius:20px;}
 .cx-st.sv{background:var(--gb);color:var(--g);} .cx-st.so{background:var(--ob);color:#c05f00;} .cx-st.sg{background:var(--gyb);color:var(--gy);}
 .cx-st .d{width:9px;height:9px;border-radius:50%;}
-.cx-st.sm{font-size:10.5px;padding:3px 9px;gap:5px;}
-.cx-st.sm .d{width:7px;height:7px;}
+.cx-st.sm{font-size:9px;padding:2px 8px;gap:4px;}
+.cx-st.sm .d{width:6px;height:6px;}
 .cx-tile-krv{font-size:21px;font-weight:800;letter-spacing:-.5px;line-height:1.1;}
-.cx-tile-krl{font-size:10.5px;color:var(--t3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:2px 0 9px;}
+.cx-tile-krl{font-size:10.5px;color:var(--t3);font-weight:600;line-height:1.35;margin:2px 0 9px;}
 .cx-st.sv .d{background:var(--gm);} .cx-st.so .d{background:var(--o);} .cx-st.sg .d{background:var(--gy);}
 .cx-bar{height:10px;background:var(--gyb);border-radius:6px;overflow:hidden;}
 .cx-bar i{display:block;height:100%;border-radius:6px;}
@@ -749,6 +749,15 @@ button,input,select,textarea{font-family:inherit;}
 .cx-phd-tags .tl{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin:0 0 6px;}
 .cx-phd-tags .tl+.tl-group+.tl{margin-top:12px;}
 .cx-tagchip{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:4px 9px;margin:0 4px 4px 0;border:1px solid;line-height:1.3;}
+/* Carrossel de KRs no card de OKRs do Modo Apresentação */
+.cx-krsl{display:none;}
+.cx-krsl.on{display:block;}
+.cx-krdots{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:10px;}
+.cx-krdot{width:7px;height:7px;border-radius:99px;background:var(--bd);cursor:pointer;border:none;padding:0;transition:width .2s,background .2s;}
+.cx-krdot:hover{background:var(--t3);}
+.cx-krdot.on{width:20px;background:var(--g);}
+.cx-krleg{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:9px;font-weight:800;letter-spacing:.3px;color:var(--t3);margin-top:6px;}
+.cx-tipbox{position:fixed;z-index:99999;background:#0f172a;color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;pointer-events:none;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);}
 .cx-media{display:block;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px solid var(--bd);object-fit:cover;background:#0b0f14;}
 iframe.cx-media{border:1.5px solid var(--bd);}
 .cx-media-link{display:flex;align-items:center;justify-content:center;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px dashed var(--bd);background:var(--gyb);font-size:13px;font-weight:800;color:var(--g);text-decoration:none;}
@@ -758,6 +767,8 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   .cx-hd,.cx-strip{display:none!important;}
   .cx-body{overflow:visible;position:static;}
   .cx-page{display:block!important;position:static;overflow:visible;page-break-after:always;padding:20px 10px;}
+  .cx-krsl{display:block!important;}
+  .cx-krdots{display:none!important;}
 }
 </style>
 
@@ -4316,6 +4327,13 @@ function buildKRList(key) {
       const orcadoNow = kd ? (kd.o[CUR_M]??'—') : '—';
       const projNow   = kd ? (kd.p.slice(0,CUR_M+1).reverse().find(v=>v!==null)??'—') : '—';
       const u = krUnit(kr)||'%';
+      // % da meta atingida — exibida quando a meta final não é 100
+      const metaN = krNum(kr.meta);
+      let atingHTML = '';
+      if (metaN !== null && metaN !== 100) {
+        let apct = 0; try { apct = krPct(kr); } catch(e) { apct = 0; }
+        atingHTML = `<div style="min-width:46px;text-align:right;font-size:12px;font-weight:800;color:${cxKRColor(key,oi,ki)};flex-shrink:0">${apct}%<span style="display:block;font-size:7px;font-weight:500;color:var(--t3);line-height:1">da meta</span></div>`;
+      }
       const item = document.createElement('div');
       item.className = 'kr-item-ev';
       item.id = `okrev-kritem-${oi}-${ki}`;
@@ -4330,6 +4348,7 @@ function buildKRList(key) {
             <span style="color:var(--a1);font-weight:600">◌ ${projNow}${projNow==='—'?'':u} proj.</span>
           </div>
         </div>
+        ${atingHTML}
         <button onclick="event.stopPropagation();openKRDataEdit('${key}',${oi},${ki})"
           style="background:none;border:1px solid var(--bd);border-radius:5px;padding:2px 7px;font-size:9px;font-weight:700;color:var(--t2);cursor:pointer;flex-shrink:0"
           title="Editar dados mensais">✏️</button>`;
@@ -4386,8 +4405,6 @@ function buildBarChart(key, oi, ki) {
     o: Array(12).fill(null),
     p: Array(12).fill(null)
   };
-  const ci  = (oi*3+ki) % KR_COLS.length;
-  const col = KR_COLS[ci];
   const unit  = krUnit(kr)||'%';
   const metaN = krNum(kr.meta);
 
@@ -4398,6 +4415,13 @@ function buildBarChart(key, oi, ki) {
   // Projetado: line, mai→dez
   const pData = MONTHS.map((_,mi) => mi>=CUR_M ? (kd.p[mi]??null) : null);
 
+  // Regra corporativa: barras sempre verdes; laranja só quando abaixo do orçado do mês
+  const GR='#006B3F', OR='#FF8B22';
+  const barCol = MONTHS.map((_,mi)=>{
+    const r=rData[mi], o=oData[mi];
+    return (r!=null&&o!=null&&r<o)?OR:GR;
+  });
+
   okrevChart = new Chart(ctx, {
     data: {
       labels: MONTHS,
@@ -4405,13 +4429,13 @@ function buildBarChart(key, oi, ki) {
         {
           type: 'bar', label: 'Realizado',
           data: rData,
-          backgroundColor: MONTHS.map((_,mi)=> mi===CUR_M ? col : col+'aa'),
-          borderColor: col, borderWidth: 1.5, borderRadius: 4, order: 3,
+          backgroundColor: MONTHS.map((_,mi)=> mi===CUR_M ? barCol[mi] : barCol[mi]+'aa'),
+          borderColor: MONTHS.map((_,mi)=> barCol[mi]), borderWidth: 1.5, borderRadius: 4, order: 3,
         },
         {
           type: 'bar', label: 'Orçado',
           data: oData,
-          backgroundColor: col+'30', borderColor: col+'66',
+          backgroundColor: GR+'30', borderColor: GR+'66',
           borderWidth: 1.5, borderRadius: 4, order: 4,
         },
         {
@@ -5464,10 +5488,10 @@ function cxStPill(s,sm){
 }
 function cxDqKR(p){
   let first=null, found=null;
-  (p.okrs||[]).forEach(function(o){
-    (o.krs||[]).forEach(function(kr){
-      if(!first) first=kr;
-      if(kr.dq&&!found) found=kr;
+  (p.okrs||[]).forEach(function(o,oi){
+    (o.krs||[]).forEach(function(kr,ki){
+      if(!first) first={kr:kr,oi:oi,ki:ki};
+      if(kr.dq&&!found) found={kr:kr,oi:oi,ki:ki};
     });
   });
   return found||first;
@@ -5506,13 +5530,13 @@ function cxPageCapa(keys){
     let tiles='';
     keys.forEach(function(k,i){
       const p=PRODS[k]; if(p.etapa!==g.k) return;
-      const kr=cxDqKR(p);
+      const dq=cxDqKR(p);
       let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)';
-      if(kr){
-        let pct=0; try{ pct=krPct(kr); }catch(e){ pct=0; }
-        krc=cxProgColor(pct);
-        krv=(kr.real&&kr.real!=='—')?cxEsc(kr.real):'—';
-        krl=cxEsc(kr.lbl||'');
+      if(dq){
+        // Regra corporativa: verde; laranja só quando abaixo do orçado
+        krc=cxKRColor(k,dq.oi,dq.ki);
+        krv=(dq.kr.real&&dq.kr.real!=='—')?cxEsc(dq.kr.real):'—';
+        krl=cxEsc(dq.kr.lbl||'');
       }
       tiles+='<div class="cx-tile" style="border-top-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'
         +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
@@ -5525,6 +5549,129 @@ function cxPageCapa(keys){
   });
 
   return h;
+}
+
+// ── Regra corporativa de cores: barras sempre verdes; laranja só quando negativo (abaixo do orçado) ──
+const CX_GR='#006B3F', CX_OR='#FF8B22';
+// Estado do KR: 'pos' (verde) · 'neg' (laranja, abaixo do orçado) · 'neu' (cinza, ainda não medido)
+function cxKRState(key,oi,ki){
+  const kd=(KR_DATA[key]&&KR_DATA[key][oi]&&KR_DATA[key][oi][ki])?KR_DATA[key][oi][ki]:null;
+  if(!kd||!kd.r) return 'neu';
+  // 1º: mês mais recente com realizado E orçado → compara
+  for(let mi=Math.min(CUR_M,11);mi>=0;mi--){
+    if(kd.r[mi]!=null&&kd.o&&kd.o[mi]!=null) return kd.r[mi]<kd.o[mi]?'neg':'pos';
+  }
+  // 2º: tem realizado mas nada p/ comparar → positivo; sem medição → neutro
+  for(let mi=Math.min(CUR_M,11);mi>=0;mi--){ if(kd.r[mi]!=null) return 'pos'; }
+  return 'neu';
+}
+function cxKRColor(key,oi,ki){
+  const st=cxKRState(key,oi,ki);
+  return st==='neg'?'var(--o)':st==='pos'?'var(--gm)':'var(--t3)';
+}
+
+// ── Gráfico mensal do KR (Realizado/Orçado/Projetado/Meta) em SVG — espelha buildBarChart da aba Evolução ──
+function cxFmtN(v){ return (Math.round(v*10)/10).toString().replace('.',','); }
+function cxKRChartSVG(key,oi,ki,kr){
+  const kd=(KR_DATA[key]&&KR_DATA[key][oi]&&KR_DATA[key][oi][ki])?KR_DATA[key][oi][ki]:null;
+  if(!kd) return '';
+  const unit=krUnit(kr)||'%';
+  const metaN=krNum(kr.meta);
+  const rD=[],oD=[],pD=[];
+  for(let mi=0;mi<12;mi++){
+    rD.push(mi<=CUR_M&&kd.r&&kd.r[mi]!=null?kd.r[mi]:null);
+    oD.push(kd.o&&kd.o[mi]!=null?kd.o[mi]:null);
+    pD.push(mi>=CUR_M&&kd.p&&kd.p[mi]!=null?kd.p[mi]:null);
+  }
+  let max=(metaN!=null?metaN:0), has=false;
+  [rD,oD,pD].forEach(function(a){a.forEach(function(v){if(v!=null){has=true;if(v>max)max=v;}});});
+  if(!has||max<=0) return '';
+  max=max*1.15; // folga p/ rótulos acima das barras
+  const W=560,H=300,T=30,B=28,L=4,Rr=4;
+  const ch=H-T-B, cw=W-L-Rr, slot=cw/12;
+  const yv=function(v){return T+ch-(v/max)*ch;};
+  const bw=slot*0.36, gp=slot*0.06;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;margin-top:6px">';
+  s+='<line x1="'+L+'" y1="'+(T+ch)+'" x2="'+(W-Rr)+'" y2="'+(T+ch)+'" stroke="#e2e8f0" stroke-width="1"/>';
+  if(metaN!=null&&metaN>0){
+    s+='<line x1="'+L+'" y1="'+yv(metaN).toFixed(1)+'" x2="'+(W-Rr)+'" y2="'+yv(metaN).toFixed(1)+'" stroke="#cbd5e1" stroke-width="1.2" stroke-dasharray="4 3" data-tip="Meta: '+cxFmtN(metaN)+unit+'"/>';
+  }
+  for(let mi=0;mi<12;mi++){
+    const cx0=L+mi*slot+slot/2;
+    if(oD[mi]!=null&&oD[mi]>0){
+      s+='<rect x="'+(cx0+gp/2).toFixed(1)+'" y="'+yv(oD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(oD[mi])).toFixed(1)+'" rx="2" fill="'+CX_GR+'30" stroke="'+CX_GR+'66" stroke-width="1" data-tip="'+MONTHS[mi]+' · Orçado: '+cxFmtN(oD[mi])+unit+'"/>';
+    }
+    if(rD[mi]!=null){
+      // Regra corporativa: barra verde; laranja só quando abaixo do orçado do mês
+      const bc=(oD[mi]!=null&&rD[mi]<oD[mi])?CX_OR:CX_GR;
+      if(rD[mi]>0){
+        s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+yv(rD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(rD[mi])).toFixed(1)+'" rx="2" fill="'+bc+(mi===CUR_M?'':'aa')+'" stroke="'+bc+'" stroke-width="1" data-tip="'+MONTHS[mi]+' · Realizado: '+cxFmtN(rD[mi])+unit+(oD[mi]!=null?' (orçado '+cxFmtN(oD[mi])+unit+')':'')+'"/>';
+      }
+      s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
+    }
+    s+='<text x="'+cx0.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(mi===CUR_M?'#F58220':'#94a3b8')+'" font-family="Plus Jakarta Sans,sans-serif">'+MONTHS[mi]+'</text>';
+  }
+  // Projetado: linha tracejada roxa com pontos e rótulos (spanGaps)
+  const pts=[];
+  for(let mi=0;mi<12;mi++){ if(pD[mi]!=null) pts.push({x:L+mi*slot+slot/2,y:yv(pD[mi]),v:pD[mi],m:MONTHS[mi]}); }
+  if(pts.length){
+    let pl='';
+    pts.forEach(function(pt){ pl+=(pl?' ':'')+pt.x.toFixed(1)+','+pt.y.toFixed(1); });
+    if(pts.length>1) s+='<polyline points="'+pl+'" fill="none" stroke="#793F98" stroke-width="2" stroke-dasharray="6 4"/>';
+    pts.forEach(function(pt){
+      s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="3" fill="#793F98"/>';
+      s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="9" fill="transparent" data-tip="'+pt.m+' · Projetado: '+cxFmtN(pt.v)+unit+'"/>';
+      s+='<text x="'+pt.x.toFixed(1)+'" y="'+(pt.y-6).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#793F98" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(pt.v)+unit+'</text>';
+    });
+  }
+  s+='</svg>';
+  return s;
+}
+
+// ── Navegação do carrossel de KRs na página do produto (bolinhas) ──
+function cxKRSet(k,i){
+  const car=document.getElementById('cxkr-'+k); if(!car) return;
+  const n=parseInt(car.dataset.n||'1',10);
+  if(i<0||i>=n) return;
+  car.dataset.i=i;
+  car.querySelectorAll('.cx-krsl').forEach(function(sl,j){ sl.classList.toggle('on',j===i); });
+  car.querySelectorAll('.cx-krdot').forEach(function(d,j){ d.classList.toggle('on',j===i); });
+}
+// Tooltip dos gráficos do Modo Apresentação (elementos com data-tip)
+let cxTipEl=null;
+function cxTipInit(){
+  if(cxTipEl) return;
+  cxTipEl=document.createElement('div');
+  cxTipEl.className='cx-tipbox';
+  document.body.appendChild(cxTipEl);
+  document.addEventListener('mousemove',function(ev){
+    let el=null;
+    try{ el=(ev.target&&ev.target.closest)?ev.target.closest('[data-tip]'):null; }catch(e){ el=null; }
+    if(el){
+      cxTipEl.textContent=el.getAttribute('data-tip');
+      cxTipEl.style.display='block';
+      let x=ev.clientX+14, y=ev.clientY-34;
+      if(x+190>window.innerWidth) x=ev.clientX-200;
+      if(y<4) y=ev.clientY+18;
+      cxTipEl.style.left=x+'px'; cxTipEl.style.top=y+'px';
+    } else {
+      cxTipEl.style.display='none';
+    }
+  });
+}
+if(document.body){ cxTipInit(); } else { document.addEventListener('DOMContentLoaded',cxTipInit); }
+
+// Clique invisível nas laterais do card: terço esquerdo volta, terço direito avança
+function cxKRZone(ev,k){
+  if(ev.target.closest&&ev.target.closest('.cx-krdot')) return;
+  const car=document.getElementById('cxkr-'+k); if(!car) return;
+  const n=parseInt(car.dataset.n||'1',10); if(n<2) return;
+  const r=car.getBoundingClientRect();
+  const x=(ev.clientX-r.left)/r.width;
+  let dir=0;
+  if(x<0.34) dir=-1; else if(x>0.66) dir=1; else return;
+  const i=parseInt(car.dataset.i||'0',10);
+  cxKRSet(k,(i+dir+n)%n);
 }
 
 // ── Uma página por produto ──
@@ -5559,8 +5706,8 @@ function cxPageProduto(k){
   }
   let h='<div class="cx-phd" style="border-left-color:'+cxEtColor(p.etapa)+'">'
     +'<div style="min-width:0;flex:1">'
-    +'<div class="cx-phd-nm">'+cxEsc(p.nm)+' '+cxStPill(p.status)
-    +'<span class="cx-tag" style="background:'+cxEtColor(p.etapa)+';color:#fff">'+cxEsc(ET_LABEL[p.etapa]||'')+'</span></div>'
+    +'<div class="cx-phd-nm">'+cxEsc(p.nm)
+    +' <span class="cx-tag" style="background:'+cxEtColor(p.etapa)+';color:#fff">'+cxEsc(ET_LABEL[p.etapa]||'')+'</span></div>'
     +'<div class="cx-phd-meta">PO: '+cxEsc(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+'</div>'
     +(p.desc?'<div class="cx-phd-desc">'+cxEsc(p.desc)+'</div>':'')
     +'</div>'
@@ -5569,31 +5716,69 @@ function cxPageProduto(k){
     +'</div>';
 
   // coluna esquerda: OKRs · coluna direita: roadmap do tri + riscos
-  let okrh='';
-  (p.okrs||[]).forEach(function(o){
-    const krs=o.krs||[];
-    okrh+='<div class="cx-obj" style="font-size:12px;padding-top:10px">🎯 '+cxEsc(o.ttl)+'</div>';
-    if(!krs.length){ okrh+='<div style="font-size:13px;color:var(--t3);padding:4px 0">Sem KRs cadastrados.</div>'; return; }
-    krs.forEach(function(kr){
+  // ── Card de OKRs em carrossel: abre no KR destaque (★), setas navegam pelos demais ──
+  const slides=[];
+  let dqIdx=-1;
+  (p.okrs||[]).forEach(function(o,oi){
+    (o.krs||[]).forEach(function(kr,ki){
+      if(kr.dq&&dqIdx<0) dqIdx=slides.length;
+      slides.push({obj:o.ttl,oi:oi,kr:kr,ki:ki});
+    });
+  });
+  if(dqIdx>0){ slides.unshift(slides.splice(dqIdx,1)[0]); }
+  let okrh='', hasChart=false;
+  if(!slides.length){
+    okrh='<div style="font-size:13px;color:var(--t3)">Sem OKRs cadastrados para este produto.</div>';
+  } else {
+    let sh='';
+    slides.forEach(function(s,si){
+      const kr=s.kr;
       let pct=0; try{ pct=krPct(kr); }catch(e){ pct=0; }
-      const dc=cxProgColor(pct);
+      // Regra corporativa: número verde; laranja só quando abaixo do orçado
+      const dc=cxKRColor(k,s.oi,s.ki);
       const meta=(kr.meta&&kr.meta!=='—')?kr.meta:null;
       const real=(kr.real&&kr.real!=='—')?kr.real:null;
       let val='';
       if(real&&meta) val=cxEsc(real)+' <span style="color:var(--t3);font-weight:400">/ meta '+cxEsc(meta)+'</span>';
       else if(real) val=cxEsc(real);
       else if(meta) val='<span style="color:var(--t3);font-weight:400">meta '+cxEsc(meta)+'</span>';
-      okrh+='<div style="padding:7px 0;border-bottom:1px solid var(--bg)">'
-        +'<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline">'
-        +'<div style="font-size:13.5px;color:var(--tx);line-height:1.4">'+cxEsc(kr.lbl)+'</div>'
-        +'<div style="font-size:13px;font-weight:800;color:'+dc+';white-space:nowrap">'+pct+'%</div>'
+      let chart='';
+      try{ chart=cxKRChartSVG(k,s.oi,s.ki,kr); }catch(e){ chart=''; }
+      if(chart) hasChart=true;
+      sh+='<div class="cx-krsl'+(si===0?' on':'')+'">'
+        // Objetivo: rótulo pequeno em caixa alta — o protagonismo fica com o gráfico
+        +'<div style="font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);line-height:1.5">🎯 '+cxEsc(s.obj)+'</div>'
+        +'<div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin:7px 0 4px">'
+        +'<div style="min-width:0">'
+        +'<div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.35">'+(kr.dq?'<span style="color:var(--a4)">★</span> ':'')+cxEsc(kr.lbl)+'</div>'
+        +(val?'<div style="font-size:11.5px;font-weight:700;color:var(--t2);margin-top:3px">'+val+'</div>':'')
         +'</div>'
-        +(val?'<div style="font-size:12px;font-weight:700;color:var(--t2);margin:3px 0 5px">'+val+'</div>':'')
-        +'<div class="cx-bar" style="height:7px;margin-top:4px"><i style="width:'+pct+'%;background:'+dc+'"></i></div>'
+        +'<div style="font-size:27px;font-weight:800;color:'+dc+';line-height:1;white-space:nowrap;letter-spacing:-.5px">'+pct+'%</div>'
+        +'</div>'
+        +(chart?chart:'<div class="cx-bar" style="height:7px;margin-top:8px"><i style="width:'+pct+'%;background:'+dc+'"></i></div>')
         +'</div>';
     });
-  });
-  if(!okrh) okrh='<div style="font-size:13px;color:var(--t3)">Sem OKRs cadastrados para este produto.</div>';
+    // Legenda abaixo do gráfico; navegação por bolinhas discretas embaixo
+    const legend=hasChart
+      ?'<div class="cx-krleg">'
+        +'<span style="color:var(--g)">▮ Realizado</span>'
+        +'<span style="color:var(--g);opacity:.5">▮ Orçado</span>'
+        +'<span style="color:#793F98">◌ Projetado</span>'
+        +'<span>┄ Meta</span>'
+        +'</div>'
+      :'';
+    let dots='';
+    if(slides.length>1){
+      dots='<div class="cx-krdots">';
+      slides.forEach(function(s,si){
+        dots+='<button class="cx-krdot'+(si===0?' on':'')+'" onclick="cxKRSet(\''+k+'\','+si+')" title="KR '+(si+1)+' de '+slides.length+'"></button>';
+      });
+      dots+='</div>';
+    }
+    okrh='<div id="cxkr-'+k+'" data-n="'+slides.length+'" data-i="0" onclick="cxKRZone(event,\''+k+'\')">'
+      +sh+legend+dots+'</div>';
+  }
+
 
   let rdh='';
   if(rdItems.length){
@@ -5651,7 +5836,7 @@ function cxPageProduto(k){
   }
 
   h+='<div class="cx-cols3">'
-    +'<div class="cx-card"><div class="cx-card-t">📈 OKRs & Key Results</div>'+okrh+'</div>'
+    +'<div class="cx-card"><div class="cx-card-t">📈 OKRs</div>'+okrh+'</div>'
     +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
     +'<div class="cx-card"><div class="cx-card-t">📅 Roadmap · '+qp.q+'T26</div>'+rdh+'</div>'
     +'</div>';
