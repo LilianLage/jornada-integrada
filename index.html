@@ -534,6 +534,13 @@ button,input,select,textarea{font-family:inherit;}
 
 /* ─── VERTICAL ETAPA GROUPING ─── */
 .port-etapa-group{margin-bottom:0;}
+.port-resp-hd{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:20px 0 8px;padding-bottom:5px;border-bottom:2px solid;}
+.port-resp-hd:first-child{margin-top:2px;}
+.port-resp-t{font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+.port-resp-sub{font-size:10px;font-weight:500;color:var(--t3);}
+.cx-resp-hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:26px;padding-bottom:7px;border-bottom:2.5px solid;}
+.cx-resp-t{font-size:16px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;}
+.cx-resp-sub{font-size:11.5px;font-weight:500;color:var(--t3);}
 .port-etapa-row{display:flex;align-items:stretch;margin-bottom:1px;}
 .port-etapa-bar{
   width:32px;flex-shrink:0;
@@ -1022,11 +1029,12 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       </div>
       <div class="msdd" id="msdd-kb-fase">
         <button class="msdd-btn" type="button" onclick="msddOpen('kb-fase', event)">
-          <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+          <span class="msdd-lbl">Gestão</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
         </button>
         <div class="msdd-panel">
-          <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('kb-fase')">JIP · Fase 1</label>
-          <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('kb-fase')">JIP · Gestão</label>
+          <label class="msdd-opt"><input type="checkbox" value="dir" data-lbl="Gestão direta" onchange="msddChange('kb-fase')">Gestão direta</label>
+          <label class="msdd-opt"><input type="checkbox" value="comp" data-lbl="Gestão compartilhada" onchange="msddChange('kb-fase')">Gestão compartilhada</label>
+          <label class="msdd-opt"><input type="checkbox" value="mon" data-lbl="Monitoramento estratégico" onchange="msddChange('kb-fase')">Monitoramento estratégico</label>
           <button type="button" class="msdd-clr" onclick="msddClear('kb-fase', event)">Limpar</button>
         </div>
       </div>
@@ -1136,11 +1144,12 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 
     <div class="msdd" id="msdd-port-fase">
       <button class="msdd-btn" type="button" onclick="msddOpen('port-fase', event)">
-        <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+        <span class="msdd-lbl">Gestão</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
       </button>
       <div class="msdd-panel">
-        <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('port-fase')">JIP · Fase 1</label>
-        <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('port-fase')">JIP · Gestão</label>
+        <label class="msdd-opt"><input type="checkbox" value="dir" data-lbl="Gestão direta" onchange="msddChange('port-fase')">Gestão direta</label>
+          <label class="msdd-opt"><input type="checkbox" value="comp" data-lbl="Gestão compartilhada" onchange="msddChange('port-fase')">Gestão compartilhada</label>
+        <label class="msdd-opt"><input type="checkbox" value="mon" data-lbl="Monitoramento estratégico" onchange="msddChange('port-fase')">Monitoramento estratégico</label>
         <button type="button" class="msdd-clr" onclick="msddClear('port-fase', event)">Limpar</button>
       </div>
     </div>
@@ -1295,11 +1304,12 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       </div>
       <div class="msdd" id="msdd-rd-fase">
         <button class="msdd-btn" type="button" onclick="msddOpen('rd-fase', event)">
-          <span class="msdd-lbl">Fase</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+          <span class="msdd-lbl">Gestão</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
         </button>
         <div class="msdd-panel">
-          <label class="msdd-opt"><input type="checkbox" value="f1" data-lbl="JIP · Fase 1" onchange="msddChange('rd-fase')">JIP · Fase 1</label>
-          <label class="msdd-opt"><input type="checkbox" value="gestao" data-lbl="JIP · Gestão" onchange="msddChange('rd-fase')">JIP · Gestão</label>
+          <label class="msdd-opt"><input type="checkbox" value="dir" data-lbl="Gestão direta" onchange="msddChange('rd-fase')">Gestão direta</label>
+          <label class="msdd-opt"><input type="checkbox" value="comp" data-lbl="Gestão compartilhada" onchange="msddChange('rd-fase')">Gestão compartilhada</label>
+          <label class="msdd-opt"><input type="checkbox" value="mon" data-lbl="Monitoramento estratégico" onchange="msddChange('rd-fase')">Monitoramento estratégico</label>
           <button type="button" class="msdd-clr" onclick="msddClear('rd-fase', event)">Limpar</button>
         </div>
       </div>
@@ -1459,6 +1469,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <input type="checkbox" id="ep-cxshow" checked style="width:16px;height:16px;accent-color:var(--g);margin:0;flex-shrink:0">
         <label for="ep-cxshow" style="margin:0;cursor:pointer">Exibir no Modo Apresentação — desmarcado, o produto sai da Visão Geral, da faixa do topo e não tem página própria</label>
       </div>
+      <div class="fg"><label>Nível de responsabilidade · define agrupamento e profundidade do card</label>
+        <select id="ep-resp" style="width:100%;border:1px solid var(--bd);border-radius:6px;padding:7px 9px;font-size:12px;outline:none;font-family:inherit">
+          <option value="dir">Gestão direta</option>
+          <option value="comp">Gestão compartilhada</option>
+          <option value="mon">Monitoramento estratégico</option>
+        </select>
+      </div>
       <div class="edit-sec-hd"><span>🎯 Objetivos e KRs</span><button class="btn-sm" onclick="addOKR()">+ OKR</button></div>
       <div id="ep-okrs"></div>
       <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
@@ -1508,7 +1525,7 @@ const PRODS = {
     rd:{done:['Rollout MO/Fôrma 100% · Calculadora ECO-FIN'],doing:['Simulador VPL · Integração Project'],todo:['Integr. Nexus · MRV Terrenos · RCCP (3T26)']}
   },
   nexus: {
-    nm:'Nexus + GCron', etapa:'est', gestor:'m', po:'Athaenar · Vivian', status:'sv', pot:'Habilitador',
+    nm:'Nexus + GCron', etapa:'pre', gestor:'m', po:'Athaenar · Vivian', status:'sv', pot:'Habilitador',
     pot_alav:{},
     desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
     ambicoes:['du','gc'], alavancas:['rccp'],
@@ -1519,7 +1536,7 @@ const PRODS = {
     rd:{done:['Nova versão PRD 18/05 · Dimensões Produtos'],doing:['Melhorias GCron · Parede Modular'],todo:['Machine Learning (3T26)']}
   },
   simurb: {
-    nm:'SIMURB', etapa:'est', gestor:'m', po:'Brenda', status:'sv', pot:'Habilitador',
+    nm:'SIMURB', etapa:'pre', gestor:'m', po:'Brenda', status:'sv', pot:'Habilitador',
     pot_alav:{},
     desc:'Ferramenta de orçamentação e simulação de viabilidade. GCron gera cronograma automaticamente.',
     ambicoes:['du','gc'], alavancas:['rccp'],
@@ -1574,6 +1591,46 @@ const PRODS = {
     okrs:[{ttl:'A definir com a PO',
            krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
     rd:{done:[],doing:[],todo:['Definição de escopo (2T26)']}
+  },
+  radar: {
+    nm:'Radar', etapa:'pre', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Radar. Produto de outra área acompanhado por monitoramento estratégico.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a área dona',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
+  },
+  usinaconcreto: {
+    nm:'Usina de Concreto', etapa:'obra', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Usina de Concreto. Produto de outra área acompanhado por monitoramento estratégico.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a área dona',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
+  },
+  fabricakits: {
+    nm:'Fábrica de Kits', etapa:'obra', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Fábrica de Kits. Produto de outra área acompanhado por monitoramento estratégico.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a área dona',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
+  },
+  hubformas: {
+    nm:'HUB de Formas', etapa:'pre', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'HUB de Formas. Produto de outra área acompanhado por monitoramento estratégico.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a área dona',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
   },
   comex: {
     nm:'Comex', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
@@ -1705,6 +1762,25 @@ const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
 // Fonte única da verdade. Referenciada por Mapa, Portfólio, Roadmap e Evolução de KRs.
 // Não persiste no Firebase (é constante de código) — sobrevive a edições de produto.
 const FASE_LABEL = {f1:'JIP · Fase 1', gestao:'JIP · Gestão'};
+
+// ── Nível de responsabilidade — estratégia PI | PPP | Sistemas e Plataformas ──
+const RESP_LABEL = {dir:'Gestão direta', comp:'Gestão compartilhada', mon:'Monitoramento estratégico'};
+const RESP_DESC  = {
+  dir:'A área responde por produto, roadmap, backlog, indicadores e evolução',
+  comp:'Responsabilidade cruzada, priorização conjunta e dependências relevantes',
+  mon:'Projetos de outras áreas que impactam o ecossistema digital da Produção'
+};
+const RESP_ORDER = ['dir','comp','mon'];
+const RESP_COL   = {dir:'var(--g)', comp:'#0369a1', mon:'#64748b'};
+// Defaults conforme o mapa da estratégia; ajustável por produto no ✏️ Editar (campo resp)
+const RESP_DEFAULT = {
+  sincroniza:'dir', compilador:'dir', lego:'dir', ecopam:'dir', novaeap:'dir',
+  compras360:'dir', obra360:'dir', prateleira:'dir', smp:'dir', ze:'dir', daeans:'dir',
+  mdm:'comp', nexus:'comp', simurb:'comp',
+  inbound:'mon', comex:'mon', cd:'mon', reformatrib:'mon',
+  radar:'mon', usinaconcreto:'mon', fabricakits:'mon', hubformas:'mon'
+};
+function prodResp(key){ const p=PRODS[key]; return (p&&p.resp)||RESP_DEFAULT[key]||'dir'; }
 const FASE = {
   f1:     new Set(['sincroniza','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans']),
   gestao: new Set(['nexus','simurb','compras360','inbound','comex','cd','reformatrib']),
@@ -2063,7 +2139,7 @@ function applyKbFilters(){
     const g=(c.dataset.g||'');
     const gMatch = gSel.size===0 || [...gSel].some(x=>g.includes(x));
     const sMatch = sSel.size===0 || sSel.has(pcStatus(c));
-    const fMatch = fSel.size===0 || fSel.has(faseOf(pcKey(c)));
+    const fMatch = fSel.size===0 || fSel.has(prodResp(pcKey(c)));
     c.classList.toggle('kb-hidden', !(gMatch && sMatch && fMatch));
   });
   // hide/show empty columns and update counts
@@ -2145,8 +2221,17 @@ function buildPort(){
     {key:'obra',label:'Obra',       col:'var(--obra)'},
   ];
 
+  // Agrupador primário: nível de responsabilidade (estratégia da área); etapa vira o agrupador interno
+  RESP_ORDER.forEach(respKey=>{
+    const hasAny=Object.keys(PRODS).some(kk=>prodResp(kk)===respKey);
+    if(!hasAny) return;
+    grid.innerHTML+=`
+      <div class="port-resp-hd" style="border-color:${RESP_COL[respKey]}">
+        <span class="port-resp-t" style="color:${RESP_COL[respKey]}">${RESP_LABEL[respKey]}</span>
+      </div>`;
+
   etapaGroups.forEach(({key:etapaKey, label:etapaLabel, col:etapaCol})=>{
-    const prods=Object.entries(PRODS).filter(([,p])=>p.etapa===etapaKey);
+    const prods=Object.entries(PRODS).filter(([kk,p])=>p.etapa===etapaKey && prodResp(kk)===respKey);
     if(!prods.length)return;
 
     // Build all product cards for this group
@@ -2235,7 +2320,7 @@ function buildPort(){
       }).join('');
 
       return `
-      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}" data-fase="${faseOf(key)}">
+      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}" data-fase="${prodResp(key)}">
         <div class="port-hd" onclick="togglePort('pb-${key}','arr-${key}')">
           <div class="phd-cell">
             <div class="phd-nm">${p.nm}</div>
@@ -2300,7 +2385,7 @@ function buildPort(){
 
     // Wrap with vertical etapa label
     grid.innerHTML+=`
-      <div class="port-etapa-group" id="peg-${etapaKey}">
+      <div class="port-etapa-group peg-et-${etapaKey}">
         <div class="port-etapa-row">
           <div class="port-etapa-bar ${etapaKey}">
             <span class="port-etapa-label">${etapaLabel}</span>
@@ -2311,6 +2396,7 @@ function buildPort(){
         </div>
       </div>`;
   });
+  }); // fim RESP_ORDER
 
   // Pós-Obra placeholder
   grid.innerHTML+=`
@@ -2388,13 +2474,27 @@ function applyPortFilt() {
     const fOk = fSel.size === 0 || fSel.has(f);
     c.style.display = (gOk && sOk && eOk && fOk) ? '' : 'none';
   });
-  // Hide entire etapa group if all its cards are hidden
-  ['est','pre','obra','pos'].forEach(ek => {
-    const grp = document.getElementById('peg-' + ek);
-    if (!grp) return;
-    const cards = grp.querySelectorAll('.port-card');
-    const allHidden = cards.length > 0 && [...cards].every(c => c.style.display === 'none');
-    grp.style.display = allHidden ? 'none' : '';
+  // Hide each etapa group whose cards are all hidden (agora pode haver um por nível de responsabilidade)
+  ['est','pre','obra'].forEach(ek => {
+    document.querySelectorAll('.peg-et-' + ek).forEach(grp => {
+      const cards = grp.querySelectorAll('.port-card');
+      const allHidden = cards.length > 0 && [...cards].every(c => c.style.display === 'none');
+      grp.style.display = allHidden ? 'none' : '';
+    });
+  });
+  const pos = document.getElementById('peg-pos');
+  if (pos) {
+    const pc = pos.querySelectorAll('.port-card');
+    pos.style.display = (pc.length > 0 && [...pc].every(c => c.style.display === 'none')) ? 'none' : '';
+  }
+  // Esconde o header de responsabilidade se todos os grupos até o próximo header estiverem escondidos
+  document.querySelectorAll('.port-resp-hd').forEach(hd => {
+    let el = hd.nextElementSibling, anyVisible = false;
+    while (el && !el.classList.contains('port-resp-hd')) {
+      if (el.classList.contains('port-etapa-group') && el.style.display !== 'none' && !el.id) anyVisible = true;
+      el = el.nextElementSibling;
+    }
+    hd.style.display = anyVisible ? '' : 'none';
   });
   updateEtapaCounts();
 }
@@ -2590,6 +2690,7 @@ function openEdit(key){
   setTimeout(() => applyAutoStatus(key), 50);
   document.getElementById('ep-desc').value=p.desc;
   const _cxs=document.getElementById('ep-cxshow'); if(_cxs) _cxs.checked=!p.cx_hide;
+  const _rsp=document.getElementById('ep-resp'); if(_rsp) _rsp.value=prodResp(key);
   const _m=prodMidiaSrc(key);
   if(_m&&String(_m).indexOf('data:image')===0){ epMidiaData=_m; document.getElementById('ep-midia').value=''; }
   else { epMidiaData=null; document.getElementById('ep-midia').value=_m||''; }
@@ -2784,6 +2885,7 @@ async function saveEdit(){
   p.status = calcAutoStatus(editKey);
   p.desc=document.getElementById('ep-desc').value;
   const _cxs=document.getElementById('ep-cxshow'); if(_cxs) p.cx_hide=!_cxs.checked;
+  const _rsp=document.getElementById('ep-resp'); if(_rsp) p.resp=_rsp.value;
   // Mídia: imagem carregada vai para a coleção produto_midia (aguarda e avisa se falhar)
   const _midiaUrl=document.getElementById('ep-midia').value.trim();
   if(epMidiaData){
@@ -3174,7 +3276,7 @@ let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set(), fase:new 
 // Helpers de visibilidade (filtros multisseleção; Set vazio = sem filtro)
 function rdEtapaHidden(et){ const s = rdFiltState.etapa; return s.size > 0 && !s.has(et); }
 function rdGestorHidden(g){ const s = rdFiltState.gestor; if (s.size === 0) return false; if (g === 'lm') return false; return !s.has(g); }
-function rdFaseHidden(key){ const s = rdFiltState.fase; return s.size > 0 && !s.has(faseOf(key)); }
+function rdFaseHidden(key){ const s = rdFiltState.fase; return s.size > 0 && !s.has(prodResp(key)); }
 
 // aplica seleção dos dropdowns ao estado e re-renderiza a view ativa (matriz/gantt)
 function rdApplyFilters(){
@@ -3531,15 +3633,13 @@ function renderRdmap() {
   }
 
   let tbodyHtml = '';
+  // Agrupador primário: nível de gestão (estratégia da área); etapa como agrupador interno
+  RESP_ORDER.forEach(rk => {
+    let respBody = '';
   etapaGroups.forEach(({key:etapa, label, col}) => {
     if (rdEtapaHidden(etapa)) return;
-    if (etapa==='pos') {
-      tbodyHtml += `<tr><td colspan="15" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
-        <b style="color:${col}">Pós-Obra</b> &nbsp;🚧 Em mapeamento
-      </td></tr>`;
-      return;
-    }
-    const allProds = Object.entries(PRODS).filter(([,p])=>p.etapa===etapa);
+    if (etapa==='pos') return; // placeholder emitido uma vez, ao final
+    const allProds = Object.entries(PRODS).filter(([kk,p])=>p.etapa===etapa && prodResp(kk)===rk);
     if (!allProds.length) return;
     const visProds = allProds.filter(([k,p])=>isVisible(p,k));
     if (!visProds.length) return;
@@ -3558,7 +3658,7 @@ function renderRdmap() {
           </div>
         </td>` : '';
       first = false;
-      tbodyHtml += `<tr class="rdmap-prod-row" id="rdr-${key}">
+      respBody += `<tr class="rdmap-prod-row" id="rdr-${key}">
         ${etapaCell}
         <td class="rdmap-prod-name" style="border-left:none">
           <div style="font-size:11px;font-weight:800;margin-bottom:3px">${p.nm}</div>
@@ -3569,6 +3669,13 @@ function renderRdmap() {
       </tr>`;
     });
   });
+    if (respBody) {
+      tbodyHtml += `<tr><td colspan="15" style="padding:9px 16px;background:var(--wh);border-bottom:2px solid ${RESP_COL[rk]};font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:${RESP_COL[rk]}">${RESP_LABEL[rk]}</td></tr>` + respBody;
+    }
+  });
+  tbodyHtml += `<tr><td colspan="15" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
+        <b style="color:var(--pos)">Pós-Obra</b> &nbsp;🚧 Em mapeamento
+      </td></tr>`;
 
   wrap.innerHTML = `<div style="overflow-x:auto;border-radius:var(--r);border:1.5px solid var(--bd);background:var(--wh)">
     <table class="rdmap-tbl">
@@ -3655,12 +3762,15 @@ function buildRdmapGantt(){
   h+='</div>';
   const groups=[{k:'est',l:'Estratégia',c:'var(--est)'},{k:'pre',l:'Pré-Obra',c:'var(--pre)'},{k:'obra',l:'Obra',c:'var(--obra)'}];
   let any=false;
+  // Agrupador primário: nível de gestão (estratégia da área); etapa como agrupador interno
+  RESP_ORDER.forEach(rk=>{
+    let respRows='';
   groups.forEach(g=>{
     if(rdEtapaHidden(g.k)) return;
-    const prods=Object.entries(PRODS).filter(([k,p])=>p.etapa===g.k && rdGanttVisible(k,p));
+    const prods=Object.entries(PRODS).filter(([k,p])=>p.etapa===g.k && prodResp(k)===rk && rdGanttVisible(k,p));
     if(!prods.length) return;
     any=true;
-    h+='<div class="gnt-row" style="grid-template-columns:'+tpl+'"><div class="gnt-grp" style="color:'+g.c+';border-left:4px solid '+g.c+'">'+g.l+'</div></div>';
+    respRows+='<div class="gnt-row" style="grid-template-columns:'+tpl+'"><div class="gnt-grp" style="color:'+g.c+';border-left:4px solid '+g.c+'">'+g.l+'</div></div>';
     prods.forEach(([key,p])=>{
       const rd=RDMAP[key]||{};
       // coleta entregas de todas as chaves do produto + calcula span em colunas
@@ -3679,19 +3789,23 @@ function buildRdmapGantt(){
       items.forEach(it=>{ let pl=false; for(let l=0;l<lanes.length;l++){ if(lanes[l]<it.sc){ it.lane=l; lanes[l]=it.ec; pl=true; break; } } if(!pl){ it.lane=lanes.length; lanes.push(it.ec); } });
       const nL=Math.max(1,lanes.length);
       const pctc=total?Math.round(done/total*100):0;
-      h+='<div class="gnt-row gnt-prow" style="grid-template-columns:'+tpl+';grid-template-rows:repeat('+nL+',minmax(30px,auto))">';
-      h+='<div class="gnt-name" style="grid-row:1/'+(nL+1)+'"><div class="gnt-pnm">'+p.nm+'</div>'
+      respRows+='<div class="gnt-row gnt-prow" style="grid-template-columns:'+tpl+';grid-template-rows:repeat('+nL+',minmax(30px,auto))">';
+      respRows+='<div class="gnt-name" style="grid-row:1/'+(nL+1)+'"><div class="gnt-pnm">'+p.nm+'</div>'
         +'<div class="gnt-psub">'+(total?('<span class="gnt-prog"><i style="width:'+pctc+'%"></i></span>'+done+'/'+total):'sem entregas')+'</div>'
         +(rdEditMode?'<div class="gnt-add" onclick="addGanttEntrega(\''+key+'\')">+ entrega</div>':'')
         +'</div>';
-      cols.forEach((c,ci)=>{ h+='<div class="gnt-bg'+(c.cur?' cur':'')+'" style="grid-column:'+(ci+2)+';grid-row:1/'+(nL+1)+'"></div>'; });
+      cols.forEach((c,ci)=>{ respRows+='<div class="gnt-bg'+(c.cur?' cur':'')+'" style="grid-column:'+(ci+2)+';grid-row:1/'+(nL+1)+'"></div>'; });
       items.forEach(it=>{
         const tip=it.m.txt.replace(/"/g,'&quot;');
         const oc=rdEditMode?(' onclick="openGanttMarcoEdit(\''+key+'\',\''+it.pk+'\','+it.i+')"'):'';
-        h+='<div class="gnt-bar '+it.m.s+(rdEditMode?' clk':'')+'" style="grid-column:'+(it.sc+2)+'/'+(it.ec+3)+';grid-row:'+(it.lane+1)+'" title="'+tip+'"'+oc+'><span class="gnt-ic">'+icon[it.m.s]+'</span><span class="gnt-tx">'+it.m.txt+'</span></div>';
+        respRows+='<div class="gnt-bar '+it.m.s+(rdEditMode?' clk':'')+'" style="grid-column:'+(it.sc+2)+'/'+(it.ec+3)+';grid-row:'+(it.lane+1)+'" title="'+tip+'"'+oc+'><span class="gnt-ic">'+icon[it.m.s]+'</span><span class="gnt-tx">'+it.m.txt+'</span></div>';
       });
-      h+='</div>';
+      respRows+='</div>';
     });
+  });
+    if(respRows){
+      h+='<div class="gnt-row" style="grid-template-columns:184px 1fr"><div style="grid-column:1/-1;padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:'+RESP_COL[rk]+';border-bottom:2px solid '+RESP_COL[rk]+';background:var(--wh)">'+RESP_LABEL[rk]+'</div></div>'+respRows;
+    }
   });
   if(!any) h+='<div style="padding:24px;text-align:center;color:var(--t3);font-size:11px">Nenhum produto.</div>';
   h+='</div></div>';
@@ -4276,18 +4390,14 @@ function buildOKRev() {
   okrevBuilt = true;
   const chips = document.getElementById('okrev-prod-chips');
 
-  // Agrupa por FASE, mantendo a ordem original de PRODS dentro de cada grupo
-  const groups = [
-    {fase:'f1',     label:FASE_LABEL.f1},
-    {fase:'gestao', label:FASE_LABEL.gestao},
-  ];
-  groups.forEach(({fase, label}) => {
-    const entries = Object.entries(PRODS).filter(([key]) => faseOf(key) === fase);
+  // Agrupa por nível de gestão (estratégia da área), mantendo a ordem original de PRODS dentro de cada grupo
+  RESP_ORDER.forEach(rk => {
+    const entries = Object.entries(PRODS).filter(([key]) => prodResp(key) === rk);
     if (!entries.length) return;
     const hd = document.createElement('div');
     hd.className = 'okrev-fase-hd';
-    hd.textContent = label;
-    hd.style.cssText = 'padding:6px 12px;background:var(--gyb);color:var(--t3);font-size:8px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;position:sticky;top:0;z-index:1';
+    hd.textContent = RESP_LABEL[rk];
+    hd.style.cssText = 'padding:6px 12px;background:var(--gyb);font-size:8px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;position:sticky;top:0;z-index:1;color:'+RESP_COL[rk];
     chips.appendChild(hd);
     entries.forEach(([key, p]) => {
       const item = document.createElement('div');
@@ -4930,6 +5040,11 @@ function fbSaveRdmap(key) {
 // load, troca "DAEane" → "Daeane" em PRODS/RDMAP e re-salva só os docs alterados.
 function _fixDae(s){ return (typeof s === 'string' && s.indexOf('DAEane') >= 0) ? s.split('DAEane').join('Daeane') : s; }
 function fixLegacyNames(){
+  // etapa: Nexus e SIMURB migraram de Estratégia para Pré-Obra (corrige docs antigos do Firestore)
+  ['nexus','simurb'].forEach(key => {
+    const p = PRODS[key];
+    if (p && p.etapa === 'est') { p.etapa = 'pre'; _suppressLog = true; fbSaveProd(key); _suppressLog = false; }
+  });
   // produtos
   Object.keys(PRODS).forEach(key => {
     const p = PRODS[key]; if (!p) return;
@@ -5500,6 +5615,7 @@ function cxDqKR(p){
 function cxProdKeys(){
   const order=['est','pre','obra'];
   const keys=[];
+  // Faixa do topo e páginas seguem a jornada: Estratégia → Pré-Obra → Obra
   // Produtos com cx_hide=true ficam fora do Modo Apresentação (Visão Geral, faixa do topo e página própria)
   order.forEach(function(et){
     Object.keys(PRODS).forEach(function(k){ if(PRODS[k].etapa===et&&!PRODS[k].cx_hide) keys.push(k); });
@@ -5524,12 +5640,14 @@ function cxPageCapa(keys){
   let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
     +'<div class="cx-pg-sub">Jornada Integrada da Produção · Plataformas e Sistemas · '+qp.q+'T26</div>';
 
-  // Semáforo em grade — cada tile destaca o resultado do KR marcado como destaque
+  // Semáforo em grade — agrupado por nível de responsabilidade (estratégia da área), etapa como subgrupo
   const groups=[{k:'est',c:'var(--est)'},{k:'pre',c:'var(--pre)'},{k:'obra',c:'var(--obra)'}];
-  groups.forEach(function(g){
-    let tiles='';
-    keys.forEach(function(k,i){
-      const p=PRODS[k]; if(p.etapa!==g.k) return;
+  RESP_ORDER.forEach(function(rk){
+    let sect='';
+    groups.forEach(function(g){
+      let tiles='';
+      keys.forEach(function(k,i){
+        const p=PRODS[k]; if(p.etapa!==g.k||prodResp(k)!==rk) return;
       const dq=cxDqKR(p);
       let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)';
       if(dq){
@@ -5544,8 +5662,14 @@ function cxPageCapa(keys){
         +'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>'
         +'<div class="cx-tile-ft">'+cxStPill(p.status,true)+'</div>'
         +'</div>';
+      });
+      if(tiles) sect+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
     });
-    if(tiles) h+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
+    if(sect){
+      h+='<div class="cx-resp-hd" style="border-color:'+RESP_COL[rk]+'">'
+        +'<span class="cx-resp-t" style="color:'+RESP_COL[rk]+'">'+RESP_LABEL[rk]+'</span>'
+        +'</div>'+sect;
+    }
   });
 
   return h;
@@ -5707,7 +5831,8 @@ function cxPageProduto(k){
   let h='<div class="cx-phd" style="border-left-color:'+cxEtColor(p.etapa)+'">'
     +'<div style="min-width:0;flex:1">'
     +'<div class="cx-phd-nm">'+cxEsc(p.nm)
-    +' <span class="cx-tag" style="background:'+cxEtColor(p.etapa)+';color:#fff">'+cxEsc(ET_LABEL[p.etapa]||'')+'</span></div>'
+    +' <span class="cx-tag" style="background:'+cxEtColor(p.etapa)+';color:#fff">'+cxEsc(ET_LABEL[p.etapa]||'')+'</span>'
+    +(prodResp(k)!=='dir'?' <span class="cx-tag" style="background:#fff;color:'+RESP_COL[prodResp(k)]+';border:1.5px solid '+RESP_COL[prodResp(k)]+'">'+RESP_LABEL[prodResp(k)]+'</span>':'')+'</div>'
     +'<div class="cx-phd-meta">PO: '+cxEsc(p.po||'—')+' · Gestor: '+(CX_G_LBL[p.gestor]||'—')+'</div>'
     +(p.desc?'<div class="cx-phd-desc">'+cxEsc(p.desc)+'</div>':'')
     +'</div>'
@@ -5835,15 +5960,50 @@ function cxPageProduto(k){
     });
   }
 
-  h+='<div class="cx-cols3">'
-    +'<div class="cx-card"><div class="cx-card-t">📈 OKRs</div>'+okrh+'</div>'
-    +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
-    +'<div class="cx-card"><div class="cx-card-t">📅 Roadmap · '+qp.q+'T26</div>'+rdh+'</div>'
-    +'</div>';
-  if(dsh||rsh){
-    h+='<div class="cx-cols2" style="margin-top:16px">'
-      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">⭐ Destaques</div>'+(dsh||'<div style="font-size:13px;color:var(--t3)">Sem destaques registrados pelo time.</div>')+'</div>'
+  // ── Profundidade proporcional ao nível de responsabilidade (estratégia da área) ──
+  const rsp=prodResp(k);
+  if(rsp==='dir'){
+    // Gestão direta: visão completa — OKRs, entregas, roadmap, destaques e riscos
+    h+='<div class="cx-cols3">'
+      +'<div class="cx-card"><div class="cx-card-t">📈 OKRs</div>'+okrh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t">📅 Roadmap · '+qp.q+'T26</div>'+rdh+'</div>'
+      +'</div>';
+    if(dsh||rsh){
+      h+='<div class="cx-cols2" style="margin-top:16px">'
+        +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">⭐ Destaques</div>'+(dsh||'<div style="font-size:13px;color:var(--t3)">Sem destaques registrados pelo time.</div>')+'</div>'
+        +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'+(rsh||'<div style="font-size:13px;color:var(--t3)">Sem riscos registrados pelo time.</div>')+'</div>'
+        +'</div>';
+    }
+  } else if(rsp==='comp'){
+    // Gestão compartilhada: riscos, responsáveis (header), indicadores e evolução — sem backlog/entregas
+    h+='<div class="cx-cols3">'
+      +'<div class="cx-card"><div class="cx-card-t">📈 Indicadores</div>'+okrh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'+(rsh||'<div style="font-size:13px;color:var(--t3)">Sem riscos registrados pelo time.</div>')+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t">📅 Evolução da solução · '+qp.q+'T26</div>'+rdh+'</div>'
+      +'</div>';
+  } else {
+    // Monitoramento estratégico: só grandes marcos e indicador mínimo — card enxuto por desenho, não por falta
+    let monInd='';
+    const dq=cxDqKR(p);
+    if(dq){
+      let mpct=0; try{ mpct=krPct(dq.kr); }catch(e){ mpct=0; }
+      const mdc=cxKRColor(k,dq.oi,dq.ki);
+      let mchart=''; try{ mchart=cxKRChartSVG(k,dq.oi,dq.ki,dq.kr); }catch(e){ mchart=''; }
+      monInd='<div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin:2px 0 4px">'
+        +'<div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.35">'+cxEsc(dq.kr.lbl)+'</div>'
+        +'<div style="font-size:27px;font-weight:800;color:'+mdc+';line-height:1;white-space:nowrap;letter-spacing:-.5px">'+mpct+'%</div>'
+        +'</div>'
+        +(mchart||'');
+    } else {
+      monInd='<div style="font-size:13px;color:var(--t3)">Indicadores mínimos a definir com a área dona.</div>';
+    }
+    h+='<div style="margin:0 0 14px;padding:10px 16px;border-radius:10px;background:#f1f5f9;border:1.5px solid #cbd5e1;font-size:12.5px;font-weight:600;color:#475569">'
+      +'👁 Produto de outra área — a Plataforma acompanha grandes marcos, responsável focal e indicadores mínimos.'
+      +'</div>'
+      +'<div class="cx-cols2">'
+      +'<div class="cx-card"><div class="cx-card-t">🚩 Grandes marcos · '+qp.q+'T26</div>'+rdh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t">📈 Indicador de referência</div>'+monInd+'</div>'
       +'</div>';
   }
   return h;
