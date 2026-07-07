@@ -782,7 +782,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit }
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, orderBy, limit, onSnapshot }
       from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -852,6 +852,8 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         // Reconcile KR_DATA shape with loaded PRODS and rebuild the active tab
         if (typeof window.refreshAfterLoad === 'function') window.refreshAfterLoad();
         else if (typeof buildPort === 'function') buildPort();
+        // Reaplica o resumo MDM se um snapshot chegou antes do load do JIP
+        if (window._mdmResumo && window.aplicarResumoMDM) window.aplicarResumoMDM(window._mdmResumo);
       } catch(e) {
         console.error('Firebase load error:', e);
         if (window.setSyncStatus) window.setSyncStatus('error');
@@ -859,6 +861,29 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     }
 
     window._loadFromFirestore = loadFromFirestore;
+
+    // ── Sincronização MDM → JIP (contrato de resumo) ──
+    // Lê o doc resumo/jip publicado pelo dashboard MDM (projeto dados-mestres)
+    // e aplica em tempo real nos KRs e no roadmap do produto MDM.
+    try {
+      const appMdm = initializeApp({
+        apiKey: "AIzaSyB7URLeOjy1ofQx6TxYp4XbYhbxAxOOwdE",
+        authDomain: "dados-mestres.firebaseapp.com",
+        projectId: "dados-mestres",
+        storageBucket: "dados-mestres.firebasestorage.app",
+        messagingSenderId: "739025205181",
+        appId: "1:739025205181:web:79e344d6e203daa57604d4"
+      }, 'mdm');
+      const dbMdm = getFirestore(appMdm);
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          onSnapshot(doc(dbMdm, 'resumo', 'jip'), (snap) => {
+            if (snap.exists() && window.aplicarResumoMDM) { console.log('[sync MDM] resumo recebido:', snap.data().ts); window.aplicarResumoMDM(snap.data()); }
+            else if (!snap.exists()) console.warn('[sync MDM] doc resumo/jip ainda não existe — abra o dashboard MDM para publicar.');
+          }, (err) => console.warn('MDM sync error:', err));
+        }, 1600); // após o load do próprio JIP (800ms)
+      });
+    } catch(e) { console.warn('MDM sync init error:', e); }
 
     // Wait for DOM + main script to be ready, then load
     window.addEventListener('load', () => {
@@ -5191,6 +5216,11 @@ function prodMidiaSrc(key) {
 
 // Save RDMAP entry for a product
 function fbSaveRdmap(key) {
+  if (key === 'mdm' && window._mdmSyncOn) {
+    alert('O roadmap do MDM é sincronizado automaticamente do dashboard MDM (Dados Mestres). Para alterá-lo, edite o cronograma lá.');
+    if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    return;
+  }
   if (!RDMAP[key]) return;
   fbSave('rdmap', key, JSON.parse(JSON.stringify(RDMAP[key])));
 }
@@ -5394,7 +5424,71 @@ function refreshAfterLoad() {
   else if (id === 'okrev') buildOKRev();
 }
 
+// ═══ Sincronização MDM → JIP (contrato de resumo) ═══
+// O dashboard MDM (projeto dados-mestres) publica um retrato em resumo/jip a
+// cada salvamento. Este bloco aplica o retrato nos KRs (série mensal) e no
+// roadmap do produto MDM, que passam a ser somente leitura aqui — a fonte
+// única é o dashboard MDM.
+function _mdmPeriodo(iso){
+  if(!iso) return 'BL27';
+  const y=+iso.slice(0,4), m=+iso.slice(5,7);
+  if(y>2026) return 'BL27';
+  if(y<2026 || m<=3) return '1T';
+  if(m===4) return 'ABR';
+  if(m===5) return 'MAI';
+  if(m===6) return 'JUN';
+  if(m<=9) return '3T';
+  return '4T';
+}
+function _mdmFmtDia(iso){ return iso ? iso.slice(8,10)+'/'+iso.slice(5,7) : '—'; }
+function aplicarResumoMDM(d){
+  if(!d) return;
+  window._mdmResumo=d; window._mdmSyncOn=true;
+  // ── KRs: série mensal (KR1 ← Meta 1 concluída · KR2 ← Meta 2 em operação) ──
+  try{
+    if(KR_DATA.mdm && KR_DATA.mdm[0]){
+      Object.keys(d.serie||{}).forEach(function(k){
+        if(k.slice(0,4)!=='2026') return;
+        const mi=+k.slice(5,7)-1; if(mi<0||mi>11) return;
+        const s=d.serie[k]||{};
+        if(KR_DATA.mdm[0][0] && s.m1c!=null) KR_DATA.mdm[0][0].r[mi]=s.m1c;
+        if(KR_DATA.mdm[0][1] && s.m2!=null)  KR_DATA.mdm[0][1].r[mi]=s.m2;
+      });
+      if(PRODS.mdm && PRODS.mdm.okrs && PRODS.mdm.okrs[0]){
+        (PRODS.mdm.okrs[0].krs||[]).forEach(function(_kr,ki){ syncKRFromEvo('mdm',0,ki); });
+      }
+    }
+  }catch(e){ console.warn('aplicarResumoMDM KRs:', e); }
+  // ── Roadmap: fases e grupos do cronograma MDM (GMs resumidos como x/y por grupo) ──
+  try{
+    if(Array.isArray(d.grupos) && d.grupos.length){
+      const rd={'1T':[],'ABR':[],'MAI':[],'JUN':[],'3T':[],'4T':[],'BL27':[]};
+      const fases={}, ford=[];
+      d.grupos.forEach(function(g){
+        if(!fases[g.f]){ fases[g.f]={fim:null,tot:0,done:0}; ford.push(g.f); }
+        const F=fases[g.f]; F.tot++; if(g.st==='done')F.done++;
+        if(g.fim&&(!F.fim||g.fim>F.fim))F.fim=g.fim;
+      });
+      ford.forEach(function(f){
+        const F=fases[f];
+        rd[_mdmPeriodo(F.fim)].push({txt:'━ '+f+' — '+F.done+'/'+F.tot+' grupos · conclusão '+_mdmFmtDia(F.fim), s:(F.done===F.tot?'done':(F.done>0?'doing':'todo'))});
+      });
+      d.grupos.forEach(function(g){
+        rd[_mdmPeriodo(g.fim)].push({txt:g.g+' ('+g.f+') · '+g.done+'/'+g.tot+' GMs', s:(g.st==='done'?'done':(g.st==='wip'?'doing':'todo'))});
+      });
+      RDMAP.mdm=rd;
+    }
+  }catch(e){ console.warn('aplicarResumoMDM roadmap:', e); }
+  if(typeof refreshAfterLoad==='function') refreshAfterLoad();
+}
+window.aplicarResumoMDM=aplicarResumoMDM;
+
 function fbSaveKRData(key) {
+  if (key === 'mdm' && window._mdmSyncOn) {
+    alert('Os KRs do MDM são sincronizados automaticamente do dashboard MDM (Dados Mestres) — os valores realizados vêm de lá.');
+    if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    return Promise.resolve(false);
+  }
   if (!KR_DATA[key]) return;
   const flat = flattenKRData(KR_DATA[key]);
   // Retorna a promise para permitir await real.
