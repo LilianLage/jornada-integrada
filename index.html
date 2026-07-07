@@ -1558,7 +1558,7 @@ const PRODS = {
     pot_alav:{'hc':6.4,'nao_q':6.7,'prazo':1.1,'spot':1.7,'rccp':24.2},
     desc:'Automação BIM que compila dados IFC e automatiza levantamento de quantitativos para orçamentação.',
     ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','rccp'],
-    riscos:[{nm:'Alta dependência de padronização com projetistas',desc:'Ritmo de cobertura limitado pela negociação com projetistas para escalar além da hidráulica.',lvl:'med'}],
+    riscos:[],
     notas:[],
     okrs:[{ttl:'Reduzir erros de quantitativos e agilizar orçamentação',
            krs:[{lbl:'KR1: Redução 40% SLA orçamento (8 dias) até dez/27',atual:19,meta:'40%',real:'7,5%',c:'v'},
@@ -1570,7 +1570,7 @@ const PRODS = {
     pot_alav:{'hc':0.5,'nao_q':2.2,'prazo':1.1,'rccp':3.6},
     desc:'Catálogo de peças padronizadas (SKUs 0) para industrialização construtiva.',
     ambicoes:['du'], alavancas:['hc','nao_q','prazo','rccp'],
-    riscos:[{nm:'Prioridade da squad redefinida por estratégia de produtos',desc:'Tipologias modulares e lazer no térreo impactam roadmap. KR2 em 56% vs meta 90%.',lvl:'med'}],
+    riscos:[],
     notas:[],
     okrs:[{ttl:'Garantir governança e confiabilidade dos SKUs na produção',
            krs:[{lbl:'KR1: 100% rastreabilidade SKU 0 nos empreendimentos',atual:100,meta:'100%',real:'100%',c:'v'},
@@ -1582,7 +1582,7 @@ const PRODS = {
     nm:'MDM – Dados Mestres', etapa:'pre', gestor:'l', po:'André Carvalhais', status:'sg', pot:'Habilitador',
     desc:'Gestão de Dados Mestres e GMs. Habilita toda a cadeia de abastecimento e orçamentação.',
     ambicoes:['du','vp'], alavancas:['spot'],
-    riscos:[{nm:'MDM em estágio inicial — 3,7% vs meta 90% até dez/26',desc:'Exige aceleração urgente. Bloqueia Compilador BIM e qualidade do ECO-PAM.',lvl:'alto'}],
+    riscos:[],
     notas:[],
     okrs:[{ttl:'Estruturar base de GMs confiável para toda a esteira',
            krs:[{lbl:'90% GMs aptos para orçamento até dez/26',atual:4,meta:'90%',real:'3,7%',c:'o'},
@@ -1674,7 +1674,7 @@ const PRODS = {
     pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':32.7,'usinas':1.8,'desp_fin':15.3},
     desc:'Sistema integrado de planejamento de custos (ECO) e abastecimento MRP (PAM). Rollout 100% concluído (22 cidades).',
     ambicoes:['du','vp'], alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
-    riscos:[{nm:'Instabilidade técnica e alto volume de erros',desc:'Redesenho de arquitetura em curso. Perda de tração no rollout. Impacto no desligamento do sistema legado.',lvl:'alto'}],
+    riscos:[],
     notas:['Prioridade jun/26: estabilização + aceleração MDM'],
     okrs:[{ttl:'Ser estrutura preditiva de custos e abastecimento confiável',
            krs:[{lbl:'Rollout ECO 100% das obras — concluído abr/26',atual:100,meta:'100%',real:'100%',c:'v'},
@@ -1707,7 +1707,7 @@ const PRODS = {
     pot_alav:{'hc':4.9,'nao_q':13.4,'prazo':6.7,'spot':1.7,'seq_mo':40.3,'usinas':1.8},
     desc:'Portal de visão integrada 360° da obra. Jornada de materiais, medições e gestão de responsabilidades.',
     ambicoes:['vp','nps'], alavancas:['hc','nao_q','prazo','spot','seq_mo','usinas'],
-    riscos:[{nm:'Baixas financeiras ainda manuais nas obras',desc:'Top 10 obras com 90% por volume, mas sem reflexo financeiro. Curva de aprendizado em andamento.',lvl:'med'}],
+    riscos:[],
     notas:[],
     okrs:[{ttl:'Aumentar VP 5% via produtividade nos canteiros',
            krs:[{lbl:'KR1: 70% produtividade ref. piso/pintura até dez/26',atual:30,meta:'70%',real:'—',c:'g'},
@@ -5274,6 +5274,23 @@ async function _poInclui(p, nome){
 async function applyPendingMigrations(){
   try {
     if (!window._fbReady || !window._db) return;
+    // Limpa arrays legados `riscos:[...]` persistidos no Firestore. O conteúdo
+    // fixo foi removido do seed do HTML; a fonte única de riscos passa a ser o
+    // campo Riscos + Plano de Ação (riscos_txt) preenchido pelo time.
+    const MIG_RISCOS = 'limpa_riscos_legados';
+    const refR = window._fsDoc(window._db, 'migrations', MIG_RISCOS);
+    let doneR = false;
+    try { const snapR = await window._fsGetDoc(refR); doneR = !!(snapR && typeof snapR.exists === 'function' && snapR.exists()); } catch(_e){}
+    if (!doneR) {
+      for (const kk of Object.keys(PRODS)) {
+        const pp = PRODS[kk];
+        if (pp && pp.riscos && pp.riscos.length) {
+          pp.riscos = [];
+          _suppressLog = true; await fbSaveProd(kk); _suppressLog = false;
+        }
+      }
+      try { await window._fsSetDoc(refR, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
+    }
     const MIG_ID = 'ecopam_po_anaflavia';
     const ref = window._fsDoc(window._db, 'migrations', MIG_ID);
     let done = false;
@@ -5845,7 +5862,6 @@ function cxPageCapa(keys){
         +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
         +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+'</div>'
         +'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>'
-        +'<div class="cx-tile-ft">'+cxStPill(p.status,true)+'</div>'
         +'</div>';
       });
       if(tiles) sect+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
