@@ -4522,6 +4522,8 @@ function okrevSetRegView(mode){
 }
 
 function buildBarChart(key, oi, ki) {
+  const _sel = window._okrevSel;
+  const selChanged = !_sel || _sel.key !== key || _sel.oi !== oi || _sel.ki !== ki;
   window._okrevSel = {key, oi, ki};
   const ctx = document.getElementById('okrev-detail-chart').getContext('2d');
   if (okrevChart) okrevChart.destroy();
@@ -4540,7 +4542,8 @@ function buildBarChart(key, oi, ki) {
   const tgl = document.getElementById('okrev-reg-toggle');
   if (tgl) {
     if (hasReg) {
-      if (okrevRegView !== 'reg') okrevRegView = okrevRegView || 'cons';
+      // Default: KR com apuração regional abre direto na visão por regional
+      if (selChanged) okrevRegView = 'reg';
       const btn = (mode, lbl) => '<button onclick="okrevSetRegView(\'' + mode + '\')" style="border:none;cursor:pointer;padding:4px 10px;font-size:9.5px;font-weight:800;'
         + (okrevRegView === mode ? 'background:var(--gm);color:#fff' : 'background:#fff;color:var(--t2)') + '">' + lbl + '</button>';
       tgl.innerHTML = btn('cons', 'Consolidado') + btn('reg', 'Por regional');
@@ -5891,6 +5894,13 @@ function cxKRChartSVG(key,oi,ki,kr){
   }
   let max=(metaN!=null?metaN:0), has=false;
   [rD,oD,pD].forEach(function(a){a.forEach(function(v){if(v!=null){has=true;if(v>max)max=v;}});});
+  // KR com apuração por regional: modo padrão do gráfico é a visão regional
+  const regOn=!!(kr.regional&&kd.reg&&kd.reg.some(function(a){return a&&a.some(function(v){return v!=null;});}));
+  const regAgg=(kr.regAgg==='media')?'media':'soma';
+  if(regOn&&regAgg==='media'){
+    // Linhas por regional podem passar do consolidado (média) — escala inclui os valores regionais
+    kd.reg.forEach(function(a){ if(a) a.forEach(function(v,mi){ if(mi<=CUR_M&&v!=null){has=true;if(v>max)max=v;} }); });
+  }
   if(!has||max<=0) return '';
   max=max*1.15; // folga p/ rótulos acima das barras
   const W=560,H=300,T=30,B=28,L=4,Rr=4;
@@ -5910,6 +5920,20 @@ function cxKRChartSVG(key,oi,ki,kr){
     if(rD[mi]!=null){
       // Regra corporativa: barra verde; laranja só quando abaixo do orçado do mês
       const bc=(oD[mi]!=null&&rD[mi]<oD[mi])?CX_OR:CX_GR;
+      if(regOn&&regAgg==='soma'){
+        // Visão regional (soma): barra empilhada — um segmento por regional
+        let acc=0;
+        kd.reg.forEach(function(a,gi){
+          const v=(a&&mi<=CUR_M)?a[mi]:null;
+          if(v==null||v<=0) return;
+          const y0=yv(acc), y1=yv(acc+v);
+          s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+y1.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(y0-y1).toFixed(1)+'" fill="'+KR_COLS[gi%KR_COLS.length]+(mi===CUR_M?'':'cc')+'" stroke="#fff" stroke-width="0.5" data-tip="'+MONTHS[mi]+' · '+(REGIONAIS[gi]||('R'+gi))+': '+cxFmtN(v)+unit+' (total '+cxFmtN(rD[mi])+unit+')"/>';
+          acc+=v;
+        });
+        if(rD[mi]>0) s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
+      } else if(regOn&&regAgg==='media'){
+        // Visão regional (média): sem barra de realizado — linhas por regional desenhadas após o loop
+      } else {
       if(rD[mi]>0){
         // Quebra por regional no tooltip (KRs com apuração regional)
         let regTip='';
@@ -5921,6 +5945,7 @@ function cxKRChartSVG(key,oi,ki,kr){
         s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+yv(rD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(rD[mi])).toFixed(1)+'" rx="2" fill="'+bc+(mi===CUR_M?'':'aa')+'" stroke="'+bc+'" stroke-width="1" data-tip="'+MONTHS[mi]+' · Realizado: '+cxFmtN(rD[mi])+unit+(oD[mi]!=null?' (orçado '+cxFmtN(oD[mi])+unit+')':'')+regTip+'"/>';
       }
       s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
+      }
     }
     s+='<text x="'+cx0.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(mi===CUR_M?'#F58220':'#94a3b8')+'" font-family="Plus Jakarta Sans,sans-serif">'+MONTHS[mi]+'</text>';
   }
@@ -5937,7 +5962,34 @@ function cxKRChartSVG(key,oi,ki,kr){
       s+='<text x="'+pt.x.toFixed(1)+'" y="'+(pt.y-6).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#793F98" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(pt.v)+unit+'</text>';
     });
   }
+  // Visão regional (média): uma linha por regional
+  if(regOn&&regAgg==='media'){
+    kd.reg.forEach(function(a,gi){
+      if(!a) return;
+      const col=KR_COLS[gi%KR_COLS.length];
+      const rpts=[];
+      for(let mi=0;mi<=CUR_M&&mi<12;mi++){ if(a[mi]!=null) rpts.push({x:L+mi*slot+slot/2,y:yv(a[mi]),v:a[mi],m:MONTHS[mi]}); }
+      if(!rpts.length) return;
+      let pl2='';
+      rpts.forEach(function(pt){ pl2+=(pl2?' ':'')+pt.x.toFixed(1)+','+pt.y.toFixed(1); });
+      if(rpts.length>1) s+='<polyline points="'+pl2+'" fill="none" stroke="'+col+'" stroke-width="2"/>';
+      rpts.forEach(function(pt){
+        s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="3" fill="'+col+'"/>';
+        s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="9" fill="transparent" data-tip="'+pt.m+' · '+(REGIONAIS[gi]||('R'+gi))+': '+cxFmtN(pt.v)+unit+'"/>';
+      });
+    });
+  }
   s+='</svg>';
+  // Legenda de regionais abaixo do gráfico
+  if(regOn){
+    let lg='<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:4px">';
+    kd.reg.forEach(function(a,gi){
+      if(!a||!a.some(function(v){return v!=null;})) return;
+      lg+='<span style="display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;color:var(--t2)"><span style="width:9px;height:9px;border-radius:2px;background:'+KR_COLS[gi%KR_COLS.length]+'"></span>'+(REGIONAIS[gi]||('R'+gi))+'</span>';
+    });
+    lg+='</div>';
+    s+=lg;
+  }
   return s;
 }
 
