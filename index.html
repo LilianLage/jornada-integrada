@@ -1381,6 +1381,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div style="background:var(--wh);border-radius:var(--r);padding:12px 16px 10px;border:1.5px solid var(--bd);flex:1;min-height:0;display:flex;flex-direction:column">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-shrink:0">
           <div id="okrev-kr-tabs" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+          <div id="okrev-reg-toggle" style="display:none;gap:0;flex-shrink:0;margin-left:10px;border:1.5px solid var(--bd);border-radius:7px;overflow:hidden"></div>
           <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:8px">
             <div style="display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--g)"><span style="width:9px;height:9px;background:var(--gm);border-radius:2px;display:inline-block"></span>Realizado</div>
             <div style="display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:var(--g);opacity:.5"><span style="width:9px;height:9px;background:var(--gm);border-radius:2px;display:inline-block;opacity:.4"></span>Orçado</div>
@@ -1406,18 +1407,24 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <button class="kpi-md-x" onclick="closeKREdit()">✕</button>
     </div>
     <div style="padding:12px 18px 6px">
-      <div style="font-size:10px;color:var(--t3);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--t3);margin-bottom:8px">
         Preencha os valores mensais (0–100%). Deixe em branco para meses não preenchidos.
       </div>
+      <div id="kred-regbar" style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:7px 10px;border:1.5px dashed var(--bd);border-radius:7px;background:#f8fafc">
+        <label style="display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--t2);cursor:pointer">
+          <input type="checkbox" id="kred-reg-chk" onchange="toggleKRRegional(this.checked)" style="accent-color:var(--gm)">
+          Apuração por regional
+        </label>
+        <span id="kred-reg-agg-wrap" style="display:none;align-items:center;gap:6px;font-size:10px;color:var(--t3)">
+          Consolidado =
+          <select id="kred-reg-agg" onchange="setKRRegAgg(this.value)" style="border:1.5px solid var(--bd);border-radius:5px;padding:2px 6px;font-size:10px;outline:none">
+            <option value="soma">Soma das regionais</option>
+            <option value="media">Média das regionais</option>
+          </select>
+        </span>
+      </div>
       <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr>
-            <th style="padding:5px 8px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);text-align:left">Mês</th>
-            <th style="padding:5px 8px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;color:var(--g)">▮ Realizado %</th>
-            <th style="padding:5px 8px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;color:var(--g);opacity:.5">▮ Orçado %</th>
-            <th style="padding:5px 8px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;color:var(--a1)">◌ Projetado %</th>
-          </tr>
-        </thead>
+        <thead id="kred-thead"></thead>
         <tbody id="kred-tbody"></tbody>
       </table>
     </div>
@@ -4377,12 +4384,15 @@ const KR_DATA = {
 };
 
 const MONTHS   = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+// Regionais para apuração de KR por regional (ordem = índice de armazenamento g0..gN)
+const REGIONAIS = ['CO+AM','NE','SE','SP','SPI','SUL'];
 const CUR_M    = new Date().getMonth();
 const KR_COLS  = ['#006B3F','#FF8B22','#793F98','#0369a1','#F7287C','#FFB719','#00D38D','#064e3b'];
 
 let okrevProdKey = null;
 let okrevChart   = null;
 let okrevBuilt   = false;
+let okrevRegView = 'cons'; // 'cons' = consolidado · 'reg' = por regional
 let editModalKey = null; // {key,oi,ki}
 
 function buildOKRev() {
@@ -4505,7 +4515,14 @@ function selectKR(key, oi, ki) {
   buildBarChart(key, oi, ki);
 }
 
+// Alterna a visão do gráfico entre Consolidado e Por regional (KRs com apuração regional)
+function okrevSetRegView(mode){
+  okrevRegView = (mode === 'reg') ? 'reg' : 'cons';
+  if (window._okrevSel) buildBarChart(window._okrevSel.key, window._okrevSel.oi, window._okrevSel.ki);
+}
+
 function buildBarChart(key, oi, ki) {
+  window._okrevSel = {key, oi, ki};
   const ctx = document.getElementById('okrev-detail-chart').getContext('2d');
   if (okrevChart) okrevChart.destroy();
   const p   = PRODS[key];
@@ -4518,12 +4535,80 @@ function buildBarChart(key, oi, ki) {
   const unit  = krUnit(kr)||'%';
   const metaN = krNum(kr.meta);
 
+  // ── Toggle Consolidado | Por regional (só quando o KR é apurado por regional) ──
+  const hasReg = !!(kr.regional && kd.reg && kd.reg.some(a => a && a.some(v => v !== null && v !== undefined)));
+  const tgl = document.getElementById('okrev-reg-toggle');
+  if (tgl) {
+    if (hasReg) {
+      if (okrevRegView !== 'reg') okrevRegView = okrevRegView || 'cons';
+      const btn = (mode, lbl) => '<button onclick="okrevSetRegView(\'' + mode + '\')" style="border:none;cursor:pointer;padding:4px 10px;font-size:9.5px;font-weight:800;'
+        + (okrevRegView === mode ? 'background:var(--gm);color:#fff' : 'background:#fff;color:var(--t2)') + '">' + lbl + '</button>';
+      tgl.innerHTML = btn('cons', 'Consolidado') + btn('reg', 'Por regional');
+      tgl.style.display = 'flex';
+    } else {
+      tgl.style.display = 'none';
+      okrevRegView = 'cons';
+    }
+  }
+
   // Realizado: bars, jan→mai
   const rData = MONTHS.map((_,mi) => mi<=CUR_M ? (kd.r[mi]??null) : null);
   // Orçado: line, full year
   const oData = kd.o.map(v => v??null);
   // Projetado: line, mai→dez
   const pData = MONTHS.map((_,mi) => mi>=CUR_M ? (kd.p[mi]??null) : null);
+
+  // ── Visão por regional: soma → barras empilhadas · média → linhas por regional ──
+  if (hasReg && okrevRegView === 'reg') {
+    const agg = kr.regAgg || 'soma';
+    const regSets = [];
+    REGIONAIS.forEach((rg, gi) => {
+      const arr = kd.reg[gi] || [];
+      const data = MONTHS.map((_, mi) => mi <= CUR_M ? (arr[mi] ?? null) : null);
+      if (!data.some(v => v !== null)) return;
+      const col = KR_COLS[gi % KR_COLS.length];
+      if (agg === 'soma') {
+        regSets.push({ type:'bar', label:rg, data, stack:'real',
+          backgroundColor:col+'cc', borderColor:col, borderWidth:1, borderRadius:2, order:3,
+          datalabels:{display:false} });
+      } else {
+        regSets.push({ type:'line', label:rg, data,
+          borderColor:col, backgroundColor:'transparent', borderWidth:2,
+          pointRadius:3, pointBackgroundColor:col, tension:0.25, spanGaps:true, order:2,
+          datalabels:{display:false} });
+      }
+    });
+    okrevChart = new Chart(ctx, {
+      data: { labels: MONTHS, datasets: regSets.concat([
+        { type:'bar', label:'Orçado', data:oData,
+          backgroundColor:'#006B3F30', borderColor:'#006B3F66', borderWidth:1.5, borderRadius:4, order:4,
+          datalabels:{display:false} },
+        { type:'line', label:'Meta', data:Array(12).fill(metaN!==null?metaN:null),
+          borderColor:'#e2e8f0', borderWidth:1.5, borderDash:[4,3], pointRadius:0,
+          backgroundColor:'transparent', order:5, datalabels:{display:false} },
+      ])},
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          datalabels:{display:false},
+          legend:{position:'bottom',labels:{boxWidth:9,font:{size:9},filter:item=>item.text!=='Meta'}},
+          tooltip:{
+            callbacks:{
+              title:ctx=>ctx[0].label+' 2026',
+              label:ctx=>ctx.parsed.y!==null?` ${ctx.dataset.label}: ${ctx.parsed.y}${unit}`:null,
+            },
+            filter:item=>item.parsed.y!==null,
+          },
+        },
+        scales:{
+          y:{min:0,stacked:(agg==='soma'),ticks:{display:false},grid:{color:'#f1f5f9'},border:{display:false}},
+          x:{stacked:(agg==='soma'),ticks:{font:{size:9},color:MONTHS.map((_,mi)=>mi===CUR_M?'var(--o)':'#94a3b8')},grid:{color:'#f1f5f9'}}
+        }
+      }
+    });
+    return;
+  }
 
   // Regra corporativa: barras sempre verdes; laranja só quando abaixo do orçado do mês
   const GR='#006B3F', OR='#FF8B22';
@@ -4630,42 +4715,116 @@ function buildBarChart(key, oi, ki) {
 }
 
 // ── KR Data Edit Modal ──
+function kredKD(){
+  const key=editModalKey.key, oi=editModalKey.oi, ki=editModalKey.ki;
+  if (!KR_DATA[key]) KR_DATA[key] = [];
+  if (!KR_DATA[key][oi]) KR_DATA[key][oi] = [];
+  if (!KR_DATA[key][oi][ki]) KR_DATA[key][oi][ki] = {r:Array(12).fill(null),o:Array(12).fill(null),p:Array(12).fill(null)};
+  return KR_DATA[key][oi][ki];
+}
+// Consolidado derivado das regionais (soma ou média) — só quando o KR é por regional
+function recomputeKRConsolidated(kd, agg){
+  for(let mi=0; mi<12; mi++){
+    const vals=[];
+    (kd.reg||[]).forEach(function(a){ if(a && a[mi]!==null && a[mi]!==undefined) vals.push(a[mi]); });
+    if(!vals.length){ kd.r[mi]=null; continue; }
+    const s=vals.reduce(function(a,b){return a+b;},0);
+    kd.r[mi]=Math.round((agg==='media'? s/vals.length : s)*10)/10;
+  }
+}
+function renderKREditTable(){
+  const key=editModalKey.key, oi=editModalKey.oi, ki=editModalKey.ki;
+  const kr = PRODS[key].okrs[oi].krs[ki];
+  const kd = kredKD();
+  const isReg = !!kr.regional;
+  const th='padding:5px 6px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;';
+  let hd='<tr><th style="'+th+'color:var(--t3);text-align:left">Mês</th>';
+  if(isReg){
+    REGIONAIS.forEach(function(rg){ hd+='<th style="'+th+'color:var(--g)">'+rg+'</th>'; });
+    hd+='<th style="'+th+'color:var(--g);background:#f0fdf4">▮ Consolid.</th>';
+  } else {
+    hd+='<th style="'+th+'color:var(--g)">▮ Realizado %</th>';
+  }
+  hd+='<th style="'+th+'color:var(--g);opacity:.5">▮ Orçado %</th>'
+    +'<th style="'+th+'color:var(--a1)">◌ Projetado %</th></tr>';
+  document.getElementById('kred-thead').innerHTML=hd;
+
+  const iw = isReg ? '44px' : '56px';
+  const inp = function(val,onch,fc){
+    return '<td style="padding:3px 4px"><input type="number" min="0" value="'+(val===null||val===undefined?'':val)+'" placeholder="—" onchange="'+onch+'"'
+      +' style="width:'+iw+';border:1.5px solid var(--bd);border-radius:5px;padding:3px 5px;font-size:11px;text-align:center;outline:none"'
+      +' onfocus="this.style.borderColor=\''+fc+'\'" onblur="this.style.borderColor=\'var(--bd)\'"></td>';
+  };
+  let rows='';
+  MONTHS.forEach(function(m,mi){
+    rows+='<tr><td style="padding:5px 8px;font-size:10px;font-weight:'+(mi===CUR_M?'800':'400')+';color:'+(mi===CUR_M?'var(--o)':'var(--t2)')+'">'+m+(mi===CUR_M?' ◀':'')+'</td>';
+    if(isReg){
+      REGIONAIS.forEach(function(rg,gi){
+        const v = kd.reg && kd.reg[gi] ? kd.reg[gi][mi] : null;
+        rows+=inp(v,'updateKRDataCellReg('+gi+','+mi+',this.value)','var(--g)');
+      });
+      rows+='<td id="kred-cons-'+mi+'" style="padding:3px 6px;text-align:center;font-size:11px;font-weight:700;color:var(--g);background:#f0fdf4;border-radius:5px">'+(kd.r[mi]===null||kd.r[mi]===undefined?'—':String(kd.r[mi]).replace('.',','))+'</td>';
+    } else {
+      rows+=inp(kd.r[mi],'updateKRDataCell(\'r\','+mi+',this.value)','var(--g)');
+    }
+    rows+=inp(kd.o[mi],'updateKRDataCell(\'o\','+mi+',this.value)','var(--g)');
+    rows+=inp(kd.p[mi],'updateKRDataCell(\'p\','+mi+',this.value)','var(--a1)');
+    rows+='</tr>';
+  });
+  document.getElementById('kred-tbody').innerHTML=rows;
+
+  // Controles da barra regional + largura do modal
+  document.getElementById('kred-reg-chk').checked=isReg;
+  document.getElementById('kred-reg-agg-wrap').style.display=isReg?'inline-flex':'none';
+  document.getElementById('kred-reg-agg').value=kr.regAgg||'soma';
+  const md=document.querySelector('#kred-modal-bg .kpi-md');
+  if(md) md.style.width=isReg?'860px':'520px';
+}
 function openKRDataEdit(key, oi, ki) {
   if(!requireEditor(()=>openKRDataEdit(key, oi, ki)))return;
   editModalKey = {key, oi, ki};
   const p   = PRODS[key];
   const kr  = p.okrs[oi].krs[ki];
-  const kd  = KR_DATA[key]?.[oi]?.[ki] || {r:Array(12).fill(null),o:Array(12).fill(null),p:Array(12).fill(null)};
-
   document.getElementById('kred-title').textContent = `✏️ ${p.nm} · ${kr.lbl.substring(0,42)} · unidade: ${krUnit(kr)||'%'}`;
-
-  const tbody = document.getElementById('kred-tbody');
-  tbody.innerHTML = MONTHS.map((m,mi) => `
-    <tr>
-      <td style="padding:5px 8px;font-size:10px;font-weight:${mi===CUR_M?'800':'400'};color:${mi===CUR_M?'var(--o)':'var(--t2)'}">${m}${mi===CUR_M?' ◀':''}</td>
-      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.r[mi]??''}" placeholder="—"
-        onchange="updateKRDataCell('r',${mi},this.value)"
-        style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
-        onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--bd)'"></td>
-      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.o[mi]??''}" placeholder="—"
-        onchange="updateKRDataCell('o',${mi},this.value)"
-        style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
-        onfocus="this.style.borderColor='var(--g)'" onblur="this.style.borderColor='var(--bd)'"></td>
-      <td style="padding:3px 5px"><input type="number" min="0" value="${kd.p[mi]??''}" placeholder="—"
-        onchange="updateKRDataCell('p',${mi},this.value)"
-        style="width:56px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 6px;font-size:11px;text-align:center;outline:none"
-        onfocus="this.style.borderColor='var(--a1)'" onblur="this.style.borderColor='var(--bd)'"></td>
-    </tr>`).join('');
-
+  renderKREditTable();
   document.getElementById('kred-modal-bg').classList.add('open');
 }
 
+function toggleKRRegional(on){
+  const {key,oi,ki}=editModalKey;
+  const kr=PRODS[key].okrs[oi].krs[ki];
+  const kd=kredKD();
+  kr.regional=!!on;
+  if(on){
+    if(!kr.regAgg) kr.regAgg='soma';
+    if(!kd.reg) kd.reg=REGIONAIS.map(function(){return Array(12).fill(null);});
+    recomputeKRConsolidated(kd, kr.regAgg);
+  }
+  // Ao desligar, os dados regionais são preservados (kd.reg fica guardado) e o
+  // consolidado volta a ser editável manualmente.
+  renderKREditTable();
+}
+function setKRRegAgg(v){
+  const {key,oi,ki}=editModalKey;
+  const kr=PRODS[key].okrs[oi].krs[ki];
+  kr.regAgg=(v==='media')?'media':'soma';
+  const kd=kredKD();
+  if(kr.regional){ recomputeKRConsolidated(kd, kr.regAgg); renderKREditTable(); }
+}
+function updateKRDataCellReg(gi, mi, val){
+  const {key,oi,ki}=editModalKey;
+  const kr=PRODS[key].okrs[oi].krs[ki];
+  const kd=kredKD();
+  if(!kd.reg) kd.reg=REGIONAIS.map(function(){return Array(12).fill(null);});
+  kd.reg[gi][mi]=(val===''||val===null)?null:parseFloat(val);
+  recomputeKRConsolidated(kd, kr.regAgg||'soma');
+  const cell=document.getElementById('kred-cons-'+mi);
+  if(cell) cell.textContent=(kd.r[mi]===null||kd.r[mi]===undefined)?'—':String(kd.r[mi]).replace('.',',');
+}
+
 function updateKRDataCell(type, mi, val) {
-  const {key,oi,ki} = editModalKey;
-  if (!KR_DATA[key]) KR_DATA[key] = [];
-  if (!KR_DATA[key][oi]) KR_DATA[key][oi] = [];
-  if (!KR_DATA[key][oi][ki]) KR_DATA[key][oi][ki] = {r:Array(12).fill(null),o:Array(12).fill(null),p:Array(12).fill(null)};
-  KR_DATA[key][oi][ki][type][mi] = val===''||val===null ? null : parseFloat(val);
+  const kd=kredKD();
+  kd[type][mi] = val===''||val===null ? null : parseFloat(val);
 }
 
 function closeKREdit() {
@@ -5135,6 +5294,10 @@ function flattenKRData(data) {
       flat[`o${oi}_k${ki}_r`] = kr.r.map(v => v === null ? -1 : v);
       flat[`o${oi}_k${ki}_o`] = kr.o.map(v => v === null ? -1 : v);
       flat[`o${oi}_k${ki}_p`] = kr.p.map(v => v === null ? -1 : v);
+      // Apuração por regional: uma série mensal por regional (g0..gN, ordem = REGIONAIS)
+      if (kr.reg) kr.reg.forEach((arr, gi) => {
+        flat[`o${oi}_k${ki}_g${gi}`] = (arr || Array(12).fill(null)).map(v => v === null || v === undefined ? -1 : v);
+      });
     });
   });
   return flat;
@@ -5162,7 +5325,18 @@ function unflattenKRData(flat, template) {
     const krs = [];
     const maxKi = maxKiByOi[oi] === undefined ? -1 : maxKiByOi[oi];
     for (let ki = 0; ki <= maxKi; ki++) {
-      krs.push({ r: decode('o'+oi+'_k'+ki+'_r'), o: decode('o'+oi+'_k'+ki+'_o'), p: decode('o'+oi+'_k'+ki+'_p') });
+      const krObj = { r: decode('o'+oi+'_k'+ki+'_r'), o: decode('o'+oi+'_k'+ki+'_o'), p: decode('o'+oi+'_k'+ki+'_p') };
+      // Séries regionais (o{oi}_k{ki}_g{gi}) — opcionais
+      const reg = []; let hasReg = false;
+      Object.keys(flat).forEach(k2 => {
+        const m2 = new RegExp('^o' + oi + '_k' + ki + '_g(\\d+)$').exec(k2);
+        if (m2) { hasReg = true; reg[+m2[1]] = decode(k2); }
+      });
+      if (hasReg) {
+        for (let gi = 0; gi < reg.length; gi++) { if (!reg[gi]) reg[gi] = Array(12).fill(null); }
+        krObj.reg = reg;
+      }
+      krs.push(krObj);
     }
     out.push(krs);
   }
@@ -5627,6 +5801,14 @@ function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--
 function cxEtColor(et){ return et==='est'?'var(--est)':et==='pre'?'var(--pre)':'var(--obra)'; }
 function cxRdItems(k, qp){
   const items=[];
+  // Pendências de trimestres anteriores entram primeiro, com marcador ⏳ atrasada (XT)
+  for(let q=0;q<cxQ;q++){
+    cxPeriodsFor(q).forEach(function(per){
+      (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){
+        if(m.s!=='done') items.push({txt:m.txt,s:m.s,_late:(q+1)+'T'});
+      });
+    });
+  }
   qp.keys.forEach(function(per){
     (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ items.push(m); });
   });
@@ -5729,7 +5911,14 @@ function cxKRChartSVG(key,oi,ki,kr){
       // Regra corporativa: barra verde; laranja só quando abaixo do orçado do mês
       const bc=(oD[mi]!=null&&rD[mi]<oD[mi])?CX_OR:CX_GR;
       if(rD[mi]>0){
-        s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+yv(rD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(rD[mi])).toFixed(1)+'" rx="2" fill="'+bc+(mi===CUR_M?'':'aa')+'" stroke="'+bc+'" stroke-width="1" data-tip="'+MONTHS[mi]+' · Realizado: '+cxFmtN(rD[mi])+unit+(oD[mi]!=null?' (orçado '+cxFmtN(oD[mi])+unit+')':'')+'"/>';
+        // Quebra por regional no tooltip (KRs com apuração regional)
+        let regTip='';
+        if(kd.reg){
+          const parts=[];
+          kd.reg.forEach(function(a,gi){ if(a&&a[mi]!=null) parts.push((REGIONAIS[gi]||('R'+gi))+' '+cxFmtN(a[mi])+unit); });
+          if(parts.length) regTip=' · '+parts.join(' · ');
+        }
+        s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+yv(rD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(rD[mi])).toFixed(1)+'" rx="2" fill="'+bc+(mi===CUR_M?'':'aa')+'" stroke="'+bc+'" stroke-width="1" data-tip="'+MONTHS[mi]+' · Realizado: '+cxFmtN(rD[mi])+unit+(oD[mi]!=null?' (orçado '+cxFmtN(oD[mi])+unit+')':'')+regTip+'"/>';
       }
       s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
     }
@@ -5908,7 +6097,10 @@ function cxPageProduto(k){
   let rdh='';
   if(rdItems.length){
     rdItems.forEach(function(m){
-      rdh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:'+cols[m.s]+';font-weight:800">'+(icons[m.s]||'○')+'</span><div>'+cxEsc(m.txt)+'</div></div>';
+      const lateTag=m._late
+        ?' <span style="display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:#fff7ed;border:1px solid #fdba74;color:#c05f00;font-size:10px;font-weight:800;white-space:nowrap">⏳ atrasada ('+m._late+')</span>'
+        :'';
+      rdh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:'+(m._late?'var(--o)':cols[m.s])+';font-weight:800">'+(m._late?'⏳':(icons[m.s]||'○'))+'</span><div>'+cxEsc(m.txt)+lateTag+'</div></div>';
     });
   } else {
     rdh='<div style="font-size:13px;color:var(--t3)">Sem entregas registradas para o '+qp.q+'T26.</div>';
