@@ -5217,8 +5217,10 @@ function prodMidiaSrc(key) {
 // Save RDMAP entry for a product
 function fbSaveRdmap(key) {
   if (key === 'mdm' && window._mdmSyncOn) {
-    alert('O roadmap do MDM é sincronizado automaticamente do dashboard MDM (Dados Mestres). Para alterá-lo, edite o cronograma lá.');
-    if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    if (!_suppressLog) {
+      alert('O roadmap do MDM é sincronizado automaticamente do dashboard MDM (Dados Mestres). Para alterá-lo, edite o cronograma lá.');
+      if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    }
     return;
   }
   if (!RDMAP[key]) return;
@@ -5433,12 +5435,8 @@ function _mdmPeriodo(iso){
   if(!iso) return 'BL27';
   const y=+iso.slice(0,4), m=+iso.slice(5,7);
   if(y>2026) return 'BL27';
-  if(y<2026 || m<=3) return '1T';
-  if(m===4) return 'ABR';
-  if(m===5) return 'MAI';
-  if(m===6) return 'JUN';
-  if(m<=9) return '3T';
-  return '4T';
+  const K=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  return (y===2026 && m>=1 && m<=12) ? K[m-1] : 'JAN';
 }
 function _mdmFmtDia(iso){ return iso ? iso.slice(8,10)+'/'+iso.slice(5,7) : '—'; }
 function aplicarResumoMDM(d){
@@ -5462,7 +5460,7 @@ function aplicarResumoMDM(d){
   // ── Roadmap: fases e grupos do cronograma MDM (GMs resumidos como x/y por grupo) ──
   try{
     if(Array.isArray(d.grupos) && d.grupos.length){
-      const rd={'1T':[],'ABR':[],'MAI':[],'JUN':[],'3T':[],'4T':[],'BL27':[]};
+      const rd={'JAN':[],'FEV':[],'MAR':[],'ABR':[],'MAI':[],'JUN':[],'JUL':[],'AGO':[],'SET':[],'OUT':[],'NOV':[],'DEZ':[],'1T':[],'3T':[],'4T':[],'BL27':[]};
       const fases={}, ford=[];
       d.grupos.forEach(function(g){
         if(!fases[g.f]){ fases[g.f]={fim:null,tot:0,done:0}; ford.push(g.f); }
@@ -5485,8 +5483,10 @@ window.aplicarResumoMDM=aplicarResumoMDM;
 
 function fbSaveKRData(key) {
   if (key === 'mdm' && window._mdmSyncOn) {
-    alert('Os KRs do MDM são sincronizados automaticamente do dashboard MDM (Dados Mestres) — os valores realizados vêm de lá.');
-    if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    if (!_suppressLog) {
+      alert('Os KRs do MDM são sincronizados automaticamente do dashboard MDM (Dados Mestres) — os valores realizados vêm de lá.');
+      if (window._mdmResumo && typeof aplicarResumoMDM === 'function') aplicarResumoMDM(window._mdmResumo);
+    }
     return Promise.resolve(false);
   }
   if (!KR_DATA[key]) return;
