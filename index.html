@@ -5274,6 +5274,11 @@ function fixLegacyNames(){
     const p = PRODS[key];
     if (p && p.etapa === 'est') { p.etapa = 'pre'; _suppressLog = true; fbSaveProd(key); _suppressLog = false; }
   });
+  // Prateleira MO: nome legado "Prateleira MO + Catracas" persistido no Firestore (Catracas já foi separado)
+  if (PRODS.prateleira && PRODS.prateleira.nm === 'Prateleira MO + Catracas') {
+    PRODS.prateleira.nm = 'Prateleira MO';
+    _suppressLog = true; fbSaveProd('prateleira'); _suppressLog = false;
+  }
   // produtos
   Object.keys(PRODS).forEach(key => {
     const p = PRODS[key]; if (!p) return;
