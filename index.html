@@ -1085,11 +1085,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     </div>
     <div class="kc obra" id="kc-obra">
       <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">8</div></div>
-      <div class="pc po" data-g="l" onclick="openEdit('ecopam')"><div class="pc-nm">ECO-PAM</div><div class="pc-sq">André R. · André C. · Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M</span></div></div>
+      <div class="pc po" data-g="l" onclick="openEdit('eco')"><div class="pc-nm">ECO</div><div class="pc-sq">André R. · André C. · Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M*</span></div></div>
+      <div class="pc po" data-g="l" onclick="openEdit('pam')"><div class="pc-nm">PAM</div><div class="pc-sq">André R. · André C. · Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 106M*</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('compras360')"><div class="pc-nm">Módulo de Compras 360</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('novaeap')"><div class="pc-nm">Nova EAP</div><div class="pc-sq">Ana Flávia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Acompanhar</div><span class="pb">Habilitadora</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('obra360')"><div class="pc-nm">Obra 360</div><div class="pc-sq">Higor</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 69M</span></div></div>
-      <div class="pc pv" data-g="m" onclick="openEdit('prateleira')"><div class="pc-nm">Prateleira MO + Catracas</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M</span></div></div>
+      <div class="pc pv" data-g="m" onclick="openEdit('prateleira')"><div class="pc-nm">Prateleira MO</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M*</span></div></div>
+      <div class="pc pv" data-g="m" onclick="openEdit('catracas')"><div class="pc-nm">Catracas</div><div class="pc-sq">Tone</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">R$ 55M*</span></div></div>
       <div class="pc pv" data-g="l" onclick="openEdit('smp')"><div class="pc-nm">SMP Digital</div><div class="pc-sq">Júlia</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Piloto em andamento</div><span class="pb">R$ 23M</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('ze')"><div class="pc-nm">IA – Zé da Obra</div><div class="pc-sq">Camila</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>KR1 atingido ✓</div><span class="pb">R$ 14M</span></div></div>
       <div class="pc pv" data-g="m" onclick="openEdit('daeans')"><div class="pc-nm">IA – Daeane</div><div class="pc-sq">Camila</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>Em desenvolvimento</div><span class="pb">R$ 7M</span></div></div>
@@ -1808,13 +1810,14 @@ const RESP_COL   = {dir:'var(--g)', comp:'#0369a1', mon:'#64748b'};
 const RESP_DEFAULT = {
   sincroniza:'dir', compilador:'dir', lego:'dir', ecopam:'dir', novaeap:'dir',
   compras360:'dir', obra360:'dir', prateleira:'dir', smp:'dir', ze:'dir', daeans:'dir',
+  eco:'dir', pam:'dir', catracas:'dir',
   mdm:'comp', nexus:'comp', simurb:'comp',
   inbound:'mon', comex:'mon', cd:'mon', reformatrib:'mon',
   radar:'mon', usinaconcreto:'mon', fabricakits:'mon', hubformas:'mon'
 };
 function prodResp(key){ const p=PRODS[key]; return (p&&p.resp)||RESP_DEFAULT[key]||'dir'; }
 const FASE = {
-  f1:     new Set(['sincroniza','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans']),
+  f1:     new Set(['sincroniza','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans','eco','pam','catracas']),
   gestao: new Set(['nexus','simurb','compras360','inbound','comex','cd','reformatrib']),
 };
 function faseOf(key){ return FASE.f1.has(key) ? 'f1' : (FASE.gestao.has(key) ? 'gestao' : ''); }
@@ -1825,6 +1828,18 @@ function faseOf(key){ return FASE.f1.has(key) ? 'f1' : (FASE.gestao.has(key) ? '
 const CV_KEYS = ['sincroniza','compilador','ecopam','obra360','prateleira','ia','lego','smp'];
 const CV_POT  = {sincroniza:79,compilador:40,ecopam:106,obra360:69,prateleira:55,ia:21,lego:7,smp:23};
 function cvProd(key){
+  if(key==='ecopam'){
+    // ECO e PAM foram separados como produtos, mas a Captura de Valor segue combinada
+    const e = PRODS.eco || {okrs:[],ambicoes:[]};
+    const a = PRODS.pam || {okrs:[],ambicoes:[]};
+    return {
+      nm:'ECO-PAM', etapa:(e.etapa||'obra'), gestor:(e.gestor||'l'), po:(e.po||''), status:(e.status||'so'), pot:'R$ 106M',
+      pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':32.7,'usinas':1.8,'desp_fin':15.3},
+      alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
+      ambicoes:[...new Set([...(e.ambicoes||[]),...(a.ambicoes||[])])],
+      okrs:[...(e.okrs||[]),...(a.okrs||[])]
+    };
+  }
   if(key==='ia'){
     const z = PRODS.ze || {okrs:[],ambicoes:[]};
     const d = PRODS.daeans || {okrs:[],ambicoes:[]};
@@ -3262,8 +3277,10 @@ const RDMAP = {
       {txt:'Análise automática relatórios BI', s:'todo'},
       {txt:'MCP: Integração IA com outros sistemas', s:'todo'},
     ],
-    '4T': [
+    'SET': [
       {txt:'IA no Forecast Produção', s:'todo'},
+    ],
+    '4T': [
       {txt:'Abertura automática de chamados', s:'todo'},
     ],
   },
@@ -4182,6 +4199,24 @@ function highlightChainAndTrace(key) {
 
 // Initialize default tab
 document.addEventListener('DOMContentLoaded', function(){
+  // ── Separação de produtos (pedido dos POs) ──
+  // ECO-PAM → ECO + PAM (a Captura de Valor segue combinada via cvProd('ecopam'))
+  // Prateleira MO → Prateleira MO + Catracas
+  // Os dados iniciais são duplicados; os POs editam depois o que pertence a cada um.
+  (function(){
+    function cl(src,dst,nm){
+      if(!PRODS[src]||PRODS[dst]) return;
+      PRODS[dst]=JSON.parse(JSON.stringify(PRODS[src]));
+      PRODS[dst].nm=nm;
+      PRODS[dst].alavancas=[]; PRODS[dst].pot_alav={}; PRODS[dst].pot='';
+      if(KR_DATA[src]) KR_DATA[dst]=JSON.parse(JSON.stringify(KR_DATA[src]));
+      if(RDMAP[src])   RDMAP[dst]=JSON.parse(JSON.stringify(RDMAP[src]));
+    }
+    cl('ecopam','eco','ECO');
+    cl('ecopam','pam','PAM');
+    cl('prateleira','catracas','Catracas');
+    delete PRODS.ecopam; // o doc antigo permanece no Firestore e é ignorado pelo load
+  })();
   // Migrate legacy riscos[]/notas[] arrays to free-text fields
   Object.values(PRODS).forEach(function(p){
     if(!p.riscos_txt){
@@ -5102,7 +5137,7 @@ async function loadHistory() {
   const body = document.getElementById('hist-body');
   if (body) body.innerHTML = '<div style="padding:30px;text-align:center;color:var(--t3);font-size:12px">Carregando…</div>';
   try {
-    const q = window._fsQuery(window._fsColl(window._db, 'audit_log'), window._fsOrderBy('ts', 'desc'), window._fsLimit(300));
+    const q = window._fsQuery(window._fsColl(window._db, 'audit_log'), window._fsOrderBy('ts', 'desc'));
     const snap = await window._fsGetDocs(q);
     _histRows = [];
     snap.forEach(d => _histRows.push(d.data()));
@@ -5322,6 +5357,99 @@ async function applyPendingMigrations(){
         }
       }
       try { await window._fsSetDoc(refR, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
+    }
+    // ── Separação ECO-PAM → ECO/PAM e Prateleira → Catracas: copia os dados
+    // vivos do Firestore (não só o seed) para os novos produtos, uma única vez.
+    const MIG_SPLIT = 'split_eco_pam_catracas';
+    const refS = window._fsDoc(window._db, 'migrations', MIG_SPLIT);
+    let doneS = false;
+    try { const sS = await window._fsGetDoc(refS); doneS = !!(sS && typeof sS.exists === 'function' && sS.exists()); } catch(_e){}
+    if (!doneS) {
+      async function _gd(coll, id) {
+        try { const s = await window._fsGetDoc(window._fsDoc(window._db, coll, id)); return (s && typeof s.exists === 'function' && s.exists()) ? s.data() : null; }
+        catch(_e) { return null; }
+      }
+      const pe = await _gd('produtos','ecopam'), pp2 = await _gd('produtos','prateleira');
+      const re = await _gd('rdmap','ecopam'),    rp  = await _gd('rdmap','prateleira');
+      const ke = await _gd('kr_data','ecopam'),  kp  = await _gd('kr_data','prateleira');
+      function _apl(dst, src, nm) {
+        if (!PRODS[dst] || !src) return;
+        const c = JSON.parse(JSON.stringify(src));
+        Object.assign(PRODS[dst], c);
+        PRODS[dst].nm = nm;
+        PRODS[dst].alavancas = []; PRODS[dst].pot_alav = {}; PRODS[dst].pot = '';
+      }
+      _apl('eco', pe, 'ECO'); _apl('pam', pe, 'PAM'); _apl('catracas', pp2, 'Catracas');
+      if (re) { RDMAP.eco = JSON.parse(JSON.stringify(re)); RDMAP.pam = JSON.parse(JSON.stringify(re)); }
+      if (rp) { RDMAP.catracas = JSON.parse(JSON.stringify(rp)); }
+      if (typeof unflattenKRData === 'function') {
+        if (ke) { KR_DATA.eco = unflattenKRData(ke, KR_DATA.eco); KR_DATA.pam = unflattenKRData(JSON.parse(JSON.stringify(ke)), KR_DATA.pam); }
+        if (kp) { KR_DATA.catracas = unflattenKRData(kp, KR_DATA.catracas); }
+      }
+      _suppressLog = true;
+      for (const kk of ['eco','pam','catracas']) {
+        if (PRODS[kk]) await fbSaveProd(kk);
+        if (RDMAP[kk]) fbSaveRdmap(kk);
+        if (KR_DATA[kk]) fbSaveKRData(kk);
+      }
+      _suppressLog = false;
+      try { await window._fsSetDoc(refS, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
+    }
+    // ── Limpeza definitiva dos riscos legados (v2): zera arrays remanescentes e
+    // remove do campo Riscos + Plano de Ação as linhas que a migração antiga
+    // copiou automaticamente dos arrays fixos.
+    const MIG_R2 = 'limpa_riscos_legados_v2';
+    const refR2 = window._fsDoc(window._db, 'migrations', MIG_R2);
+    let doneR2 = false;
+    try { const sR2 = await window._fsGetDoc(refR2); doneR2 = !!(sR2 && typeof sR2.exists === 'function' && sR2.exists()); } catch(_e){}
+    if (!doneR2) {
+      const LEG = [
+        'Alta dependência de padronização com projetistas',
+        'Prioridade da squad redefinida por estratégia de produtos',
+        'MDM em estágio inicial',
+        'Instabilidade técnica e alto volume de erros',
+        'Baixas financeiras ainda manuais nas obras'
+      ];
+      for (const kk of Object.keys(PRODS)) {
+        const pp = PRODS[kk]; if (!pp) continue;
+        let ch = false;
+        if (pp.riscos && pp.riscos.length) { pp.riscos = []; ch = true; }
+        if (pp.riscos_txt) {
+          const kept = pp.riscos_txt.split(/\n+/).filter(function(ln){
+            const t = ln.trim();
+            return t && !LEG.some(function(s){ return t.indexOf(s) === 0; });
+          });
+          const nt = kept.join('\n');
+          if (nt !== pp.riscos_txt) { pp.riscos_txt = nt; ch = true; }
+        }
+        if (ch) { _suppressLog = true; await fbSaveProd(kk); _suppressLog = false; }
+      }
+      try { await window._fsSetDoc(refR2, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
+    }
+    // ── Entrega de forecast da IA-Zé pertence ao 3T: move no doc persistido ──
+    const MIG_ZE = 'ze_forecast_3t';
+    const refZ = window._fsDoc(window._db, 'migrations', MIG_ZE);
+    let doneZ = false;
+    try { const sZ = await window._fsGetDoc(refZ); doneZ = !!(sZ && typeof sZ.exists === 'function' && sZ.exists()); } catch(_e){}
+    if (!doneZ) {
+      if (RDMAP.ze) {
+        const OKK = ['JUL','AGO','SET','3T'];
+        let moved = false;
+        Object.keys(RDMAP.ze).forEach(function(per){
+          if (OKK.indexOf(per) >= 0) return;
+          const arr = RDMAP.ze[per]; if (!Array.isArray(arr)) return;
+          for (let i = arr.length - 1; i >= 0; i--) {
+            if (/forecast/i.test(arr[i].txt || '')) {
+              const it = arr.splice(i, 1)[0];
+              if (!RDMAP.ze['SET']) RDMAP.ze['SET'] = [];
+              RDMAP.ze['SET'].push(it);
+              moved = true;
+            }
+          }
+        });
+        if (moved) { _suppressLog = true; fbSaveRdmap('ze'); _suppressLog = false; }
+      }
+      try { await window._fsSetDoc(refZ, { applied:true, ts:Date.now(), tsISO:new Date().toISOString() }); } catch(_e){}
     }
     const MIG_ID = 'ecopam_po_anaflavia';
     const ref = window._fsDoc(window._db, 'migrations', MIG_ID);
@@ -5914,19 +6042,26 @@ function cxProdKeys(){
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
 function cxEtColor(et){ return et==='est'?'var(--est)':et==='pre'?'var(--pre)':'var(--obra)'; }
 function cxRdItems(k, qp){
-  const items=[];
+  const raw=[];
   // Pendências de trimestres anteriores entram primeiro, com marcador ⏳ atrasada (XT)
   for(let q=0;q<cxQ;q++){
-    cxPeriodsFor(q).forEach(function(per){
+    cxPeriodsFor(q).forEach(function(per,pi){
       (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){
-        if(m.s!=='done') items.push({txt:m.txt,s:m.s,_late:(q+1)+'T'});
+        if(m.s!=='done') raw.push({txt:m.txt,s:m.s,_late:(q+1)+'T',_seq:q*10+pi});
       });
     });
   }
-  qp.keys.forEach(function(per){
-    (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ items.push(m); });
+  qp.keys.forEach(function(per,pi){
+    (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ raw.push({txt:m.txt,s:m.s,_seq:cxQ*10+pi}); });
   });
-  return items;
+  // Entrega que inicia num mês e termina no outro aparece só na última
+  // ocorrência (o mês de entrega) — evita duplicar como "atrasada" + "em andamento"
+  const lastIdx={};
+  raw.forEach(function(m,i){
+    const t=(m.txt||'').trim().toLowerCase();
+    if(!(t in lastIdx)||m._seq>=raw[lastIdx[t]]._seq) lastIdx[t]=i;
+  });
+  return raw.filter(function(m,i){ return lastIdx[(m.txt||'').trim().toLowerCase()]===i; });
 }
 
 // ── Página 1: Visão Geral ──
@@ -5945,17 +6080,25 @@ function cxPageCapa(keys){
       keys.forEach(function(k,i){
         const p=PRODS[k]; if(p.etapa!==g.k||prodResp(k)!==rk) return;
       const dq=cxDqKR(p);
-      let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)';
+      let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)', objl='', pctSpan='';
       if(dq){
         // Regra corporativa: verde; laranja só quando abaixo do orçado
         krc=cxKRColor(k,dq.oi,dq.ki);
         krv=(dq.kr.real&&dq.kr.real!=='—')?cxEsc(dq.kr.real):'—';
         krl=cxEsc(dq.kr.lbl||'');
+        objl=cxEsc((p.okrs&&p.okrs[dq.oi]&&p.okrs[dq.oi].ttl)||'');
+        let tpct=null; try{ tpct=krPct(dq.kr); }catch(e){ tpct=null; }
+        if(tpct!==null&&tpct!==100) pctSpan=' <span style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0">· '+tpct+'% da meta</span>';
+      } else if(p.okrs&&p.okrs[0]&&p.okrs[0].ttl){
+        // Produto com Objetivo mas sem KRs cadastrados: mostra o objetivo
+        objl=cxEsc(p.okrs[0].ttl);
+        krl='';
       }
       tiles+='<div class="cx-tile" style="border-top-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'
         +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
-        +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+'</div>'
-        +'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>'
+        +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+pctSpan+'</div>'
+        +(objl?'<div class="cx-tile-krl" style="color:var(--g);font-weight:700" title="'+objl+'">🎯 '+objl+'</div>':'')
+        +(krl?'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>':'')
         +'</div>';
       });
       if(tiles) sect+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
@@ -6296,14 +6439,6 @@ function cxPageProduto(k){
       if(ln.trim()) rsh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--o)">●</span><div>'+cxEsc(ln.trim())+'</div></div>';
     });
   }
-  (p.riscos||[]).forEach(function(r){
-    const lvl=r.lvl==='alto'?'alto':'med';
-    rsh+='<div class="cx-risk '+lvl+'" style="padding:12px 16px;margin:8px 0">'
-      +'<div class="cx-risk-t" style="font-size:14px">'+cxEsc(r.nm)
-      +'<span class="cx-tag '+(lvl==='alto'?'alto':'')+'">'+(lvl==='alto'?'Alta':'Média')+'</span></div>'
-      +(r.desc?'<div class="cx-risk-d" style="font-size:13px">'+cxEsc(r.desc)+'</div>':'')
-      +'</div>';
-  });
 
   // Destaques do produto (campo ⭐ preenchido pelo time no card do Portfólio)
   let dsh='';
@@ -6330,11 +6465,15 @@ function cxPageProduto(k){
         +'</div>';
     }
   } else if(rsp==='comp'){
-    // Gestão compartilhada: riscos, responsáveis (header), indicadores e evolução — sem backlog/entregas
+    // Gestão compartilhada: indicadores, entregas do tri anterior, evolução, destaques e riscos
     h+='<div class="cx-cols3">'
       +'<div class="cx-card"><div class="cx-card-t">📈 Indicadores</div>'+okrh+'</div>'
-      +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'+(rsh||'<div style="font-size:13px;color:var(--t3)">Sem riscos registrados pelo time.</div>')+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t">📅 Evolução da solução · '+qp.q+'T26</div>'+rdh+'</div>'
+      +'</div>';
+    h+='<div class="cx-cols2" style="margin-top:16px">'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">⭐ Destaques</div>'+(dsh||'<div style="font-size:13px;color:var(--t3)">Sem destaques registrados pelo time.</div>')+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:#c05f00">⚠ Riscos</div>'+(rsh||'<div style="font-size:13px;color:var(--t3)">Sem riscos registrados pelo time.</div>')+'</div>'
       +'</div>';
   } else {
     // Monitoramento estratégico: só grandes marcos e indicador mínimo — card enxuto por desenho, não por falta
