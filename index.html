@@ -691,17 +691,23 @@ button,input,select,textarea{font-family:inherit;}
 .cx-hd-t{color:#fff;font-size:17px;font-weight:800;display:flex;align-items:center;gap:10px;}
 .cx-hd-s{color:rgba(255,255,255,.55);font-size:12px;font-weight:600;}
 .cx-hd-r{display:flex;align-items:center;gap:10px;}
-.cx-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;transition:background .15s;}
+.cx-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;color:#fff;font-size:12px;font-weight:700;padding:8px 14px;cursor:pointer;transition:background .15s,opacity .15s;}
 .cx-btn:hover{background:rgba(255,255,255,.22);}
+.cx-btn-ic{padding:8px 12px;font-size:14px;opacity:.6;}
+.cx-btn-ic:hover{opacity:1;}
 .cx-qgrp{display:flex;border:1px solid rgba(255,255,255,.25);border-radius:8px;overflow:hidden;margin-right:6px;}
 .cx-qbtn{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.65);font-size:12px;font-weight:800;padding:8px 13px;cursor:pointer;transition:all .15s;}
 .cx-qbtn:hover{background:rgba(255,255,255,.18);color:#fff;}
 .cx-qbtn.on{background:var(--o);color:#fff;}
 .cx-body{flex:1;min-height:0;position:relative;overflow:hidden;}
-.cx-strip{display:flex;gap:3px;align-items:center;padding:10px 20px 8px;background:var(--bg);overflow-x:auto;flex-shrink:0;scrollbar-width:thin;scrollbar-color:#dde4ec var(--bg);}
+.cx-strip-wrap{display:flex;align-items:center;gap:6px;background:var(--bg);flex-shrink:0;padding-right:12px;}
+.cx-strip{display:flex;gap:3px;align-items:center;padding:10px 20px 8px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:thin;scrollbar-color:#dde4ec var(--bg);}
 .cx-strip::-webkit-scrollbar{height:6px;}
 .cx-strip::-webkit-scrollbar-track{background:var(--bg);}
 .cx-strip::-webkit-scrollbar-thumb{background:#dde4ec;border-radius:3px;}
+.cx-hd-toggle{flex-shrink:0;width:26px;height:26px;border-radius:7px;border:1.5px solid var(--bd);background:#fff;color:var(--t3);font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cx-hd-toggle:hover{background:var(--gyb);color:var(--tx);}
+#comex-ov.cx-hd-collapsed .cx-hd{display:none;}
 .cx-pill{display:inline-flex;align-items:center;padding:7px 16px 7px 13px;border:1.5px solid var(--bd);border-left-width:6px;border-radius:5px;background:transparent;font-size:12px;font-weight:800;color:var(--t2);cursor:pointer;white-space:nowrap;transition:all .18s;flex-shrink:0;opacity:.38;filter:grayscale(.5);}
 .cx-pill:hover{opacity:.8;filter:grayscale(0);}
 .cx-pill.on{opacity:1;filter:none;background:#fff;color:var(--tx);box-shadow:0 2px 8px rgba(15,23,42,.08);}
@@ -775,14 +781,30 @@ button,input,select,textarea{font-family:inherit;}
 .cx-media{display:block;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px solid var(--bd);object-fit:cover;background:#0b0f14;}
 iframe.cx-media{border:1.5px solid var(--bd);}
 .cx-media-link{display:flex;align-items:center;justify-content:center;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px dashed var(--bd);background:var(--gyb);font-size:13px;font-weight:800;color:var(--g);text-decoration:none;}
+@page{size:landscape;margin:10mm 8mm;}
 @media print{
+  /* preserva as cores/fundos do board — sem isso o Chrome imprime tudo em branco */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
   body.cx-open>*:not(#comex-ov){display:none!important;}
-  #comex-ov{position:static;display:block!important;background:#fff;}
-  .cx-hd,.cx-strip{display:none!important;}
+  #comex-ov{position:static;display:block!important;background:#f4f7fb;}
+  .cx-hd,.cx-strip-wrap{display:none!important;}
   .cx-body{overflow:visible;position:static;}
-  .cx-page{display:block!important;position:static;overflow:visible;page-break-after:always;padding:20px 10px;}
+  .cx-page{display:block!important;position:static;overflow:visible;page-break-after:always;padding:16px 10px;}
   .cx-krsl{display:block!important;}
   .cx-krdots{display:none!important;}
+  /* nunca corta um card/gráfico/indicador ao meio entre duas páginas */
+  .cx-kpi,.cx-card,.cx-risk,.cx-tile,.cx-phd,.cx-et,.cx-krsl,.cx-media,.cx-media-link,.cx-tagchip,canvas,.cx-obj,.cx-li{
+    break-inside:avoid;page-break-inside:avoid;
+  }
+  /* Bug do motor de impressão do Chrome: "flex:1;min-width:0" dentro de um
+     fluxo paginado às vezes calcula largura ~0 para o item de texto quando
+     há um irmão de largura fixa (a imagem do produto), quebrando a
+     descrição em uma palavra por linha. Neutraliza o flex no card de
+     cabeçalho do produto só na impressão, empilhando tudo em bloco. */
+  .cx-phd{display:block!important;}
+  .cx-phd>div{flex:none!important;width:auto!important;max-width:100%!important;min-width:0!important;}
+  .cx-phd-media{margin:14px 0 0;}
+  .cx-phd-tags{margin:14px 0 0;max-width:100%!important;}
 }
 </style>
 
@@ -994,11 +1016,14 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div class="cx-qgrp" id="cx-qgrp">
         <button class="cx-qbtn" onclick="cxSetQ(0)">1T</button><button class="cx-qbtn" onclick="cxSetQ(1)">2T</button><button class="cx-qbtn" onclick="cxSetQ(2)">3T</button><button class="cx-qbtn" onclick="cxSetQ(3)">4T</button>
       </div>
-      <button class="cx-btn" onclick="printComex()">🖨 Imprimir / PDF</button>
+      <button class="cx-btn cx-btn-ic" onclick="printComex()" title="Imprimir / Exportar PDF">🖨</button>
       <button class="cx-btn" onclick="closeComex()">✕ Sair</button>
     </div>
   </div>
-  <div class="cx-strip" id="cx-strip"></div>
+  <div class="cx-strip-wrap" id="cx-strip-wrap">
+    <div class="cx-strip" id="cx-strip"></div>
+    <button class="cx-hd-toggle" id="cx-hd-toggle" onclick="cxToggleHd()" title="Recolher cabeçalho">▲</button>
+  </div>
   <div class="cx-body" id="cx-body"></div>
 </div>
 
@@ -6633,11 +6658,30 @@ function openComex(){
   document.getElementById('comex-ov').classList.add('open');
   document.body.classList.add('cx-open');
   document.addEventListener('keydown',cxKeyHandler);
+  // restaura a preferência de cabeçalho recolhido/expandido
+  let collapsed=false;
+  try{ collapsed=localStorage.getItem('cxHdCollapsed')==='1'; }catch(e){}
+  cxSetHdCollapsed(collapsed);
 }
 function closeComex(){
   document.getElementById('comex-ov').classList.remove('open');
   document.body.classList.remove('cx-open');
   document.removeEventListener('keydown',cxKeyHandler);
+}
+// ── Recolher/expandir o cabeçalho verde no Modo Apresentação ──
+// Com o cabeçalho recolhido, a faixa de produtos passa a ser o topo da tela.
+function cxSetHdCollapsed(collapsed){
+  document.getElementById('comex-ov').classList.toggle('cx-hd-collapsed',collapsed);
+  const btn=document.getElementById('cx-hd-toggle');
+  if(btn){
+    btn.textContent=collapsed?'▼':'▲';
+    btn.title=collapsed?'Expandir cabeçalho':'Recolher cabeçalho';
+  }
+}
+function cxToggleHd(){
+  const collapsed=!document.getElementById('comex-ov').classList.contains('cx-hd-collapsed');
+  cxSetHdCollapsed(collapsed);
+  try{ localStorage.setItem('cxHdCollapsed',collapsed?'1':'0'); }catch(e){}
 }
 function printComex(){ window.print(); }
 
