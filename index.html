@@ -5614,13 +5614,36 @@ function aplicarResumoMDM(d){
   // ── KRs: série mensal (KR1 ← Meta 1 concluída · KR2 ← Meta 2 em operação) ──
   try{
     if(KR_DATA.mdm && KR_DATA.mdm[0]){
+      const k1=KR_DATA.mdm[0][0], k2=KR_DATA.mdm[0][1];
       Object.keys(d.serie||{}).forEach(function(k){
         if(k.slice(0,4)!=='2026') return;
         const mi=+k.slice(5,7)-1; if(mi<0||mi>11) return;
         const s=d.serie[k]||{};
-        if(KR_DATA.mdm[0][0] && s.m1c!=null) KR_DATA.mdm[0][0].r[mi]=s.m1c;
-        if(KR_DATA.mdm[0][1] && s.m2!=null)  KR_DATA.mdm[0][1].r[mi]=s.m2;
+        if(k1 && s.m1c!=null) k1.r[mi]=s.m1c;
       });
+      // Projetado do KR1 ← série mensal de forecast publicada pelo MDM (fc1)
+      if(k1 && d.fc1){
+        Object.keys(d.fc1).forEach(function(k){
+          if(k.slice(0,4)!=='2026') return;
+          const mi=+k.slice(5,7)-1; if(mi<0||mi>11) return;
+          if(d.fc1[k]!=null) k1.p[mi]=d.fc1[k];
+        });
+      }
+      // KR2 (Meta 2) derivado do KR1: realizado e projetado deslocados 2 meses;
+      // orçado = rampa linear do 1º mês orçado da Meta 1 até 25% em dezembro.
+      if(k1 && k2){
+        for(let mi=2;mi<12;mi++){
+          k2.r[mi]=(k1.r[mi-2]!=null)?k1.r[mi-2]:null;
+        }
+        if(d.fc1){
+          for(let mi=0;mi<12;mi++) k2.p[mi]=(mi>=2 && k1.p[mi-2]!=null)?k1.p[mi-2]:null;
+        }
+        const ini=k1.o.findIndex(v=>v!=null&&v>0);
+        if(ini>=0){
+          const n=12-ini;
+          for(let mi=0;mi<12;mi++) k2.o[mi]=(mi<ini)?null:Math.round(250*(mi-ini+1)/n)/10;
+        }
+      }
       if(PRODS.mdm && PRODS.mdm.okrs && PRODS.mdm.okrs[0]){
         (PRODS.mdm.okrs[0].krs||[]).forEach(function(_kr,ki){ syncKRFromEvo('mdm',0,ki); });
       }
