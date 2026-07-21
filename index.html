@@ -263,16 +263,17 @@ button,input,select,textarea{font-family:inherit;}
 /* Agrupamento visual: Desp. Financeira + Custo de Capital + Total com custo
    financeiro ficam cinza clarinho, mostrando que as 2 primeiras compõem a 3ª. */
 .alav-tbl .alav-fin-hl td{background:var(--gyb);}
-/* Resumo Macro (tabela completa de Captura de Valor, aberta ao clicar no gráfico) */
-.cvsum-tbl{width:100%;border-collapse:collapse;font-size:10.5px;white-space:nowrap;}
-.cvsum-tbl th{position:sticky;top:0;background:var(--wh);font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);padding:6px 8px;text-align:left;border-bottom:2px solid var(--bd);z-index:3;}
-.cvsum-tbl td{padding:6px 8px;border-bottom:1px solid var(--gyb);color:var(--t2);vertical-align:top;background:var(--wh);}
-.cvsum-tbl td.cvsum-wrap{white-space:normal;max-width:230px;line-height:1.4;}
-/* Bem mais larga que as outras: com pouco texto por linha a coluna "quebra"
-   em muitas linhas e deixa as colunas de número (curtas) com espaço vazio
-   embaixo — alargando, o texto cabe em poucas linhas e a linha toda encolhe. */
-.cvsum-tbl td.cvsum-wrap-lg{white-space:normal;width:620px;max-width:620px;line-height:1.5;}
-.cvsum-tbl td.cvsum-num{text-align:right;font-variant-numeric:tabular-nums;}
+/* Resumo Macro (tabela completa de Captura de Valor, aberta ao clicar no gráfico).
+   table-layout:fixed + <colgroup> com largura em px por coluna: diferente do
+   layout "auto" (que ignora width em <td> quando o conteúdo de outras linhas é
+   curto), aqui a largura de cada coluna é DEFINITIVA — não depende do conteúdo,
+   então as colunas largas (indicador/memória) ficam garantidamente largas e as
+   estreitas (números) garantidamente estreitas, sem o navegador "decidir" diferente. */
+.cvsum-tbl{table-layout:fixed;border-collapse:collapse;font-size:10.5px;}
+.cvsum-tbl th{position:sticky;top:0;background:var(--wh);font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);padding:6px 8px;text-align:left;border-bottom:2px solid var(--bd);z-index:3;white-space:normal;line-height:1.3;}
+.cvsum-tbl td{padding:6px 8px;border-bottom:1px solid var(--gyb);color:var(--t2);vertical-align:top;background:var(--wh);white-space:normal;overflow-wrap:break-word;line-height:1.4;}
+.cvsum-tbl td.cvsum-wrap-lg{line-height:1.55;}
+.cvsum-tbl td.cvsum-num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .cvsum-tbl tr:hover td{background:var(--gb);}
 .cvsum-tbl .alav-fin-hl td{background:var(--gyb);}
 .cvsum-tbl .alav-fin-hl:hover td{background:var(--gyb);}
@@ -809,11 +810,14 @@ button,input,select,textarea{font-family:inherit;}
 }
 .cx-jn-legend span[data-tip]:hover::after,
 .cx-jn-legend span[data-tip]:hover::before{opacity:1;visibility:visible;}
-.cx-jn-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px 4px;}
-.cx-jn-col{display:flex;flex-direction:column;gap:8px;justify-content:center;flex-shrink:0;}
+/* Fluida como a página de produto (que usa grid 1fr 1fr): as colunas crescem
+   pra preencher a largura toda em tela grande (justify-content:space-between +
+   flex-grow), e encolhem/quebram linha em tela pequena (flex-wrap + min-width). */
+.cx-jn-flow{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:space-between;gap:14px 10px;width:100%;}
+.cx-jn-col{display:flex;flex-direction:column;gap:8px;justify-content:center;flex:1 1 150px;min-width:120px;}
+.cx-jn-col.wide{flex:1.5 1 220px;}
 .cx-jn-arrow{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--bd);flex-shrink:0;padding:0 1px;}
-.cx-jn-box{background:var(--gyb);border:1.5px solid var(--bd);border-radius:10px;padding:9px 10px;min-width:120px;max-width:150px;}
-.cx-jn-box.wide{max-width:216px;}
+.cx-jn-box{background:var(--gyb);border:1.5px solid var(--bd);border-radius:10px;padding:9px 10px;width:100%;box-sizing:border-box;}
 .cx-jn-box-hd{font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--g);margin-bottom:7px;line-height:1.3;}
 .cx-jn-box-pills{display:flex;flex-direction:column;gap:5px;}
 .cx-jn-box-pills.grid{flex-direction:row;flex-wrap:wrap;}
@@ -3079,38 +3083,47 @@ function buildValor(){
 // com o que o board já mostra (sem Racional/Fonte da Informação, removidos do
 // modal por pedido da Lilian). Sempre derivada de CV_LEVERS — nunca hardcoded.
 function buildCVSummaryHtml(){
+  // "w" = largura em px da coluna, usada no <colgroup> abaixo. Com
+  // table-layout:fixed essa largura é definitiva (não depende do conteúdo das
+  // outras linhas) — é o que garante que Indicador/Memória (textão) fiquem
+  // largas e Meta/Apuração (número curto) fiquem estreitas, sempre.
+  const firstCol = {h:'Alavanca', w:190};
   const numCols = [
-    {key:'fin',         h:'Potencial Anual (R$ M)',   fmt:v=>cvFmtM(v)},
-    {key:'uh',          h:'Potencial (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'meta2025_uh', h:'Meta 2025 (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'cap2025_uh',  h:'Capturado 2025 (R$/UH)',   fmt:v=>cvFmtUH(v||0)},
-    {key:'cap2025_mm',  h:'Capturado 2025 (R$ M)',    fmt:v=>cvFmtM((v||0)*1e6)},
-    {key:'meta2026_uh', h:'Meta 2026 (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'meta2027_uh', h:'Meta 2027 (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'meta2028_uh', h:'Meta 2028 (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'meta2029_uh', h:'Meta 2029 (R$/UH)',        fmt:v=>cvFmtUH(v)},
-    {key:'meta2030_uh', h:'Meta 2030 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'fin',         h:'Potencial Anual (R$ M)',   fmt:v=>cvFmtM(v), w:105},
+    {key:'uh',          h:'Potencial (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'meta2025_uh', h:'Meta 2025 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'cap2025_uh',  h:'Capturado 2025 (R$/UH)',   fmt:v=>cvFmtUH(v||0), w:110},
+    {key:'cap2025_mm',  h:'Capturado 2025 (R$ M)',    fmt:v=>cvFmtM((v||0)*1e6), w:110},
+    {key:'meta2026_uh', h:'Meta 2026 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'meta2027_uh', h:'Meta 2027 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'meta2028_uh', h:'Meta 2028 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'meta2029_uh', h:'Meta 2029 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
+    {key:'meta2030_uh', h:'Meta 2030 (R$/UH)',        fmt:v=>cvFmtUH(v), w:100},
   ];
   const txtCols = [
-    {h:'Bloco',           get:d=>cxEsc(d.bloco||'')},
-    {h:'Tipo de Captura', get:d=>cxEsc(d.tipo||'')},
-    {h:'Natureza',        get:d=>cxEsc(d.natureza||'')},
+    {h:'Bloco',           get:d=>cxEsc(d.bloco||''), w:110},
+    {h:'Tipo de Captura', get:d=>cxEsc(d.tipo||''), w:140},
+    {h:'Natureza',        get:d=>cxEsc(d.natureza||''), w:150},
   ];
+  const apur2026Col = {h:'Apuração 2026 (R$/UH)', w:110};
   const tailCols = [
-    {h:'Plano de Ação',           get:d=>d.plano_acao?'Em aberto':'—'},
-    {h:'Indicador Operacional',   get:d=>cxEsc(d.indicador||''), wrap:'lg'},
-    {h:'Memória de Cálculo',      get:d=>cxEsc(d.memoria||''), wrap:'lg'},
-    {h:'Frequência de Apuração',  get:d=>cxEsc(d.freq||''), wrap:true},
-    {h:'Responsável pela Apuração', get:d=>cxEsc(d.resp_apuracao||''), wrap:true},
+    {h:'Plano de Ação',           get:d=>d.plano_acao?'Em aberto':'—', w:100},
+    {h:'Indicador Operacional',   get:d=>cxEsc(d.indicador||''), wrap:'lg', w:480},
+    {h:'Memória de Cálculo',      get:d=>cxEsc(d.memoria||''), wrap:'lg', w:480},
+    {h:'Frequência de Apuração',  get:d=>cxEsc(d.freq||''), wrap:true, w:190},
+    {h:'Responsável pela Apuração', get:d=>cxEsc(d.resp_apuracao||''), wrap:true, w:210},
   ];
   // Apuração 2026: mesma fonte única do card editável no modal da alavanca
   // (evolução mensal, se já houver; senão o campo estático; senão "Em apuração").
   const apur2026 = (k,d) => { const v=cvEvoLatest(k); const vv=(v!=null)?v:d.apuracao2026_uh; return (vv!=null)?cvFmtUH(vv):'Em apuração'; };
 
-  const thead = '<tr><th>Alavanca</th>'
+  const allCols = [firstCol].concat(txtCols, numCols, [apur2026Col], tailCols);
+  const colgroup = '<colgroup>' + allCols.map(c=>'<col style="width:'+c.w+'px">').join('') + '</colgroup>';
+
+  const thead = '<tr><th>'+firstCol.h+'</th>'
     + txtCols.map(c=>'<th>'+c.h+'</th>').join('')
     + numCols.map(c=>'<th>'+c.h+'</th>').join('')
-    + '<th>Apuração 2026 (R$/UH)</th>'
+    + '<th>'+apur2026Col.h+'</th>'
     + tailCols.map(c=>'<th>'+c.h+'</th>').join('')
     + '</tr>';
 
@@ -3120,7 +3133,7 @@ function buildCVSummaryHtml(){
     tds += txtCols.map(c=>'<td>'+c.get(d)+'</td>').join('');
     tds += numCols.map(c=>'<td class="cvsum-num">'+c.fmt(d[c.key])+'</td>').join('');
     tds += '<td class="cvsum-num">'+apur2026(k,d)+'</td>';
-    tds += tailCols.map(c=>'<td class="'+(c.wrap==='lg'?'cvsum-wrap-lg':c.wrap?'cvsum-wrap':'')+'">'+c.get(d)+'</td>').join('');
+    tds += tailCols.map(c=>'<td class="'+(c.wrap==='lg'?'cvsum-wrap-lg':'')+'">'+c.get(d)+'</td>').join('');
     return '<tr'+rowCls+'>'+tds+'</tr>';
   }).join('');
 
@@ -3139,7 +3152,7 @@ function buildCVSummaryHtml(){
   const totCom = totRow('Total com custo financeiro', ()=>true);
   const totSem = totRow('Total sem custo financeiro', k=>!CV_FIN_KEYS.includes(k));
 
-  return '<table class="cvsum-tbl"><thead>'+thead+'</thead><tbody>'+rows+totCom+totSem+'</tbody></table>';
+  return '<table class="cvsum-tbl">'+colgroup+'<thead>'+thead+'</thead><tbody>'+rows+totCom+totSem+'</tbody></table>';
 }
 function openCVSummary(){
   document.getElementById('cvsum-body').innerHTML = buildCVSummaryHtml();
@@ -4684,12 +4697,17 @@ function renderProdRows(filterAlavanca) {
       </div>`;
     }).join('');
 
-    // ── Alavancas
+    // ── Alavancas — mostra também quanto % DAQUELA ALAVANCA este produto
+    // representa (ex.: R$ 4,4M · 11,4% da alavanca), direto de ALAV_PCT — a
+    // mesma fonte e o mesmo número da tabela "Captura por produto" no modal
+    // da alavanca (nunca recalculado/digitado à mão aqui).
     const alavHtml = p.alavancas.map(ak => {
       const isActive = filterAlavanca && ak === filterAlavanca;
       const potVal = p.pot_alav ? p.pot_alav[ak] : null;
+      const pctOfAlav = (ALAV_PCT[ak] && ALAV_PCT[ak][key]!=null) ? ALAV_PCT[ak][key] : null;
+      const pctStr = pctOfAlav!=null ? String(pctOfAlav).replace('.',',') : null;
       return `<div style="background:${isActive?'var(--o)':'var(--ob)'};border:1px solid var(--o);border-radius:6px;padding:5px 9px;margin-bottom:4px;font-size:10px;font-weight:700;color:${isActive?'#fff':'#7a3d00'};${isActive?'box-shadow:0 2px 6px rgba(249,115,22,.3);':''}">
-        ${ALAVANCAS[ak]||ak}${potVal?` <span style="font-size:9px;font-weight:800;opacity:${isActive?1:.7}"> · R$ ${potVal}M</span>`:''}
+        ${ALAVANCAS[ak]||ak}${potVal?` <span style="font-size:9px;font-weight:800;opacity:${isActive?1:.7}"> · R$ ${potVal}M${pctStr!=null?` · ${pctStr}% da alavanca`:''}</span>`:''}
       </div>`;
     }).join('');
 
@@ -6822,7 +6840,10 @@ function cxJourneyHTML(keys){
       }).join('')
     +'</div><div class="cx-jn-flow">';
   CX_JOURNEY.forEach(function(col,i){
-    h+='<div class="cx-jn-col">'+col.map(function(box){ return cxJnBox(box,keys); }).join('')+'</div>';
+    // Colunas com caixa "grid" (ex.: Abastecimento, 11 itens) crescem mais que as
+    // demais — mantém a proporção que existia com max-width fixo, mas agora fluida.
+    const isWide = col.some(function(box){ return box.grid; });
+    h+='<div class="cx-jn-col'+(isWide?' wide':'')+'">'+col.map(function(box){ return cxJnBox(box,keys); }).join('')+'</div>';
     if(i<CX_JOURNEY.length-1) h+='<div class="cx-jn-arrow">→</div>';
   });
   h+='</div>';
