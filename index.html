@@ -253,8 +253,36 @@ button,input,select,textarea{font-family:inherit;}
 .alav-tbl td{padding:7px 8px;border-bottom:1px solid var(--gyb);font-size:11px;color:var(--t2);vertical-align:middle;}
 .alav-tbl td:nth-child(2){text-align:right;color:var(--t3);font-weight:500;}
 .alav-tbl td:nth-child(3){text-align:right;font-weight:800;color:var(--g);}
-.alav-tbl tr:last-child td{border-bottom:none;font-weight:800;color:var(--tx);}
-.alav-tbl tr:last-child td:nth-child(3){font-size:14px;}
+.alav-tbl tbody tr:last-child td{border-bottom:none;}
+/* Linhas de total (com/sem custo financeiro) — classe própria, nunca aplicada
+   por posição (":last-child" pegava sem querer a última alavanca real, que por
+   coincidência é Custo de Capital, deixando-a com destaque de total por engano). */
+.alav-tbl .alav-tot-row td{font-weight:800;color:var(--tx);}
+.alav-tbl .alav-tot-row td:nth-child(3){font-size:13px;color:var(--tx);}
+.alav-tbl tfoot tr:last-child td{border-bottom:none;}
+/* Agrupamento visual: Desp. Financeira + Custo de Capital + Total com custo
+   financeiro ficam cinza clarinho, mostrando que as 2 primeiras compõem a 3ª. */
+.alav-tbl .alav-fin-hl td{background:var(--gyb);}
+/* Resumo Macro (tabela completa de Captura de Valor, aberta ao clicar no gráfico) */
+.cvsum-tbl{width:100%;border-collapse:collapse;font-size:10.5px;white-space:nowrap;}
+.cvsum-tbl th{position:sticky;top:0;background:var(--wh);font-size:8px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--t3);padding:6px 8px;text-align:left;border-bottom:2px solid var(--bd);z-index:3;}
+.cvsum-tbl td{padding:6px 8px;border-bottom:1px solid var(--gyb);color:var(--t2);vertical-align:top;background:var(--wh);}
+.cvsum-tbl td.cvsum-wrap{white-space:normal;max-width:230px;line-height:1.4;}
+/* Bem mais larga que as outras: com pouco texto por linha a coluna "quebra"
+   em muitas linhas e deixa as colunas de número (curtas) com espaço vazio
+   embaixo — alargando, o texto cabe em poucas linhas e a linha toda encolhe. */
+.cvsum-tbl td.cvsum-wrap-lg{white-space:normal;width:620px;max-width:620px;line-height:1.5;}
+.cvsum-tbl td.cvsum-num{text-align:right;font-variant-numeric:tabular-nums;}
+.cvsum-tbl tr:hover td{background:var(--gb);}
+.cvsum-tbl .alav-fin-hl td{background:var(--gyb);}
+.cvsum-tbl .alav-fin-hl:hover td{background:var(--gyb);}
+.cvsum-tbl .alav-tot-row td{font-weight:800;color:var(--tx);border-top:2px solid var(--tx);}
+/* Coluna "Alavanca" e cabeçalho congelados — dá pra rolar pra baixo/pro lado
+   e ainda saber de qual linha/coluna se trata. */
+.cvsum-tbl th:first-child,.cvsum-tbl td:first-child{position:sticky;left:0;z-index:1;box-shadow:2px 0 4px rgba(0,0,0,.06);}
+.cvsum-tbl th:first-child{z-index:4;}
+.cvsum-tbl tr:hover td:first-child{background:var(--gb);}
+.cvsum-tbl .alav-fin-hl td:first-child{background:var(--gyb);}
 .prod-rows{display:flex;flex-direction:column;gap:5px;}
 
 .pr-nm{font-size:11px;font-weight:800;color:var(--tx);}
@@ -759,6 +787,52 @@ button,input,select,textarea{font-family:inherit;}
 .cx-tile.sv{border-top-color:var(--gm);} .cx-tile.so{border-top-color:var(--o);} .cx-tile.sg{border-top-color:var(--gy);}
 .cx-tile-nm{font-size:14.5px;font-weight:800;color:var(--tx);line-height:1.25;margin-bottom:8px;}
 .cx-tile-ft{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:700;color:var(--t3);}
+/* infográfico da jornada (visão geral do modo apresentação) */
+.cx-jn-legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:11px;font-weight:700;color:var(--t2);margin-bottom:18px;}
+.cx-jn-legend span{display:inline-flex;align-items:center;gap:6px;cursor:help;position:relative;}
+.cx-jn-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;}
+.cx-jn-legend i.off{background:#e2e8f0;border:1.5px dashed #94a3b8;}
+/* Tooltip customizado (não depende do title nativo do navegador, que às vezes
+   não aparece / demora demais) — some sempre no hover, com seta apontando pro item. */
+.cx-jn-legend span[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
+  background:#1e293b;color:#fff;padding:8px 11px;border-radius:8px;
+  font-size:10.5px;font-weight:600;line-height:1.45;white-space:normal;
+  width:220px;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.22);
+  opacity:0;visibility:hidden;transition:opacity .12s ease;z-index:80;pointer-events:none;
+}
+.cx-jn-legend span[data-tip]::before{
+  content:'';position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:#1e293b;
+  opacity:0;visibility:hidden;transition:opacity .12s ease;z-index:80;pointer-events:none;
+}
+.cx-jn-legend span[data-tip]:hover::after,
+.cx-jn-legend span[data-tip]:hover::before{opacity:1;visibility:visible;}
+.cx-jn-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px 4px;}
+.cx-jn-col{display:flex;flex-direction:column;gap:8px;justify-content:center;flex-shrink:0;}
+.cx-jn-arrow{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--bd);flex-shrink:0;padding:0 1px;}
+.cx-jn-box{background:var(--gyb);border:1.5px solid var(--bd);border-radius:10px;padding:9px 10px;min-width:120px;max-width:150px;}
+.cx-jn-box.wide{max-width:216px;}
+.cx-jn-box-hd{font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--g);margin-bottom:7px;line-height:1.3;}
+.cx-jn-box-pills{display:flex;flex-direction:column;gap:5px;}
+.cx-jn-box-pills.grid{flex-direction:row;flex-wrap:wrap;}
+.cx-jn-pill{width:100%;box-sizing:border-box;border-left:4px solid var(--bd);border-radius:6px;background:#fff;padding:6px 8px;font-size:10.5px;font-weight:700;color:var(--tx);line-height:1.25;box-shadow:0 1px 3px rgba(15,23,42,.06);}
+.cx-jn-box-pills.grid .cx-jn-pill{width:auto;flex:1 1 88px;min-width:88px;}
+.cx-jn-pill.on{cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.cx-jn-pill.on:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(15,23,42,.12);}
+.cx-jn-pill.off{background:#fff;border-left-style:dashed;font-weight:600;cursor:default;opacity:.42;box-shadow:none;}
+.cx-jn-orphans{margin-top:18px;border-top:1px solid var(--bd);padding-top:14px;}
+.cx-jn-orphans-toggle{font-size:11.5px;font-weight:800;color:var(--g);cursor:pointer;display:inline-block;user-select:none;}
+.cx-jn-orphans-body{display:none;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.cx-jn-orphans-body.on{display:flex;}
+.cx-jn-plr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.cx-jn-plr-card{background:#fff;border:1.5px solid var(--bd);border-left:5px solid var(--a4);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s;}
+.cx-jn-plr-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08);}
+.cx-jn-plr-prod{font-size:10.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;}
+.cx-jn-plr-ttl{font-size:13.5px;font-weight:700;color:var(--tx);line-height:1.35;margin-bottom:8px;}
+.cx-jn-plr-kr{font-size:19px;font-weight:800;letter-spacing:-.4px;}
+.cx-jn-plr-krl{font-size:10.5px;color:var(--t3);font-weight:600;margin-top:2px;}
 /* one-pager de produto */
 .cx-phd{background:#fff;border:1.5px solid var(--bd);border-radius:14px;padding:22px 28px;display:flex;justify-content:space-between;gap:24px;align-items:flex-start;border-left-width:6px;margin-bottom:16px;}
 .cx-phd-nm{font-size:32px;font-weight:800;letter-spacing:-1.2px;color:var(--tx);line-height:1.1;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
@@ -871,6 +945,27 @@ iframe.cx-media{border:1.5px solid var(--bd);}
             }
           }
         });
+        // Load CV_EVO overrides (apuração mensal 2026 por alavanca)
+        const cvEvoSnap = await getDocs(collection(db, 'cv_evo'));
+        cvEvoSnap.forEach(d => {
+          if (window.CV_EVO && window.CV_EVO[d.id]) {
+            const v = d.data();
+            if (v && Array.isArray(v.r)) window.CV_EVO[d.id].r = v.r;
+          }
+        });
+        // Load CV_PCT overrides (alocação % por produto, só as 7 alavancas-base)
+        const cvPctSnap = await getDocs(collection(db, 'cv_pct'));
+        let cvPctChanged = false;
+        cvPctSnap.forEach(d => {
+          if (window.ALAV_PCT && window.ALAV_PCT[d.id]) {
+            Object.assign(window.ALAV_PCT[d.id], d.data());
+            cvPctChanged = true;
+          }
+        });
+        if (cvPctChanged) {
+          if (typeof window.recomputeCVDerivedPct === 'function') window.recomputeCVDerivedPct();
+          if (typeof window.recomputeCVPot === 'function') window.recomputeCVPot();
+        }
         if (window.setSyncStatus) window.setSyncStatus('ok');
         // Corrige nomes legados persistidos (ex.: "DAEane" → "Daeane") e re-salva docs alterados
         if (typeof window.fixLegacyNames === 'function') window.fixLegacyNames();
@@ -936,7 +1031,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       style="font-size:10px;font-weight:700;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px">
       <span>👤</span><span id="editor-badge-txt">Identificar-se</span>
     </div>
-    <div class="hd-pill">Potencial total <b>R$ 408M · 10,2k/UH</b></div>
+    <div class="hd-pill">Potencial total <b id="hd-pill-pot">—</b></div>
     <!-- ⋮ menu -->
     <div style="position:relative" id="hd-menu-wrap">
       <button onclick="toggleHdMenu()" style="background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;font-size:18px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1" title="Mais opções">⋮</button>
@@ -1050,13 +1145,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     </div>
     <div class="kpi ka" onclick="showKpi('potencial')">
       <div class="kpi-lbl">Potencial Anual</div>
-      <div class="kpi-val a sm">R$ 408M</div>
-      <div class="kpi-sub">c/ custo financeiro · 8 produtos</div>
+      <div class="kpi-val a sm" id="kpi-mapa-pot">—</div>
+      <div class="kpi-sub" id="kpi-mapa-pot-sub">—</div>
     </div>
     <div class="kpi kv" onclick="showKpi('potencial')">
       <div class="kpi-lbl">Potencial por UH</div>
-      <div class="kpi-val v sm">R$ 3,5k</div>
-      <div class="kpi-sub">Custo evitado / unidade habitacional</div>
+      <div class="kpi-val v sm" id="kpi-mapa-uh">—</div>
+      <div class="kpi-sub">Custo evitado / unidade habitacional · c/ custo financeiro</div>
     </div>
   </div>
 
@@ -1147,18 +1242,18 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     </div>
     <div class="kpi kv" onclick="showKpi('potencial')">
       <div class="kpi-lbl">Potencial Acum. até 2030 · por UH</div>
-      <div class="kpi-val v sm">R$ 10,2k</div>
-      <div class="kpi-sub">R$ 408M total · 10.205,9 R$/UH</div>
+      <div class="kpi-val v sm" id="kpi-port-uh">—</div>
+      <div class="kpi-sub" id="kpi-port-uh-sub">—</div>
     </div>
     <div class="kpi ko" style="cursor:default">
       <div class="kpi-lbl">Captura 2025 · realizado</div>
-      <div class="kpi-val o sm">R$ 1,8k</div>
-      <div class="kpi-sub">R$ 71M · vs 1,2k previsto ✓</div>
+      <div class="kpi-val o sm" id="kpi-port-cap25">—</div>
+      <div class="kpi-sub" id="kpi-port-cap25-sub">—</div>
     </div>
     <div class="kpi ka" onclick="showKpi('potencial')">
-      <div class="kpi-lbl">Foco Captura 2026 · acum/UH</div>
-      <div class="kpi-val a sm">R$ 3,5k</div>
-      <div class="kpi-sub">R$ 139M acumulado previsto</div>
+      <div class="kpi-lbl">Meta Acum. 2026 · 40% da meta</div>
+      <div class="kpi-val a sm" id="kpi-port-meta26">—</div>
+      <div class="kpi-sub" id="kpi-port-meta26-sub">—</div>
     </div>
   </div>
 
@@ -1231,28 +1326,30 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--gm)">
       <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Potencial Acumulado até 2030 · por UH</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)">R$ 10,2k</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 408M total · 10.205,9 R$/UH</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--g)" id="cv-kpi-pot">—</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px" id="cv-kpi-pot-sub">—</div>
     </div>
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid #F58220">
       <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Captura 2025 · realizado por UH</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:#F58220">R$ 1,8k</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 71M realizado · vs 1,2k previsto ✓</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:#F58220" id="cv-kpi-cap25">—</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px" id="cv-kpi-cap25-sub">—</div>
     </div>
     <div style="background:var(--wh);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);border-top:3px solid var(--a1)">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Foco de Captura 2026 · acum. por UH</div>
-      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--a1)">R$ 3,5k</div>
-      <div style="font-size:10px;color:var(--t3);margin-top:3px">R$ 139M acumulado previsto</div>
+      <div style="font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Meta Acumulada 2026 · por UH</div>
+      <div style="font-size:26px;font-weight:800;letter-spacing:-1.5px;color:var(--a1)" id="cv-kpi-meta26">—</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:3px" id="cv-kpi-meta26-sub">—</div>
     </div>
   </div>
 
   <!-- Chart + Alavancas (sincronizados) -->
   <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-bottom:14px;align-items:stretch">
     <div class="cv-box" style="display:flex;flex-direction:column">
-      <div class="cv-ttl">Calendarização de Captura de Valor</div>
+      <div class="cv-ttl">Calendarização de Captura de Valor
+        <span style="font-size:9px;font-weight:400;color:var(--t3);margin-left:6px">clique no gráfico para ver o resumo macro completo</span>
+      </div>
       <div class="cv-sub">Barras = Potencial Anual (R$/UH mil) · Linha = Potencial Acumulado (R$ MM)</div>
       <div style="flex:1;min-height:0;position:relative">
-        <canvas id="cvChart" style="position:absolute;inset:0;width:100%!important;height:100%!important"></canvas>
+        <canvas id="cvChart" onclick="openCVSummary()" style="position:absolute;inset:0;width:100%!important;height:100%!important;cursor:pointer"></canvas>
       </div>
     </div>
     <div class="cv-box">
@@ -1261,18 +1358,9 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       </div>
       <table class="alav-tbl" id="alav-tbl">
         <colgroup><col><col style="width:66px"><col style="width:74px"></colgroup>
-        <thead><tr><th>Alavanca</th><th>c/ fin. (M)</th><th>Pot./UH</th></tr></thead>
-        <tbody>
-          <tr class="alav-row" data-alavanca="seq_mo" onclick="openAlavModal('seq_mo')"><td>Seq. MO e Produtividade</td><td>134,4</td><td>3360</td></tr>
-          <tr class="alav-row" data-alavanca="rccp"   onclick="openAlavModal('rccp')"><td>Disp. Recursos Críticos</td><td>121,0</td><td>3024</td></tr>
-          <tr class="alav-row" data-alavanca="nao_q"  onclick="openAlavModal('nao_q')"><td>Red. Custo Não Qualidade</td><td>44,8</td><td>1120</td></tr>
-          <tr class="alav-row" data-alavanca="spot"   onclick="openAlavModal('spot')"><td>Red. Compra SPOT</td><td>33,6</td><td>840</td></tr>
-          <tr class="alav-row" data-alavanca="hc"     onclick="openAlavModal('hc')"><td>Red. HC: Automações</td><td>24,6</td><td>616</td></tr>
-          <tr class="alav-row" data-alavanca="prazo"  onclick="openAlavModal('prazo')"><td>Red. Multa Atraso Prazo</td><td>22,4</td><td>560</td></tr>
-          <tr class="alav-row" data-alavanca="desp_fin" onclick="openAlavModal('desp_fin')"><td>Red. Desp. Financeira (Estoque)</td><td>15,3</td><td>383,5</td></tr>
-          <tr class="alav-row" data-alavanca="usinas" onclick="openAlavModal('usinas')"><td>Usinas de Concreto</td><td>12,1</td><td>302,4</td></tr>
-          <tr style="font-weight:800"><td>Total anual</td><td>408,2</td><td>10.205,9</td></tr>
-        </tbody>
+        <thead><tr><th>Alavanca</th><th>Potencial Total (M)</th><th>Pot./UH</th></tr></thead>
+        <tbody id="alav-tbl-body"><!-- preenchido por renderAlavTable(), fonte única: CV_LEVERS --></tbody>
+        <tfoot id="alav-tbl-foot"></tfoot>
       </table>
     </div>
   </div>
@@ -1298,7 +1386,8 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <div class="msdd-panel">
           <label class="msdd-opt"><input type="checkbox" value="sincroniza" data-lbl="Sincroniza" onchange="msddChange('valor-prod')">Sincroniza</label>
           <label class="msdd-opt"><input type="checkbox" value="compilador" data-lbl="Compilador BIM" onchange="msddChange('valor-prod')">Compilador BIM</label>
-          <label class="msdd-opt"><input type="checkbox" value="ecopam" data-lbl="ECO-PAM" onchange="msddChange('valor-prod')">ECO-PAM</label>
+          <label class="msdd-opt"><input type="checkbox" value="eco" data-lbl="ECO" onchange="msddChange('valor-prod')">ECO</label>
+          <label class="msdd-opt"><input type="checkbox" value="pam" data-lbl="PAM" onchange="msddChange('valor-prod')">PAM</label>
           <label class="msdd-opt"><input type="checkbox" value="obra360" data-lbl="Obra 360" onchange="msddChange('valor-prod')">Obra 360</label>
           <label class="msdd-opt"><input type="checkbox" value="prateleira" data-lbl="Prateleira MO" onchange="msddChange('valor-prod')">Prateleira MO</label>
           <label class="msdd-opt"><input type="checkbox" value="ia" data-lbl="IA" onchange="msddChange('valor-prod')">IA (Zé · Daeane)</label>
@@ -1509,6 +1598,14 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   </div>
 </div>
 
+<!-- RESUMO MACRO — CAPTURA DE VALOR (tabela completa, só com o que está no board) -->
+<div class="kpi-mbg" id="cvsum-mbg" onclick="if(event.target.id==='cvsum-mbg')closeCVSummary()">
+  <div class="kpi-md" style="width:1560px;max-width:97vw">
+    <div class="kpi-md-hd"><div class="kpi-md-ttl">📋 Resumo Macro · Captura de Valor <span style="font-size:9px;font-weight:400;color:var(--t3);margin-left:6px">só com o que está neste board</span></div><button class="kpi-md-x" onclick="closeCVSummary()">✕</button></div>
+    <div class="kpi-md-body" id="cvsum-body" style="max-height:78vh;overflow:auto"></div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div class="edit-mbg" id="edit-mbg" onclick="if(event.target.id==='edit-mbg')closeEdit()">
   <div class="edit-md">
@@ -1562,15 +1659,19 @@ const AMBS = {
   gc:    {id:'gc',  lbl:'Geração de Caixa',    cls:'a3'},
   nps:   {id:'nps', lbl:'NPS 6m',              cls:'a4'},
 };
+// ── Alavancas de Valor: fonte única = "Captura de Valor JIP - Plataformas e Sistemas.xlsx",
+// aba "Matriz Revisada" (conceitos e números validados). 9 alavancas oficiais.
+// "Usinas de Concreto" foi removida por não constar mais na matriz oficial.
 const ALAVANCAS = {
-  seq_mo:  'Seq. MO e Produtividade',
-  rccp:    'Disp. Recursos Críticos',
-  nao_q:   'Red. Custo Não Qualidade',
-  spot:    'Red. Compra SPOT',
-  hc:      'Red. HC: Automações',
-  prazo:   'Red. Multa Atraso Prazo',
-  desp_fin:'Red. Desp. Financeira (Estoque)',
-  usinas:  'Usinas de Concreto',
+  rccp:        'Disp. Recursos Críticos',
+  seq_mo:      'Seq. MO e Produtividade',
+  spot:        'Red. Compra SPOT',
+  hc:          'Red. HC: Automações',
+  estoque:     'Red. Estoque de Materiais',
+  prazo:       'Red. Multa Atraso Prazo',
+  nao_q:       'Red. Custo Não Qualidade',
+  desp_fin:    'Red. Desp. Financeira (Estoque)',
+  custo_capital:'Custo de Capital (Desembolso)',
 };
 
 const PRODS = {
@@ -1847,168 +1948,409 @@ const RESP_DEFAULT = {
   inbound:'mon', comex:'mon', cd:'mon', reformatrib:'mon',
   radar:'mon', usinaconcreto:'mon', fabricakits:'mon', hubformas:'mon'
 };
-function prodResp(key){ const p=PRODS[key]; return (p&&p.resp)||RESP_DEFAULT[key]||'dir'; }
+// Produto sem modelo de gestão definido (nem no cadastro, nem em RESP_DEFAULT) vira
+// "monitoramento estratégico" por padrão — pedido da Lilian, política mais conservadora
+// que assumir gestão direta por omissão.
+function prodResp(key){ const p=PRODS[key]; return (p&&p.resp)||RESP_DEFAULT[key]||'mon'; }
 const FASE = {
   f1:     new Set(['sincroniza','compilador','lego','mdm','ecopam','novaeap','obra360','prateleira','smp','ze','daeans','eco','pam','catracas']),
   gestao: new Set(['nexus','simurb','compras360','inbound','comex','cd','reformatrib']),
 };
 function faseOf(key){ return FASE.f1.has(key) ? 'f1' : (FASE.gestao.has(key) ? 'gestao' : ''); }
 
-// ── Captura de Valor: apenas produtos que compartilham valor (Imagem 2) ──
-// ECO-PAM permanece unificado (somando capturas); as IAs (Zé + Daeane) entram
-// unificadas como "IA". Os demais produtos seguem intactos nas outras abas.
-const CV_KEYS = ['sincroniza','compilador','ecopam','obra360','prateleira','ia','lego','smp'];
-const CV_POT  = {sincroniza:79,compilador:40,ecopam:106,obra360:69,prateleira:55,ia:21,lego:7,smp:23};
+// ══════════════════════════════════════════════════════════════════════════
+// CAPTURA DE VALOR — fonte única e oficial: planilha "Captura de Valor JIP -
+// Plataformas e Sistemas.xlsx" (abas "Matriz Revisada", "Detalhe HC" e
+// "Alocacao Original Produtos"). Conceitos e números validados; em aberto
+// apenas a apuração de 2026 (campo apuracao2026_uh, editável no dashboard).
+//
+// CV_LEVERS é a ÚNICA fonte dos números por alavanca (fin/uh/metas/memória).
+// ALAV_PCT é a ÚNICA fonte de alocação por produto. Tudo o mais (tabela da
+// aba, modal de alavanca, CV_POT por produto, Conexões) é DERIVADO destes
+// dois objetos em tempo de execução — evita ter valores divergentes em
+// lugares diferentes do board.
+// ══════════════════════════════════════════════════════════════════════════
+const CV_LEVERS = {
+  rccp:{
+    bloco:'Custo Obra', tipo:'Custo evitado', natureza:'Recorrente Anual',
+    fin:108000000, uh:2700,
+    racional:'Custo evitado de obras que iniciaram dentro da cartilha em relação a obras que iniciaram fora. Estudo comparativo chegou a R$ 2,7k/UH.\n\nResgatar memória do estudo. RCCP ou Recursos Críticos com João Gandra.',
+    fonte_h:'Lucas / João Gandra?', resp_apuracao:'Marcos',
+    plano_acao:'Avaliar as obras que iniciaram em 23/24, se na conclusão capturaram. Continuar acompanhando.\n\nDefinir fonte oficial da informação para apuração trimestral.',
+    indicador:'% de obras que iniciam dentro da cartilha, com os recursos críticos disponíveis no momento planejado',
+    memoria:'Comparar o Desembolso Unitário (DU) realizado por UH de obras equivalentes que iniciaram dentro e fora da cartilha. Captura = (DU/UH do grupo fora − DU/UH do grupo dentro) × UH elegíveis das obras dentro da cartilha.',
+    fonte_m:'Memória do estudo RCCP / Recursos Críticos; base de classificação das obras; custo realizado e UH. Lucas/CEI.\nDefinir fonte oficial da informação para apuração trimestral.',
+    freq:'Trimestral, por coorte de obras concluídas',
+    meta2025_uh:405, cap2025_uh:1125, cap2025_mm:45, apuracao2026_uh:null,
+    meta2026_uh:1080, meta2027_uh:1755, meta2028_uh:2160, meta2029_uh:2430, meta2030_uh:2700
+  },
+  seq_mo:{
+    bloco:'Custo Obra', tipo:'Prazo/produtividade', natureza:'Recorrente Anual',
+    fin:120000000, uh:3000,
+    racional:'Retenção, sequenciamento e treinamento de mão de obra elevam produtividade em serviços críticos, reduzem acidentes, demissão, contratação, treinamento, EPI e prazo de obra.\n\nAgenda gravada com o Paulo sobre o estudo em 20/07/2026. Explica a relação entre 30%-40% de produtividade e redução de 3 a 5 meses de obra. Ref. de custo: cada mês da obra custa 0,1 MRV.',
+    fonte_h:'Paulo', resp_apuracao:'Marcos',
+    plano_acao:'Tempo médio de casa de CA da obra; comparar resultado de prazo entre obras. | Com hipótese validada multiplicar por obras (UH) com o tempo médio de casa maior que 3 anos.\n\nDefinir fonte oficial da informação para apuração trimestral.\n\nRetomar fontes Painel Performance JIP (feito pela Camila Velho, mas não publicado, está na pasta de Transformação da Produção).',
+    indicador:'% de obras elegíveis com MO sequenciada e tempo médio de casa superior a 3 anos',
+    memoria:'Validar no estudo a economia por UH de equipes retidas, treinadas e sequenciadas versus equipes novas. Captura = saving validado por UH × UH das obras que atendem ao critério de tempo de casa e adoção do sequenciamento.',
+    fonte_m:'Estudo do Parra/Paulo; base de tempo médio de casa de CA; dados de produtividade, prazo e UH das obras. Localizar com Paulo.\nDefinir fonte oficial da informação para apuração trimestral.',
+    freq:'Trimestral, por coorte de obras',
+    meta2025_uh:450, cap2025_uh:407, cap2025_mm:16.28, apuracao2026_uh:null,
+    meta2026_uh:1200, meta2027_uh:1950, meta2028_uh:2400, meta2029_uh:2700, meta2030_uh:3000
+  },
+  spot:{
+    bloco:'Custo Obra', tipo:'Materiais/negociação', natureza:'Recorrente Anual',
+    fin:30100000, uh:752.5,
+    racional:'MRP, ECO-PAM, MDM e previsibilidade de compras reduzem necessidade de compra spot. Premissa: spot é 20% mais caro que contrato; reduzir compra spot em 50% (de 8,1% para 4%), desconsiderando alumínio.',
+    fonte_h:'Machado', resp_apuracao:'Lilian',
+    plano_acao:'2024: 8,1%; objetivo reduzir 50% de compra spot, chegar em 4%. Acompanhamento no Painel Perfil de Compras SPM046.',
+    indicador:'% do valor de compras elegíveis realizado via spot',
+    memoria:'Captura = (percentual spot de referência − percentual spot apurado) × valor de compras elegíveis × diferencial médio de custo spot versus contrato. Premissas atuais: referência de 8,1%, objetivo de 4%, diferencial de 20% e exclusão de alumínio.',
+    fonte_m:'Painel Perfil de Compras SPM046; Machado.',
+    freq:'Mensal',
+    meta2025_uh:112.875, cap2025_uh:204, cap2025_mm:8.16, apuracao2026_uh:null,
+    meta2026_uh:301, meta2027_uh:489.125, meta2028_uh:602, meta2029_uh:677.25, meta2030_uh:752.5
+  },
+  hc:{
+    bloco:'Custo Obra', tipo:'Automação/HC', natureza:'Recorrente Anual',
+    fin:27950400, uh:698.76,
+    racional:'Automações e simplificação de processos reduzem operadores em compras, controle, orçamento, suprimentos e rotinas de obra.',
+    fonte_h:'João Gandra / Boanerges / Orçamento / Obras', resp_apuracao:'Lilian e Marcos (cada frente precisa dessa apuração, sendo que o resultado é a somatória)',
+    plano_acao:'Marcos levanta horas X custo financeiro Obra 360 / Lilian levanta horas X custo financeiro Compilador Visão Obra.\n\nNo dashboard do time, cada produto deve ter um KR considerando essa alavanca.\n\nPlano de ação também na aba Detalhe HC (Responsável: Lilian).',
+    indicador:'HC reduzido ou contratação evitada por iniciativa, suportado pelas horas de trabalho eliminadas',
+    memoria:'Por iniciativa, calcular a redução ou contratação evitada de HC. Método-base: quantidade de HC × custo mensal completo × meses × fator de captura. Quando a evidência for economia de tempo: horas eliminadas × frequência × volume × custo/hora, reconhecendo financeiramente apenas a parcela convertida em HC reduzido ou evitado.',
+    fonte_m:'Aba Detalhe HC; bases de RH/custo; estudos de tempo e uso do Obra 360 e Compilador Visão Obra; João Gandra, Boanerges, Orçamento e Obras.',
+    freq:'Trimestral',
+    meta2025_uh:104.814, cap2025_uh:0, cap2025_mm:0, apuracao2026_uh:null,
+    meta2026_uh:279.504, meta2027_uh:454.194, meta2028_uh:559.008, meta2029_uh:628.884, meta2030_uh:698.76
+  },
+  estoque:{
+    bloco:'Ativo / Estoque', tipo:'Capital empregado', natureza:'Único',
+    fin:100000000, uh:2500,
+    racional:'Redução do gap de R$ 100MM entre estoque ideal e estoque real gerencial de materiais. O ganho ocorre uma vez; depois a base se mantém menor.\n\nConsiderar que o MRP pode aumentar estoque planejado nos primeiros 3 a 6 meses. Separar estoque planejado de estoque indesejado.',
+    fonte_h:'Machado', resp_apuracao:'Lilian',
+    plano_acao:'Não tratar como economia recorrente de custo de obra. | Tem R$350MM e deveria ter R$250MM | Consultar estoque atual, dividido pelas UH hoje, e considerar o ganho | Painel de Materiais ENGPDC005 | Não vincula só quando o MRP será implantado — toda feature que viabiliza a cultura de planejamento alavanca | Cabo, janela e aço são os principais GMs de estoque.',
+    indicador:'Estoque médio de materiais por UH, separando estoque planejado e indesejado',
+    memoria:'Captura única = estoque gerencial apurado − estoque planejado/ideal validado. Captura por UH = redução efetiva do estoque ÷ UH da base elegível. Acompanhar saldo médio para reduzir efeito de oscilações de fechamento.',
+    fonte_m:'Painel de Materiais ENGPDC005; Machado. Detalhar por obra e GM, com foco inicial em cabo, janela e aço.',
+    freq:'Mensal',
+    meta2025_uh:375, cap2025_uh:0, cap2025_mm:0, apuracao2026_uh:null,
+    meta2026_uh:1000, meta2027_uh:1625, meta2028_uh:2000, meta2029_uh:2250, meta2030_uh:2500
+  },
+  prazo:{
+    bloco:'Custo Obra', tipo:'Multa/desembolso', natureza:'Recorrente desembolso',
+    fin:20000000, uh:500,
+    racional:'Projeto SIM reduz atrasos de obra e, por consequência, desembolso com multa a cliente.\n\nConfirmar se a captura é R$20MM ou se a base de R$60MM caiu para R$20MM, o que implicaria ganho maior.',
+    fonte_h:'Lucas Palermo', resp_apuracao:'Marcos',
+    plano_acao:'Avaliar com a Kátia onde mede a multa.\n\nDefinir fonte oficial da informação para apuração trimestral.',
+    indicador:'Despesa com multa por UH entregue',
+    memoria:'Captura = (multa de referência por UH − multa apurada por UH) × UH entregues no período, controlando obras elegíveis e causas de atraso relacionadas à atuação do portfólio.',
+    fonte_m:'Fonte a localizar com Kátia; validar base do Lucas Palermo.\nDefinir fonte oficial da informação para apuração trimestral.',
+    freq:'Mensal, com consolidação trimestral',
+    meta2025_uh:75, cap2025_uh:0, cap2025_mm:0, apuracao2026_uh:null,
+    meta2026_uh:200, meta2027_uh:325, meta2028_uh:400, meta2029_uh:450, meta2030_uh:500
+  },
+  nao_q:{
+    bloco:'Custo Obra', tipo:'Resserviço/AT', natureza:'Recorrente desembolso',
+    fin:40000000, uh:1000,
+    racional:'Redução de notas de materiais e serviços em blocos entregues para assistência técnica. Inclui resserviço para adequação; não zera porque há limpeza e preparação de apto.',
+    fonte_h:'Kátia / Pablo', resp_apuracao:'Marcos',
+    plano_acao:'Avaliar se painel ENGPDC009 garante essa visão, senão avaliar com o Pablo possibilidades.\nFiltro no painel: Correção da VA + pós 99%.',
+    indicador:'Custo evitável de não qualidade por UH entregue, considerando correção da VA e pós-99%',
+    memoria:'Captura = (custo evitável de não qualidade por UH na referência − custo evitável apurado por UH) × UH entregues. Considerar correção da VA, pós-99%, materiais e serviços; excluir limpeza, preparação e demais custos estruturais inevitáveis.',
+    fonte_m:'Painel ENGPDC009; levantamento de correção da VA e pós-99%; Kátia e Pablo.',
+    freq:'Mensal, com consolidação trimestral',
+    meta2025_uh:150, cap2025_uh:0, cap2025_mm:0, apuracao2026_uh:null,
+    meta2026_uh:400, meta2027_uh:650, meta2028_uh:800, meta2029_uh:900, meta2030_uh:1000
+  },
+  desp_fin:{
+    bloco:'Custo Financeiro', tipo:'Financeiro derivado', natureza:'Derivada financeira',
+    fin:15340000, uh:383.5,
+    racional:'Redução do custo financeiro anual associado a manter estoque de materiais acima do necessário.\n\nMaterial do Comex de 30/03/26 cita: adição da captura referente à redução da desp. financeira por redução do estoque de materiais (ref.: 15,3% a.a.).',
+    fonte_h:'Lucas', resp_apuracao:'Lilian',
+    plano_acao:'Deriva da redução de estoque; não somar como captura operacional independente.',
+    indicador:'Redução média efetiva do saldo de estoque',
+    memoria:'Captura financeira derivada = redução média efetiva do saldo de estoque × taxa anual de custo financeiro × fração do ano em que a redução permaneceu. Não reconhecer separadamente sem a apuração da redução de estoque.',
+    fonte_m:'Apuração de estoque no ENGPDC005 + taxa financeira oficial; material do Comex de 30/03/2026.',
+    freq:'Trimestral, derivada da medição de estoque',
+    meta2025_uh:57.525, cap2025_uh:null, cap2025_mm:null, apuracao2026_uh:null,
+    meta2026_uh:153.4, meta2027_uh:249.275, meta2028_uh:306.8, meta2029_uh:345.15, meta2030_uh:383.5
+  },
+  custo_capital:{
+    bloco:'Custo Financeiro', tipo:'Financeiro derivado', natureza:'Derivada financeira',
+    fin:38326000, uh:958.15,
+    racional:'Ao reduzir desembolso das capturas operacionais, reduz-se necessidade de capital/empréstimo. Planilha aplica 11% sobre R$ 348,42MM.\n\nMaterial do Comex de 30/03/26 cita: a promessa de captura de valor foi atualizada considerando a redução do custo financeiro associado ao menor desembolso anual (ref.: 12% a.a.).',
+    fonte_h:'Lucas', resp_apuracao:'Lilian',
+    plano_acao:'Se a base operacional revisada mudar, esta linha precisa recalcular.',
+    indicador:'Redução efetiva dos desembolsos operacionais elegíveis',
+    memoria:'Captura financeira derivada = soma das reduções efetivas de desembolso das capturas operacionais × taxa anual de custo de capital × fração do ano. Recalcular quando a base operacional for atualizada.',
+    fonte_m:'Apuração validada das capturas operacionais + taxa financeira oficial; material do Comex de 30/03/2026.',
+    freq:'Trimestral, após fechamento das capturas-base',
+    meta2025_uh:143.7225, cap2025_uh:null, cap2025_mm:null, apuracao2026_uh:null,
+    meta2026_uh:383.26, meta2027_uh:622.7975, meta2028_uh:766.52, meta2029_uh:862.335, meta2030_uh:958.15
+  },
+};
+// Regra oficial das duas linhas "financeiro derivado" — SEMPRE calculadas a
+// partir das capturas-base (nunca digitadas à mão), para que qualquer revisão
+// de captura recalcule as duas automaticamente, sem risco de divergência:
+//   • Red. Desp. Financeira (Estoque) = 15,3% × captura de Red. Estoque de Materiais
+//   • Custo de Capital (Desembolso)   = 11%   × soma de todas as demais capturas 2025
+// Base de conversão R$/UH ↔ total: 40.000 UH (mesma referência usada na
+// apuração capturada 2025).
+const CV_UH_BASE = 40000;
+function recalcCVFinDerivadas(){
+  const capEstoque = CV_LEVERS.estoque.cap2025_mm;
+  CV_LEVERS.desp_fin.cap2025_mm = (capEstoque==null) ? null : Math.round(capEstoque*0.153*1000)/1000;
+  CV_LEVERS.desp_fin.cap2025_uh = (CV_LEVERS.desp_fin.cap2025_mm==null) ? null : Math.round(CV_LEVERS.desp_fin.cap2025_mm*1e6/CV_UH_BASE*10)/10;
+
+  const somaCapturas = Object.entries(CV_LEVERS)
+    .filter(([k])=>k!=='custo_capital')
+    .reduce((s,[,l])=>s+(l.cap2025_mm||0),0);
+  CV_LEVERS.custo_capital.cap2025_mm = Math.round(somaCapturas*0.11*1000)/1000;
+  CV_LEVERS.custo_capital.cap2025_uh = Math.round(CV_LEVERS.custo_capital.cap2025_mm*1e6/CV_UH_BASE*10)/10;
+}
+recalcCVFinDerivadas();
+// Apuração mensal 2026, por alavanca — editável no dashboard (mesmo padrão da
+// Evolução de KRs). CV_EVO[key].r[mi] = valor acumulado no ano, em R$/UH, no
+// mês mi (0=Jan..11=Dez). 2025 permanece fixo (CV_LEVERS.cap2025_uh, já
+// oficial) — não editável aqui. Persistido em Firestore na coleção 'cv_evo'.
+const CV_EVO = {};
+Object.keys(CV_LEVERS).forEach(k => { CV_EVO[k] = { r: Array(12).fill(null) }; });
+// Última apuração 2026 preenchida (mês mais recente com valor) — fonte única
+// para qualquer exibição do "Apuração 2026" no board.
+function cvEvoLatest(key){
+  const kd = (window.CV_EVO||CV_EVO)[key];
+  if(!kd || !kd.r) return null;
+  const v = kd.r.slice(0, CUR_M+1).reverse().find(x=>x!==null&&x!==undefined);
+  return (v===undefined) ? null : v;
+}
+// Totais oficiais (aba Matriz Revisada, linhas "Total"): usados no header, KPIs
+// e calendarização — nunca recalcular à mão, sempre a partir de CV_LEVERS.
+const CV_FIN_KEYS = ['desp_fin','custo_capital']; // alavancas "financeiro derivado" — somadas só no total "com custo financeiro"
+const CV_TOTAL_COM_FIN = Object.values(CV_LEVERS).reduce((s,l)=>s+l.fin,0); // R$ 499.716.400 (~R$500M)
+const CV_TOTAL_SEM_FIN = Object.entries(CV_LEVERS).filter(([k])=>!CV_FIN_KEYS.includes(k)).reduce((s,[,l])=>s+l.fin,0); // R$ 446.050.400 (~R$446M)
+// Capturado 2025 (realizado) e Meta acumulada 2026 — agregados oficiais, com e sem financeiro.
+const CV_CAP2025_COM_FIN = Object.values(CV_LEVERS).reduce((s,l)=>s+(l.cap2025_mm||0),0)*1e6; // R$41,4M
+const CV_CAP2025_SEM_FIN = Object.entries(CV_LEVERS).filter(([k])=>!CV_FIN_KEYS.includes(k)).reduce((s,[,l])=>s+(l.cap2025_mm||0),0)*1e6; // R$38,7M
+const CV_META2026_COM_FIN = CV_TOTAL_COM_FIN*0.4; // 40% da meta total (regra: 15/40/65/80/90/100% de 2025 a 2030)
+const CV_META2026_SEM_FIN = CV_TOTAL_SEM_FIN*0.4;
+// Calendarização do gráfico "Potencial x Realizado" — SEMPRE derivada de
+// CV_TOTAL_COM_FIN/CV_CAP2025_COM_FIN, nunca hardcoded (era a causa do gráfico
+// mostrar "não bateu a meta" com números antigos, congelados antes da revisão
+// da captura 2025).
+// Conversão MM → R$/UH mil usa a mesma base de 40.000 UH do resto do board:
+// R$/UH = R$ MM × 25 (1.000.000/40.000) ⇒ R$/UH mil = R$ MM / 40.
+const CV_CHART_PCTS = [0.15,0.40,0.65,0.80,0.90,1.00]; // 2025→2030, % acumulado da meta total
+const CV_CHART_LINE = CV_CHART_PCTS.map(p => Math.round(CV_TOTAL_COM_FIN/1e6*p)); // acumulado R$ MM, por ano
+const CV_CHART_BAR = CV_CHART_PCTS.map((p,i) => {
+  const prev = i===0 ? 0 : CV_CHART_PCTS[i-1];
+  return Math.round((CV_TOTAL_COM_FIN/1e6*(p-prev))/40*1000)/1000; // incremento do ano, em R$/UH mil
+});
+const CV_CHART_REAL2025_UH = Math.round(CV_CAP2025_COM_FIN/1e6/40*1000)/1000; // realizado 2025, R$/UH mil
+const CV_CHART_REAL2025_MM = Math.round(CV_CAP2025_COM_FIN/1e6*10)/10;        // realizado 2025, R$ MM
+// Popula todos os pontos do board que mostravam "R$408M" fixo — sempre os dois totais
+// (com e sem custo financeiro), pedido explícito da Lilian. Chamado 1x no DOMContentLoaded.
+function renderCVHeaderNumbers(){
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  const potUHcom = CV_TOTAL_COM_FIN/1e6*25, potUHsem = CV_TOTAL_SEM_FIN/1e6*25;
+  set('hd-pill-pot', 'R$ '+Math.round(CV_TOTAL_COM_FIN/1e6)+'M · '+(potUHcom/1000).toFixed(1).replace('.',',')+'k/UH <span style="opacity:.7;font-weight:600">(R$'+Math.round(CV_TOTAL_SEM_FIN/1e6)+'M s/ fin.)</span>');
+  set('kpi-mapa-pot', 'R$ '+cvFmtM(CV_TOTAL_COM_FIN)+'M');
+  set('kpi-mapa-pot-sub', 'c/ custo financeiro · R$'+cvFmtM(CV_TOTAL_SEM_FIN)+'M sem · '+CV_KEYS.length+' produtos');
+  set('kpi-mapa-uh', 'R$ '+(potUHcom/1000).toFixed(1).replace('.',',')+'k');
+  set('kpi-port-uh', 'R$ '+(potUHcom/1000).toFixed(1).replace('.',',')+'k');
+  set('kpi-port-uh-sub', 'R$'+cvFmtM(CV_TOTAL_COM_FIN)+'M · '+cvFmtUH(potUHcom)+' R$/UH (R$'+cvFmtM(CV_TOTAL_SEM_FIN)+'M · '+cvFmtUH(potUHsem)+' s/ fin.)');
+  set('kpi-port-cap25', 'R$ '+(CV_CAP2025_COM_FIN/1e6*25/1000).toFixed(1).replace('.',',')+'k');
+  set('kpi-port-cap25-sub', 'R$'+cvFmtM(CV_CAP2025_COM_FIN)+'M · meta era R$'+cvFmtM(CV_TOTAL_COM_FIN*0.15)+'M (15%)');
+  set('kpi-port-meta26', 'R$ '+(CV_META2026_COM_FIN/1e6*25/1000).toFixed(1).replace('.',',')+'k');
+  set('kpi-port-meta26-sub', 'R$'+cvFmtM(CV_META2026_COM_FIN)+'M acumulado (R$'+cvFmtM(CV_META2026_SEM_FIN)+'M s/ fin.)');
+  set('cv-kpi-pot', 'R$ '+(potUHcom/1000).toFixed(1).replace('.',',')+'k');
+  set('cv-kpi-pot-sub', 'R$'+cvFmtM(CV_TOTAL_COM_FIN)+'M total · '+cvFmtUH(potUHcom)+' R$/UH (R$'+cvFmtM(CV_TOTAL_SEM_FIN)+'M s/ custo financeiro)');
+  set('cv-kpi-cap25', 'R$ '+(CV_CAP2025_COM_FIN/1e6*25/1000).toFixed(1).replace('.',',')+'k');
+  set('cv-kpi-cap25-sub', 'R$'+cvFmtM(CV_CAP2025_COM_FIN)+'M realizado · meta 2025 R$'+cvFmtM(CV_TOTAL_COM_FIN*0.15)+'M (15% da meta)');
+  set('cv-kpi-meta26', 'R$ '+(CV_META2026_COM_FIN/1e6*25/1000).toFixed(1).replace('.',',')+'k');
+  set('cv-kpi-meta26-sub', 'R$'+cvFmtM(CV_META2026_COM_FIN)+'M acumulado previsto (40% da meta total)');
+}
+function cvFmtM(v){ return (v/1e6).toFixed(1).replace('.',','); } // "499,7"
+function cvFmtUH(v){
+  // Preserva 1 casa decimal quando o valor não é inteiro (ex.: 752,5 R$/UH), como na planilha oficial.
+  const rounded = Math.round(v*10)/10;
+  return Number.isInteger(rounded) ? rounded.toLocaleString('pt-BR') : rounded.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1});
+}
+
+// ── Alocação original por produto (aba "Alocacao Original Produtos") — % de
+// cada alavanca capturado por cada produto. ECO e PAM entram separados (são
+// produtos distintos no board). "estoque" usa a mesma alocação de "desp_fin"
+// (mesmo driver: redução de estoque). "custo_capital" não tem alocação própria
+// na planilha — é a MÉDIA das % das outras 7 alavancas por produto (pedido da
+// Lilian), calculada abaixo, não hardcoded.
+const ALAV_PCT_BASE = {
+  rccp:     {sincroniza:30, compilador:20, eco:22.5, pam:5,  obra360:0,  prateleira:10, ia:5,  lego:2.5, smp:5},
+  seq_mo:   {sincroniza:25, compilador:0,  eco:5,    pam:5,  obra360:30, prateleira:25, ia:5,  lego:0,   smp:5},
+  spot:     {sincroniza:0,  compilador:5,  eco:20,   pam:70, obra360:5,  prateleira:0,  ia:0,  lego:0,   smp:0},
+  hc:       {sincroniza:0,  compilador:26, eco:12,   pam:24, obra360:20, prateleira:2,  ia:14, lego:2,   smp:0},
+  prazo:    {sincroniza:20, compilador:5,  eco:5,    pam:0,  obra360:30, prateleira:20, ia:10, lego:5,   smp:5},
+  nao_q:    {sincroniza:10, compilador:15, eco:5,    pam:0,  obra360:30, prateleira:10, ia:5,  lego:5,   smp:20},
+  desp_fin: {sincroniza:0,  compilador:0,  eco:10,   pam:90, obra360:0,  prateleira:0,  ia:0,  lego:0,   smp:0},
+};
+const CV_KEYS = ['sincroniza','compilador','eco','pam','obra360','prateleira','ia','lego','smp'];
+// Alavancas cuja alocação % por produto é editável no dashboard (as 7 da aba
+// oficial "Alocacao Original Produtos"). "estoque" e "custo_capital" são
+// sempre DERIVADAS destas 7 (nunca editadas diretamente — ver recomputeCVDerivedPct).
+const CV_PCT_EDITABLE = new Set(Object.keys(ALAV_PCT_BASE));
+const ALAV_PCT = JSON.parse(JSON.stringify(ALAV_PCT_BASE));
+// estoque = mesma alocação de desp_fin (mesmo driver) · custo_capital = média
+// das 7 alavancas-base por produto. Recalculado sempre que uma % editável mudar
+// (edição no dashboard ou override carregado do Firestore) — nunca hardcoded.
+function recomputeCVDerivedPct(){
+  ALAV_PCT.estoque = JSON.parse(JSON.stringify(ALAV_PCT.desp_fin));
+  const baseCodes = ['rccp','seq_mo','spot','hc','prazo','nao_q','desp_fin'];
+  const cc = {};
+  // Arredonda pra 1 casa decimal — a média de 7 alavancas gera dízimas longas
+  // (ex.: 27,714285714285715%) que não fazem sentido mostrar na tela.
+  CV_KEYS.forEach(k => { cc[k] = Math.round(baseCodes.reduce((s,c)=>s+(ALAV_PCT[c][k]||0),0)/baseCodes.length*10)/10; });
+  ALAV_PCT.custo_capital = cc;
+}
+recomputeCVDerivedPct();
+const CV_SHORT = {sincroniza:'Sincroniza',compilador:'Compilador BIM',eco:'ECO',pam:'PAM',obra360:'Obra 360',prateleira:'Prateleira MO',ia:'IA (Zé · Daeane)',lego:'Sistema LEGO',smp:'SMP Digital'};
+// CV_POT: potencial por produto = soma, em todas as alavancas, de (% do produto × potencial da alavanca).
+// Sempre derivado — nunca digitado à mão — para não divergir da Matriz Revisada.
+// Objeto mutável (não reatribuído): recomputeCVPot() atualiza os valores em
+// tempo real sempre que uma % de alocação mudar, sem quebrar referências já
+// lidas em outras partes do board (ex.: renderProdRows).
+const CV_POT = {};
+function recomputeCVPot(){
+  CV_KEYS.forEach(k => {
+    let tot = 0;
+    Object.keys(CV_LEVERS).forEach(ak => { tot += (ALAV_PCT[ak][k]||0)/100 * (CV_LEVERS[ak].fin/1e6); });
+    CV_POT[k] = Math.round(tot*10)/10;
+  });
+}
+recomputeCVPot();
+// cvProd: retorna o produto "visto pela Captura de Valor" — nm/etapa/gestor/po/status/ambições/OKRs
+// vêm do produto real (PRODS), mas pot/pot_alav/alavancas SEMPRE vêm de ALAV_PCT×CV_LEVERS
+// (nunca do pot_alav próprio do produto, que é mantido pelos POs na aba Produtos).
+function cvPotAlavFor(key){
+  const pot_alav = {}, alavancas = [];
+  Object.keys(CV_LEVERS).forEach(ak => {
+    const v = (ALAV_PCT[ak][key]||0)/100 * (CV_LEVERS[ak].fin/1e6);
+    if (v > 0.0001) { pot_alav[ak] = Math.round(v*100)/100; alavancas.push(ak); }
+  });
+  return { pot_alav, alavancas, pot: 'R$ ' + Math.round(CV_POT[key]) + 'M' };
+}
 function cvProd(key){
-  if(key==='ecopam'){
-    // ECO e PAM foram separados como produtos, mas a Captura de Valor segue combinada
-    const e = PRODS.eco || {okrs:[],ambicoes:[]};
-    const a = PRODS.pam || {okrs:[],ambicoes:[]};
-    return {
-      nm:'ECO-PAM', etapa:(e.etapa||'obra'), gestor:(e.gestor||'l'), po:(e.po||''), status:(e.status||'so'), pot:'R$ 106M',
-      pot_alav:{'hc':8.9,'nao_q':2.2,'prazo':1.1,'spot':30.2,'seq_mo':13.4,'rccp':32.7,'usinas':1.8,'desp_fin':15.3},
-      alavancas:['hc','nao_q','prazo','spot','seq_mo','rccp','usinas','desp_fin'],
-      ambicoes:[...new Set([...(e.ambicoes||[]),...(a.ambicoes||[])])],
-      okrs:[...(e.okrs||[]),...(a.okrs||[])]
-    };
-  }
+  const cvd = cvPotAlavFor(key);
   if(key==='ia'){
     const z = PRODS.ze || {okrs:[],ambicoes:[]};
     const d = PRODS.daeans || {okrs:[],ambicoes:[]};
     return {
-      nm:'IA (Zé da Obra · Daeane)', etapa:'obra', gestor:'m', po:'Camila', status:'sv', pot:'R$ 21M',
-      pot_alav:{'hc':3.4,'nao_q':2.2,'prazo':2.2,'seq_mo':6.7,'rccp':6.0},
-      alavancas:['hc','nao_q','prazo','seq_mo','rccp'],
+      nm:'IA (Zé da Obra · Daeane)', etapa:'obra', gestor:'m', po:'Camila', status:'sv',
+      pot:cvd.pot, pot_alav:cvd.pot_alav, alavancas:cvd.alavancas,
       ambicoes:[...new Set([...(z.ambicoes||[]),...(d.ambicoes||[])])],
       okrs:[...(z.okrs||[]),...(d.okrs||[])]
     };
   }
-  return PRODS[key];
+  const base = PRODS[key] || {};
+  return { ...base, pot:cvd.pot, pot_alav:cvd.pot_alav, alavancas:cvd.alavancas };
 }
-
-// ── Dados do modal de alavanca: potencial (Imagem 1), % por produto (Imagem 2),
-//    e "lastro"/como capturar (Imagem 2 + memória de cálculo da planilha) ──
-const ALAV_FIN = {
-  seq_mo:  {fin:134400000, uh:3360,  lastro:'Economia por UH em equipes eficientes vs. equipes novas — início de obra com os 7 recursos críticos, sequenciamento, treino e retenção de MO e boas práticas de planejamento e execução. Premissa: até 3k/UH; 3 meses de prazo ganhos.'},
-  rccp:    {fin:120960000, uh:3024,  lastro:'Garantia da disponibilidade dos 7 recursos críticos no início de obra certo, evitando paradas, ociosidade e descontinuidade da produção.'},
-  nao_q:   {fin:44800000,  uh:1120,  lastro:'Custo incorrido em retrabalho (não qualidade) que deixa de acontecer com melhor planejamento e execução.'},
-  spot:    {fin:33600000,  uh:840,   lastro:'Redução de 17%→7% de compras spot no ano, via negociações estratégicas com fornecedores habilitadas pela antecipação do planejamento (maior visibilidade da necessidade de materiais, serviços e equipamentos).'},
-  hc:      {fin:24640000,  uh:616,   lastro:'Por automações feitas — redução e simplificação de atividades manuais (requisições, conferências, orçamentação, negociação), exigindo menos operadores por processo.'},
-  prazo:   {fin:22400000,  uh:560,   lastro:'Redução de multas por atraso na entrega de prazo ao cliente.'},
-  desp_fin:{fin:15340000,  uh:383.5, lastro:'Baseada na redução do ativo (estoque): menor montante físico/financeiro parado em obra reduz a captação de recursos de terceiros e o custo financeiro da CIA.'},
-  usinas:  {fin:12096000,  uh:302.4, lastro:'Redução do custo de concreto via usinas próprias (verticalização).'},
-};
-// % de captura por produto em cada alavanca (Imagem 2; ECO+PAM somados em ECO-PAM, IAs unificadas em IA)
-const ALAV_PCT = {
-  hc:      {sincroniza:0, compilador:26,ecopam:36, obra360:20,prateleira:2, ia:14,lego:2,smp:0},
-  nao_q:   {sincroniza:10,compilador:15,ecopam:5,  obra360:30,prateleira:10,ia:5, lego:5,smp:20},
-  prazo:   {sincroniza:20,compilador:5, ecopam:5,  obra360:30,prateleira:20,ia:10,lego:5,smp:5},
-  spot:    {sincroniza:0, compilador:5, ecopam:90, obra360:5, prateleira:0, ia:0, lego:0,smp:0},
-  seq_mo:  {sincroniza:25,compilador:0, ecopam:10, obra360:30,prateleira:25,ia:5, lego:0,smp:5},
-  rccp:    {sincroniza:30,compilador:20,ecopam:27, obra360:0, prateleira:10,ia:5, lego:3,smp:5},
-  desp_fin:{sincroniza:0, compilador:0, ecopam:100,obra360:0, prateleira:0, ia:0, lego:0,smp:0},
-  usinas:  {sincroniza:0, compilador:0, ecopam:15, obra360:15,prateleira:0, ia:0, lego:0,smp:0},
-};
-const CV_SHORT = {sincroniza:'Sincroniza',compilador:'Compilador BIM',ecopam:'ECO-PAM',obra360:'Obra 360',prateleira:'Prateleira MO',ia:'IA (Zé · Daeane)',lego:'Sistema LEGO',smp:'SMP Digital'};
-
-// ── Conteúdo integral da planilha de capturas (memória de cálculo por alavanca) ──
-const CAPTURE_DETAIL = {
-  seq_mo:{
-    frente:'Sequenciamento MO / Planej. e Exec.', tipo:'CPV — redução de prazo de obra e maior eficiência produtiva',
-    como:'Reduzir prazo de obra e custo via início de obra adequado (com os 7 recursos críticos), sequenciando, treinando e retendo a mão de obra e garantindo as melhores práticas de planejamento e execução no canteiro.',
-    premissa:'Economia de até 3k por UH em equipes eficientes vs. equipes novas.',
-    savingUH:'R$ 3.000/UH (base) → R$ 3.360/UH c/ financeiro',
-    acao:'Validar o resserviço atual e o gasto com afastamento por obra.',
-    obs:'3 meses de prazo ganhos com eficiência produtiva, redução de resserviço e de custos com contratações e SSMA.'
-  },
-  spot:{
-    frente:'Abastecimento', tipo:'CPV — redução de custos de materiais/serviços por maior previsibilidade',
-    como:'Negociações mais estratégicas com fornecedores, via antecipação do planejamento (maior visibilidade da necessidade de materiais, serviços e equipamentos das obras).',
-    premissa:'Redução de 17% → 7% de compras spot no ano.',
-    savingUH:'R$ 753/UH (base) → R$ 840/UH c/ financeiro',
-    acao:'Validar os R$ 150MM de acessório de forma; validar se o spot pode ficar < 7%; otimizar compra de aço e cabo.',
-    obs:'Em 12 meses há ~R$ 500MM/ano de compra spot (24% dos pedidos); R$ 150MM de acessório de forma seguirão spot.',
-    subitens:[{nm:'Custo de serviço',desc:'Redução do custo de grandes negociações (BG, terraplanagem, fundação, castelo d\'água, elevador, usina de concreto). Avaliar quanto o MRP habilitará essa redução.'}]
-  },
-  hc:{
-    frente:'Abastecimento / Orçamentos / Planej. e Exec.', tipo:'Automatização e simplificação de processos e sistemas',
-    como:'Redução e simplificação de atividades manuais, gerando processos mais ágeis que precisam de menos operadores.',
-    premissa:'Soma de todas as iniciativas de redução de HC.',
-    savingUH:'R$ 699/UH (base, soma das iniciativas)',
-    subitens:[
-      {nm:'Automatização das Compras — requisições',item:'1 braço direito / obra · 150 obras',saving:'R$ 7,1M · R$ 178/UH',obs:'Obra 360 + plano de abastecimento automático são habilitadores. Mais difícil de retirar.'},
-      {nm:'Automatização das Compras — aprovações',item:'20 aprovadores',saving:'R$ 0,95M · R$ 24/UH',obs:'Redução baseada em HC, independente da cadeira.'},
-      {nm:'Eficiência no processo orçamentário',item:'15% dos orçamentistas',saving:'R$ 0,22M · R$ 5/UH',obs:'Hoje 1,3 orçamentos/pessoa/mês; meta de eficiência p/ 20%.'},
-      {nm:'Eficiência no processo de negociação',item:'10% de suprimentos',saving:'R$ 5,4M · R$ 135/UH',obs:'Potencial de chegar a 20%; assumido 10% com segurança.'},
-      {nm:'Redução do excesso de conferência',item:'2 auxiliares · 150 obras',saving:'R$ 14,3M · R$ 356/UH',obs:'7 cargos similares a "auxiliar" orçados em obra.'}
-    ]
-  },
-  desp_fin:{
-    frente:'Abastecimento (Ativo)', tipo:'Redução do custo de capital para estoque de obra',
-    como:'Reduzir o montante físico e financeiro de material nas obras, reduzindo a captação de recursos de terceiros e viabilizando custos financeiros menores para a CIA.',
-    premissa:'Redução de gap de R$ 100MM por 1 ano.',
-    savingUH:'Base: estoque R$ 250MM · redução-alvo R$ 150MM',
-    acao:'Entender a real oportunidade de redução de estoque, com dimensionamento adequado por região.'
-  }
-};
+function cvNl2br(s){ return s ? cxEsc(s).replace(/\n/g,'<br>') : ''; }
 function buildCaptureDetailHtml(key){
-  const d = CAPTURE_DETAIL[key];
+  const d = CV_LEVERS[key];
   if(!d) return '';
   const field = (lbl,val) => val ? '<div style="margin-bottom:6px"><span style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--t3)">'+lbl+': </span><span style="font-size:11px;color:var(--t2);line-height:1.5">'+val+'</span></div>' : '';
-  let sub = '';
-  if(d.subitens && d.subitens.length){
-    sub = '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--t3);margin:9px 0 5px">Itens / memória</div>';
-    sub += d.subitens.map(s=>{
-      const meta = [s.item,s.saving].filter(Boolean).join(' · ');
-      return '<div style="border-left:2px solid var(--gm);padding:4px 0 4px 9px;margin-bottom:6px">'
-        +'<div style="font-size:10.5px;font-weight:700;color:var(--tx)">'+s.nm+'</div>'
-        +(meta?'<div style="font-size:10px;color:var(--g);font-weight:700">'+meta+'</div>':'')
-        +(s.desc?'<div style="font-size:10px;color:var(--t2);line-height:1.4">'+s.desc+'</div>':'')
-        +(s.obs?'<div style="font-size:9.5px;color:var(--t3);font-style:italic;margin-top:2px">'+s.obs+'</div>':'')
-        +'</div>';
-    }).join('');
-  }
+  // Plano de ação: indicador discreto (não é para chamar atenção na tela principal,
+  // só sinalizar pros líderes que tem pendência sendo trabalhada — pedido da Lilian).
+  const planoHtml = d.plano_acao
+    ? '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--o)">🔧 Plano de ação em aberto</summary>'
+      +'<div style="margin-top:6px;font-size:10.5px;color:var(--t2);line-height:1.55;background:var(--ob);border-radius:7px;padding:8px 10px">'+cvNl2br(d.plano_acao)+'</div></details>'
+    : '';
   return '<details style="margin-top:12px;border:1px solid var(--bd);border-radius:9px;padding:9px 11px">'
-    +'<summary style="cursor:pointer;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--g)">Memória de cálculo · planilha de capturas</summary>'
+    +'<summary style="cursor:pointer;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--g)">Memória de cálculo</summary>'
     +'<div style="margin-top:9px">'
-    + field('Frente', d.frente)
-    + field('Tipo de economia', d.tipo)
-    + field('Como', d.como)
-    + field('Premissa', d.premissa)
-    + field('Saving por UH', d.savingUH)
-    + field('Ação / validação', d.acao)
-    + field('Obs', d.obs)
-    + sub
+    + field('Bloco', d.bloco)
+    + field('Tipo de captura', d.tipo)
+    + field('Natureza', d.natureza)
+    + field('Indicador operacional', d.indicador)
+    + field('Memória de cálculo', cvNl2br(d.memoria))
+    + field('Frequência de apuração', d.freq)
+    + field('Responsável pela apuração', d.resp_apuracao)
+    + planoHtml
     +'</div></details>';
 }
-
-function openAlavModal(key){
-  const fin = ALAV_FIN[key], pct = ALAV_PCT[key];
-  if(!fin || !pct) return;
+// Progressão de metas 2025→2030 (% acumulado da meta total): 15/40/65/80/90/100,
+// já validado na planilha oficial — não recalcular, só exibir. 2025 e 2026
+// mostram também o realizado (2025 é valor único fixo; 2026 vem da apuração
+// mensal editável — clicar no card de 2026 abre o mesmo editor do card
+// "Apuração 2026" acima).
+function cvMetaProgressHtml(d,key){
+  const real2026 = cvEvoLatest(key);
+  const anos = [
+    {ano:'2025', meta:d.meta2025_uh, pctTot:15, real:d.cap2025_uh, editable:false},
+    {ano:'2026', meta:d.meta2026_uh, pctTot:40, real:real2026,     editable:true},
+    {ano:'2027', meta:d.meta2027_uh, pctTot:65},
+    {ano:'2028', meta:d.meta2028_uh, pctTot:80},
+    {ano:'2029', meta:d.meta2029_uh, pctTot:90},
+    {ano:'2030', meta:d.meta2030_uh, pctTot:100},
+  ];
+  return '<div style="display:flex;gap:6px;margin:10px 0 12px">'
+    + anos.map(a=>{
+        const hasReal = a.real!==undefined;
+        const realHtml = hasReal
+          ? '<div style="font-size:8.5px;font-weight:700;color:'+(a.real!=null?'var(--g)':'var(--t3)')+';margin-top:3px">'+(a.real!=null?cvFmtUH(a.real)+' real.':'Em apuração')+'</div>'
+          : '';
+        const boxAttrs = a.editable
+          ? ' onclick="toggleCVEvoEdit(\''+key+'\')" style="flex:1;background:var(--gyb);border-radius:7px;padding:6px 4px;text-align:center;cursor:pointer" title="Clique para apurar/editar 2026"'
+          : ' style="flex:1;background:var(--gyb);border-radius:7px;padding:6px 4px;text-align:center"';
+        return '<div'+boxAttrs+'>'
+          +'<div style="font-size:8px;font-weight:800;color:var(--t3)">'+a.ano+(a.editable?' ✎':'')+'</div>'
+          +'<div style="font-size:11px;font-weight:800;color:var(--tx)">'+cvFmtUH(a.meta)+'</div>'
+          +'<div style="font-size:7.5px;color:var(--t3)">'+a.pctTot+'% da meta</div>'
+          +realHtml
+          +'</div>';
+      }).join('')
+    + '</div>';
+}
+function openAlavModal(key, keepProdOpen){
+  const d = CV_LEVERS[key], pct = ALAV_PCT[key];
+  if(!d || !pct) return;
   const nome = ALAVANCAS[key] || key;
-  const mM = v => 'R$ ' + (v/1e6).toFixed(1).replace('.',',') + ' M';
-  const rows = CV_KEYS.map(k=>({short:CV_SHORT[k]||k, pct:pct[k]||0, val:(pct[k]||0)/100*fin.fin}))
+  const mM = v => 'R$ ' + cvFmtM(v) + ' M';
+  const rows = CV_KEYS.map(k=>({short:CV_SHORT[k]||k, pct:pct[k]||0, val:(pct[k]||0)/100*d.fin}))
                       .filter(r=>r.pct>0).sort((a,b)=>b.val-a.val);
-  const somaPct = rows.reduce((s,r)=>s+r.pct,0);
-  const naoAtrib = Math.max(0, 100 - somaPct);
+  const somaPct = Math.round(rows.reduce((s,r)=>s+r.pct,0)*10)/10;
+  const naoAtrib = Math.max(0, Math.round((100-somaPct)*10)/10);
   const rowsHtml = rows.map(r=>'<tr style="border-top:1px solid var(--bd)">'+
       '<td style="padding:6px 0;font-weight:700;color:var(--tx)">'+r.short+'</td>'+
-      '<td style="padding:6px 0"><div style="display:flex;align-items:center;gap:7px"><div style="flex:1;height:7px;background:var(--gyb);border-radius:4px;overflow:hidden"><div style="width:'+r.pct+'%;height:100%;background:var(--g);border-radius:4px"></div></div><span style="font-weight:700;min-width:30px;text-align:right">'+r.pct+'%</span></div></td>'+
+      '<td style="padding:6px 0"><div style="display:flex;align-items:center;gap:7px"><div style="flex:1;height:7px;background:var(--gyb);border-radius:4px;overflow:hidden"><div style="width:'+r.pct+'%;height:100%;background:var(--g);border-radius:4px"></div></div><span style="font-weight:700;min-width:34px;text-align:right">'+r.pct+'%</span></div></td>'+
       '<td style="padding:6px 0;text-align:right;font-weight:700;color:var(--g)">'+mM(r.val)+'</td></tr>').join('');
-  const naoAtribHtml = naoAtrib>0.5 ? '<tr style="border-top:1px solid var(--bd)"><td style="padding:6px 0;color:var(--t3)">Não atribuído / outros</td><td style="padding:6px 0;color:var(--t3)">'+naoAtrib+'%</td><td style="padding:6px 0;text-align:right;color:var(--t3)">'+mM(naoAtrib/100*fin.fin)+'</td></tr>' : '';
+  const naoAtribHtml = naoAtrib>0.5 ? '<tr style="border-top:1px solid var(--bd)"><td style="padding:6px 0;color:var(--t3)">Não atribuído / outros</td><td style="padding:6px 0;color:var(--t3)">'+naoAtrib+'%</td><td style="padding:6px 0;text-align:right;color:var(--t3)">'+mM(naoAtrib/100*d.fin)+'</td></tr>' : '';
+  const evoLatest = cvEvoLatest(key);
+  const apur2026v = evoLatest!=null ? evoLatest : d.apuracao2026_uh;
+  const apur2026 = (apur2026v!=null) ? cvFmtUH(apur2026v)+' R$/UH' : 'Em apuração';
   const body =
-    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">'+
-      '<div style="background:var(--gb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial c/ fin.</div><div style="font-size:15px;font-weight:800;color:var(--g);margin-top:2px">R$ '+Math.round(fin.fin).toLocaleString('pt-BR')+'</div></div>'+
-      '<div style="background:#f5f3ff;border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial por UH</div><div style="font-size:15px;font-weight:800;color:var(--a1);margin-top:2px">R$ '+fin.uh.toLocaleString('pt-BR',{maximumFractionDigits:1})+'</div></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:6px">'+
+      '<div style="background:var(--gb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial anual</div><div style="font-size:15px;font-weight:800;color:var(--g);margin-top:2px">'+mM(d.fin)+'</div></div>'+
+      '<div style="background:#f5f3ff;border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Potencial por UH</div><div style="font-size:15px;font-weight:800;color:var(--a1);margin-top:2px">R$ '+cvFmtUH(d.uh)+'</div></div>'+
       '<div style="background:var(--gyb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Captura atribuída</div><div style="font-size:15px;font-weight:800;color:var(--tx);margin-top:2px">'+Math.min(100,somaPct)+'%</div></div>'+
+      '<div style="background:#fff8ef;border-radius:9px;padding:9px 10px;cursor:pointer" onclick="toggleCVEvoEdit(\''+key+'\')" title="Clique para apurar/editar 2026"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Apuração 2026 ✎</div><div style="font-size:13px;font-weight:800;color:var(--o);margin-top:2px">'+apur2026+'</div></div>'+
     '</div>'+
-    '<div style="background:#fff8ef;border:1px solid #ffe3bf;border-radius:9px;padding:9px 11px;margin-bottom:12px"><div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--o);margin-bottom:3px">Como se captura · lastro</div><div style="font-size:11px;color:var(--t2);line-height:1.5">'+fin.lastro+'</div></div>'+
-    '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);margin-bottom:4px">Captura por produto</div>'+
-    '<table style="width:100%;border-collapse:collapse;font-size:11px">'+
-      '<thead><tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px"><th style="padding:4px 0">Produto</th><th style="width:150px;padding:4px 0">% da alavanca</th><th style="text-align:right;padding:4px 0">Valor</th></tr></thead>'+
-      '<tbody>'+rowsHtml+naoAtribHtml+'</tbody>'+
-      '<tfoot><tr style="border-top:2px solid var(--tx);font-weight:800"><td style="padding:7px 0">Potencial total</td><td style="padding:7px 0">100%</td><td style="padding:7px 0;text-align:right;color:var(--g)">'+mM(fin.fin)+'</td></tr></tfoot>'+
-    '</table>'+
+    '<div id="cv-evo-wrap-'+key+'" style="display:none;margin-bottom:10px"></div>'+
+    '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);margin:10px 0 2px">Meta acumulada por ano (R$/UH)</div>'+
+    cvMetaProgressHtml(d,key)+
+    '<details'+(keepProdOpen?' open':'')+' style="margin-top:10px;border:1px solid var(--bd);border-radius:9px;padding:9px 11px">'+
+      '<summary style="cursor:pointer;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--g)">Captura por produto</summary>'+
+      '<div style="margin-top:9px">'+
+        '<div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:6px">'+
+          (CV_PCT_EDITABLE.has(key)
+            ? '<span style="cursor:pointer;font-size:9px;font-weight:800;color:var(--g)" onclick="toggleCVPctEdit(\''+key+'\')" title="Editar alocação % por produto">✎ editar alocação</span>'
+            : '<span style="font-size:8.5px;color:var(--t3)" title="Estoque replica a alocação de Red. Desp. Financeira; Custo de Capital é a média das outras 7 alavancas">alocação derivada automaticamente</span>')+
+        '</div>'+
+        '<div id="cv-pct-wrap-'+key+'" style="display:none;margin-bottom:10px"></div>'+
+        '<table style="width:100%;border-collapse:collapse;font-size:11px">'+
+          '<thead><tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px"><th style="padding:4px 0">Produto</th><th style="width:150px;padding:4px 0">% da alavanca</th><th style="text-align:right;padding:4px 0">Valor</th></tr></thead>'+
+          '<tbody>'+rowsHtml+naoAtribHtml+'</tbody>'+
+          '<tfoot><tr style="border-top:2px solid var(--tx);font-weight:800"><td style="padding:7px 0">Potencial total</td><td style="padding:7px 0">100%</td><td style="padding:7px 0;text-align:right;color:var(--g)">'+mM(d.fin)+'</td></tr></tfoot>'+
+        '</table>'+
+      '</div>'+
+    '</details>'+
     buildCaptureDetailHtml(key)+
     '<div style="margin-top:14px;text-align:right"><button onclick="filtrarPorAlavancaDoModal(\''+key+'\')" style="border:1.5px solid var(--g);background:var(--g);color:#fff;border-radius:8px;padding:7px 13px;font-size:10px;font-weight:800;cursor:pointer">Filtrar produtos por esta alavanca →</button></div>';
   document.getElementById('alav-ttl').textContent = nome;
@@ -2016,6 +2358,105 @@ function openAlavModal(key){
   document.getElementById('alav-mbg').classList.add('open');
 }
 function closeAlavModal(){ const el=document.getElementById('alav-mbg'); if(el) el.classList.remove('open'); }
+
+// ── Apuração 2026 por alavanca — editável, mesmo padrão da Evolução de KRs ──
+// (2025 é valor único já oficial em CV_LEVERS; aqui só a evolução mensal 2026.)
+function cvEvoKD(key){
+  if(!CV_EVO[key]) CV_EVO[key] = {r:Array(12).fill(null)};
+  if(!CV_EVO[key].r) CV_EVO[key].r = Array(12).fill(null);
+  return CV_EVO[key];
+}
+function renderCVEvoTable(key){
+  const wrap = document.getElementById('cv-evo-wrap-'+key);
+  if(!wrap) return;
+  const kd = cvEvoKD(key);
+  const d = CV_LEVERS[key];
+  const th='padding:5px 6px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;';
+  let hd='<tr><th style="'+th+'color:var(--t3);text-align:left">Mês</th><th style="'+th+'color:var(--o)">▮ Apuração acum. R$/UH</th></tr>';
+  let rows='';
+  MONTHS.forEach(function(m,mi){
+    const v = kd.r[mi];
+    rows+='<tr><td style="padding:5px 8px;font-size:10px;font-weight:'+(mi===CUR_M?'800':'400')+';color:'+(mi===CUR_M?'var(--o)':'var(--t2)')+'">'+m+(mi===CUR_M?' ◀':'')+'</td>'
+      +'<td style="padding:3px 4px"><input type="number" min="0" step="0.1" value="'+(v===null||v===undefined?'':v)+'" placeholder="—" onchange="updateCVEvoCell(\''+key+'\','+mi+',this.value)"'
+      +' style="width:90px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 5px;font-size:11px;text-align:center;outline:none"'
+      +' onfocus="this.style.borderColor=\'var(--o)\'" onblur="this.style.borderColor=\'var(--bd)\'"></td></tr>';
+  });
+  wrap.innerHTML = '<div style="border:1px solid var(--bd);border-radius:9px;padding:9px 11px;background:var(--ob)">'
+    +'<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--o);margin-bottom:6px">Apuração mensal 2026 (acumulado no ano, R$/UH) · meta 2026: '+cvFmtUH(d.meta2026_uh)+'</div>'
+    +'<table style="width:100%;border-collapse:collapse"><thead>'+hd+'</thead><tbody>'+rows+'</tbody></table>'
+    +'<div style="margin-top:8px;text-align:right"><button onclick="closeCVEvoEdit(\''+key+'\')" style="border:1.5px solid var(--o);background:var(--o);color:#fff;border-radius:7px;padding:6px 12px;font-size:10px;font-weight:800;cursor:pointer">Concluir</button></div>'
+    +'</div>';
+}
+function toggleCVEvoEdit(key){
+  if(!requireEditor(()=>toggleCVEvoEdit(key))) return;
+  const wrap = document.getElementById('cv-evo-wrap-'+key);
+  if(!wrap) return;
+  const opening = wrap.style.display==='none';
+  if(opening){ renderCVEvoTable(key); wrap.style.display='block'; }
+  else { closeCVEvoEdit(key); }
+}
+function updateCVEvoCell(key, mi, val){
+  const kd = cvEvoKD(key);
+  kd.r[mi] = (val===''||val===null) ? null : parseFloat(val);
+}
+function closeCVEvoEdit(key){
+  const wrap = document.getElementById('cv-evo-wrap-'+key);
+  if(wrap){ wrap.style.display='none'; wrap.innerHTML=''; }
+  setEditDetail('apurou captura 2026', ALAVANCAS[key]||key);
+  fbSaveCVEvo(key);
+  openAlavModal(key); // reabre o modal já refletindo o novo valor no card "Apuração 2026"
+}
+
+// ── Alocação % por produto — editável só nas 7 alavancas-base (aba oficial
+// "Alocacao Original Produtos"). Nunca editada na aba de produtos: esta edição
+// é sempre feita aqui, na Captura de Valor (fonte única) — pedido da Lilian.
+function renderCVPctTable(key){
+  const wrap = document.getElementById('cv-pct-wrap-'+key);
+  if(!wrap) return;
+  const pct = ALAV_PCT[key];
+  const rowsE = CV_KEYS.map(function(k){
+    const v = pct[k]||0;
+    return '<tr><td style="padding:4px 8px;font-size:10.5px;color:var(--t2)">'+(CV_SHORT[k]||k)+'</td>'
+      +'<td style="padding:3px 4px"><input type="number" min="0" max="100" step="0.5" value="'+v+'" onchange="updateCVPctCell(\''+key+'\',\''+k+'\',this.value)"'
+      +' style="width:70px;border:1.5px solid var(--bd);border-radius:5px;padding:3px 5px;font-size:11px;text-align:center;outline:none"'
+      +' onfocus="this.style.borderColor=\'var(--g)\'" onblur="this.style.borderColor=\'var(--bd)\'"> %</td></tr>';
+  }).join('');
+  const soma = Math.round(CV_KEYS.reduce(function(s,k){return s+(pct[k]||0);},0)*10)/10;
+  wrap.innerHTML = '<div style="border:1px solid var(--bd);border-radius:9px;padding:9px 11px;background:var(--gb)">'
+    +'<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--g);margin-bottom:6px">Editar alocação por produto · soma atual: <span id="cv-pct-soma-'+key+'">'+soma+'</span>%</div>'
+    +'<table style="width:100%;border-collapse:collapse">'+rowsE+'</table>'
+    +'<div style="margin-top:8px;text-align:right"><button onclick="closeCVPctEdit(\''+key+'\')" style="border:1.5px solid var(--g);background:var(--g);color:#fff;border-radius:7px;padding:6px 12px;font-size:10px;font-weight:800;cursor:pointer">Salvar e concluir</button></div>'
+    +'</div>';
+}
+function toggleCVPctEdit(key){
+  if(!CV_PCT_EDITABLE.has(key)) return;
+  if(!requireEditor(()=>toggleCVPctEdit(key))) return;
+  const wrap = document.getElementById('cv-pct-wrap-'+key);
+  if(!wrap) return;
+  if(wrap.style.display==='none'){ renderCVPctTable(key); wrap.style.display='block'; }
+  else { closeCVPctEdit(key); }
+}
+function updateCVPctCell(key, prodKey, val){
+  const v = (val===''||val===null) ? 0 : parseFloat(val);
+  ALAV_PCT[key][prodKey] = isNaN(v) ? 0 : v;
+  const soma = Math.round(CV_KEYS.reduce(function(s,k){return s+(ALAV_PCT[key][k]||0);},0)*10)/10;
+  const el = document.getElementById('cv-pct-soma-'+key);
+  if(el) el.textContent = soma;
+}
+function closeCVPctEdit(key){
+  recomputeCVDerivedPct();
+  recomputeCVPot();
+  const wrap = document.getElementById('cv-pct-wrap-'+key);
+  if(wrap){ wrap.style.display='none'; wrap.innerHTML=''; }
+  setEditDetail('editou alocação por produto', ALAVANCAS[key]||key);
+  fbSaveCVPct(key);
+  // Reflete em tudo que depende de ALAV_PCT/CV_POT sem precisar recarregar a página.
+  if (typeof renderAlavTable==='function') renderAlavTable();
+  if (typeof renderProdRows==='function') renderProdRows(typeof activeAlavanca!=='undefined'?activeAlavanca:null);
+  if (typeof updateAlavancaTable==='function') updateAlavancaTable();
+  if (typeof updateValorChart==='function') updateValorChart();
+  openAlavModal(key, true); // reabre já refletindo as novas %/valores, com "Captura por produto" ainda expandido
+}
 function filtrarPorAlavancaDoModal(key){
   closeAlavModal();
   if(activeAlavanca !== key) filterByAlavanca(key, null);
@@ -2262,13 +2703,14 @@ const KPI_DATA = {
     {ic:'🔴',ttl:'MDM: 3,7% vs meta 90% até dez/26',desc:'Exige aceleração urgente. Bloqueia Compilador BIM e qualidade do ECO-PAM.',badge:'Alto',bc:'ko'},
     {ic:'🟡',ttl:'Sistema LEGO: prioridade redefinida por estratégia',desc:'KR2 em 56% vs meta de 90%. Tipologias modulares impactam roadmap.',badge:'Médio',bc:'kg'},
   ]},
-  potencial:{ttl:'R$ 408M de potencial anual',items:[
-    {ic:'💚',ttl:'Seq. MO e Produtividade',desc:'Redução de prazo e maior eficiência produtiva via sequenciamento e retenção de MO.',badge:'R$ 134M',bc:'kv'},
-    {ic:'💚',ttl:'Disponibilidade Recursos Críticos',desc:'Garantia dos 7 recursos críticos no início de obra certo.',badge:'R$ 121M',bc:'kv'},
-    {ic:'💚',ttl:'ECO-PAM (ECO + PAM)',desc:'Redução de compras spot, controle de custos e abastecimento planejado.',badge:'R$ 119M',bc:'kv'},
-    {ic:'💚',ttl:'Obra 360 + Sincroniza',desc:'Velocidade de produção e visibilidade operacional de obra.',badge:'R$ 144M',bc:'kv'},
-    {ic:'💜',ttl:'Red. Custo Não Qualidade + HC + IA',desc:'Automações, eliminação de retrabalho e consultas manuais.',badge:'R$ 90M',bc:'ka'},
-  ]},
+  // Derivado de CV_LEVERS (fonte única da Captura de Valor) — nunca hardcoded, pra sempre bater com a Matriz Revisada oficial.
+  potencial:(function(){
+    const icBloco = {'Custo Obra':'💚','Ativo / Estoque':'📦','Custo Financeiro':'💜'};
+    const items = Object.entries(CV_LEVERS)
+      .sort((a,b)=>b[1].fin-a[1].fin)
+      .map(([k,d])=>({ic:icBloco[d.bloco]||'💰', ttl:ALAVANCAS[k]||k, desc:(d.racional||'').split('\n')[0], badge:'R$ '+cvFmtM(d.fin)+'M', bc:CV_FIN_KEYS.includes(k)?'ka':'kv'}));
+    return {ttl:'R$ '+cvFmtM(CV_TOTAL_COM_FIN)+'M de potencial anual (R$ '+cvFmtM(CV_TOTAL_SEM_FIN)+'M sem custo financeiro)', items};
+  })(),
 };
 
 function showKpi(key){
@@ -2584,21 +3026,43 @@ function updateEtapaCounts() {
 }
 
 // ══ CAPTURA DE VALOR ══
+// Tabela "Potencial por Alavanca": renderizada 100% a partir de CV_LEVERS — antes eram
+// valores fixos no HTML, fonte de divergência. Ordem: alavancas operacionais primeiro,
+// financeiras derivadas por último (mesma ordem da Matriz Revisada).
+function renderAlavTable(){
+  const body = document.getElementById('alav-tbl-body');
+  const foot = document.getElementById('alav-tbl-foot');
+  if(!body) return;
+  // Desp. Financeira e Custo de Capital ficam cinza clarinho (mesma classe do
+  // total "com custo financeiro" logo abaixo) — mostra visualmente que as duas
+  // linhas derivadas compõem esse total, e não o "sem custo financeiro".
+  body.innerHTML = Object.entries(CV_LEVERS).map(([k,d])=>
+    '<tr class="alav-row'+(CV_FIN_KEYS.includes(k)?' alav-fin-hl':'')+'" data-alavanca="'+k+'" onclick="openAlavModal(\''+k+'\')">'
+    +'<td>'+cxEsc(ALAVANCAS[k]||k)+(d.plano_acao?' <span title="Tem plano de ação em aberto" style="color:var(--o)">●</span>':'')+'</td>'
+    +'<td>'+cvFmtM(d.fin)+'</td><td>'+cvFmtUH(d.uh)+'</td></tr>'
+  ).join('');
+  if(foot) foot.innerHTML =
+      '<tr class="alav-tot-row alav-fin-hl" data-tot="com"><td>Total com custo financeiro</td><td>'+cvFmtM(CV_TOTAL_COM_FIN)+'</td><td>'+cvFmtUH(CV_TOTAL_COM_FIN/1e6*25)+'</td></tr>'
+    + '<tr class="alav-tot-row" data-tot="sem"><td>Total sem custo financeiro</td><td>'+cvFmtM(CV_TOTAL_SEM_FIN)+'</td><td>'+cvFmtUH(CV_TOTAL_SEM_FIN/1e6*25)+'</td></tr>';
+}
 let cvBuilt=false;
 function buildValor(){
   if(cvBuilt)return; cvBuilt=true;
+  renderAlavTable();
   const ctx=document.getElementById('cvChart').getContext('2d');
   new Chart(ctx,{data:{
     labels:['2025','2026','2027','2028','2029','2030'],
     datasets:[
-      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:[1.2,2.3,2.7,1.9,1.5,0.7],backgroundColor:'rgba(7,157,86,.42)',borderRadius:4,yAxisID:'y',order:3,
+      {type:'bar',label:'Potencial Anual (R$/UH mil)',data:CV_CHART_BAR.slice(),backgroundColor:'rgba(7,157,86,.42)',borderRadius:4,yAxisID:'y',order:3,
         datalabels:{anchor:'end',align:'top',offset:1,color:'#0a8f50',font:{size:9,weight:700},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
-      {type:'bar',label:'Realizado Anual (R$/UH mil)',data:[1.8,null,null,null,null,null],backgroundColor:'#024d2a',borderRadius:4,yAxisID:'y',order:3,
+      {type:'bar',label:'Realizado Anual (R$/UH mil)',data:[CV_CHART_REAL2025_UH,null,null,null,null,null],backgroundColor:'#024d2a',borderRadius:4,yAxisID:'y',order:3,
         datalabels:{anchor:'end',align:'top',offset:1,color:'#024d2a',font:{size:9,weight:800},formatter:v=>v==null?null:v.toLocaleString('pt-BR')}},
-      {type:'line',label:'Potencial Acumulado (R$ MM)',data:[46,139,246,320,380,408],borderColor:'#793F98',backgroundColor:'rgba(121,63,152,.06)',tension:.4,pointBackgroundColor:'#793F98',pointRadius:5,borderWidth:2.5,yAxisID:'y2',order:1,
+      {type:'line',label:'Potencial Acumulado (R$ MM)',data:CV_CHART_LINE.slice(),borderColor:'#793F98',backgroundColor:'rgba(121,63,152,.06)',tension:.4,pointBackgroundColor:'#793F98',pointRadius:5,borderWidth:2.5,yAxisID:'y2',order:1,
         datalabels:{anchor:'end',align:'top',offset:8,color:'#793F98',font:{size:9,weight:700},formatter:v=>v==null?null:v+'MM'}},
-      {type:'line',label:'Realizado Acum. (R$ MM)',data:[71,null,null,null,null,null],borderColor:'#F58220',pointBackgroundColor:'#F58220',pointBorderColor:'#fff',pointBorderWidth:1.5,pointRadius:7,pointStyle:'rectRot',showLine:false,yAxisID:'y2',order:0,
-        datalabels:{anchor:'end',align:'top',offset:8,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v+'MM'}}
+      {type:'line',label:'Realizado Acum. (R$ MM)',data:[CV_CHART_REAL2025_MM,null,null,null,null,null],borderColor:'#F58220',pointBackgroundColor:'#F58220',pointBorderColor:'#fff',pointBorderWidth:1.5,pointRadius:7,pointStyle:'rectRot',showLine:false,yAxisID:'y2',order:0,
+        // align:'bottom' (em vez de 'top') separa este rótulo do "Potencial Acumulado" acima,
+        // que fica bem perto quando os dois valores estão próximos (ex.: 2025) — antes ficavam sobrepostos.
+        datalabels:{anchor:'end',align:'bottom',offset:10,color:'#F58220',font:{size:9,weight:800},formatter:v=>v==null?null:v+'MM'}}
     ]},options:{responsive:true,maintainAspectRatio:false,
     layout:{padding:{top:20,right:10,left:4}},
     plugins:{legend:{position:'top',labels:{font:{family:'Plus Jakarta Sans',size:10},boxWidth:10,padding:9}},datalabels:{clamp:true},tooltip:{callbacks:{afterLabel:function(ctx){if(ctx.dataset.label&&ctx.dataset.label.indexOf('Acum')>-1&&ctx.parsed.y!=null){return 'Por UH: R$ '+Math.round(ctx.parsed.y*25).toLocaleString('pt-BR');}return undefined;}}}},
@@ -2608,6 +3072,82 @@ function buildValor(){
 
   // Filtro de produtos: pick list multi-seleção
   msddInit('valor-prod', applyValorProdFilter, 'Todos');
+}
+
+// ── Resumo Macro: tabela completa de Captura de Valor, aberta ao clicar no
+// gráfico de Calendarização. Espelha a estrutura da planilha oficial, mas só
+// com o que o board já mostra (sem Racional/Fonte da Informação, removidos do
+// modal por pedido da Lilian). Sempre derivada de CV_LEVERS — nunca hardcoded.
+function buildCVSummaryHtml(){
+  const numCols = [
+    {key:'fin',         h:'Potencial Anual (R$ M)',   fmt:v=>cvFmtM(v)},
+    {key:'uh',          h:'Potencial (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'meta2025_uh', h:'Meta 2025 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'cap2025_uh',  h:'Capturado 2025 (R$/UH)',   fmt:v=>cvFmtUH(v||0)},
+    {key:'cap2025_mm',  h:'Capturado 2025 (R$ M)',    fmt:v=>cvFmtM((v||0)*1e6)},
+    {key:'meta2026_uh', h:'Meta 2026 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'meta2027_uh', h:'Meta 2027 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'meta2028_uh', h:'Meta 2028 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'meta2029_uh', h:'Meta 2029 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+    {key:'meta2030_uh', h:'Meta 2030 (R$/UH)',        fmt:v=>cvFmtUH(v)},
+  ];
+  const txtCols = [
+    {h:'Bloco',           get:d=>cxEsc(d.bloco||'')},
+    {h:'Tipo de Captura', get:d=>cxEsc(d.tipo||'')},
+    {h:'Natureza',        get:d=>cxEsc(d.natureza||'')},
+  ];
+  const tailCols = [
+    {h:'Plano de Ação',           get:d=>d.plano_acao?'Em aberto':'—'},
+    {h:'Indicador Operacional',   get:d=>cxEsc(d.indicador||''), wrap:'lg'},
+    {h:'Memória de Cálculo',      get:d=>cxEsc(d.memoria||''), wrap:'lg'},
+    {h:'Frequência de Apuração',  get:d=>cxEsc(d.freq||''), wrap:true},
+    {h:'Responsável pela Apuração', get:d=>cxEsc(d.resp_apuracao||''), wrap:true},
+  ];
+  // Apuração 2026: mesma fonte única do card editável no modal da alavanca
+  // (evolução mensal, se já houver; senão o campo estático; senão "Em apuração").
+  const apur2026 = (k,d) => { const v=cvEvoLatest(k); const vv=(v!=null)?v:d.apuracao2026_uh; return (vv!=null)?cvFmtUH(vv):'Em apuração'; };
+
+  const thead = '<tr><th>Alavanca</th>'
+    + txtCols.map(c=>'<th>'+c.h+'</th>').join('')
+    + numCols.map(c=>'<th>'+c.h+'</th>').join('')
+    + '<th>Apuração 2026 (R$/UH)</th>'
+    + tailCols.map(c=>'<th>'+c.h+'</th>').join('')
+    + '</tr>';
+
+  const rows = Object.entries(CV_LEVERS).map(([k,d])=>{
+    const rowCls = CV_FIN_KEYS.includes(k) ? ' class="alav-fin-hl"' : '';
+    let tds = '<td>'+cxEsc(ALAVANCAS[k]||k)+'</td>';
+    tds += txtCols.map(c=>'<td>'+c.get(d)+'</td>').join('');
+    tds += numCols.map(c=>'<td class="cvsum-num">'+c.fmt(d[c.key])+'</td>').join('');
+    tds += '<td class="cvsum-num">'+apur2026(k,d)+'</td>';
+    tds += tailCols.map(c=>'<td class="'+(c.wrap==='lg'?'cvsum-wrap-lg':c.wrap?'cvsum-wrap':'')+'">'+c.get(d)+'</td>').join('');
+    return '<tr'+rowCls+'>'+tds+'</tr>';
+  }).join('');
+
+  function totRow(label, filterFn){
+    const entries = Object.entries(CV_LEVERS).filter(([k])=>filterFn(k));
+    let tds = '<td>'+label+'</td>';
+    tds += txtCols.map(()=>'<td></td>').join('');
+    tds += numCols.map(c=>{
+      const sum = entries.reduce((s,[,d])=>s+(d[c.key]||0),0);
+      return '<td class="cvsum-num">'+c.fmt(sum)+'</td>';
+    }).join('');
+    tds += '<td></td>'; // Apuração 2026 não soma (é uma medição em andamento, não uma meta)
+    tds += tailCols.map(()=>'<td></td>').join('');
+    return '<tr class="alav-tot-row">'+tds+'</tr>';
+  }
+  const totCom = totRow('Total com custo financeiro', ()=>true);
+  const totSem = totRow('Total sem custo financeiro', k=>!CV_FIN_KEYS.includes(k));
+
+  return '<table class="cvsum-tbl"><thead>'+thead+'</thead><tbody>'+rows+totCom+totSem+'</tbody></table>';
+}
+function openCVSummary(){
+  document.getElementById('cvsum-body').innerHTML = buildCVSummaryHtml();
+  document.getElementById('cvsum-mbg').classList.add('open');
+}
+function closeCVSummary(){
+  const el = document.getElementById('cvsum-mbg');
+  if (el) el.classList.remove('open');
 }
 
 // ══ CONEXÕES ══
@@ -2766,8 +3306,13 @@ function openEdit(key){
   epMidiaPreview();
   renderEditOKRs(p);
   document.getElementById('edit-mbg').classList.add('open');
+  document.addEventListener('keydown',editKeyHandler);
 }
-function closeEdit(){document.getElementById('edit-mbg').classList.remove('open');}
+function closeEdit(){
+  document.getElementById('edit-mbg').classList.remove('open');
+  document.removeEventListener('keydown',editKeyHandler);
+}
+function editKeyHandler(e){ if(e.key==='Escape') closeEdit(); }
 
 // ── Mídia do produto: upload de imagem comprimida salva no Firestore (base64) ──
 let epMidiaData=null;
@@ -2847,6 +3392,17 @@ function toggleKRDq(oi,ki){
   p.okrs.forEach(function(o,i){ (o.krs||[]).forEach(function(kr,j){ kr.dq=(i===oi&&j===ki)?!cur:false; }); });
   renderEditOKRs(p);
 }
+// Meta PLR da área — marcador por KR (não exclusivo: vários KRs, em produtos diferentes, podem
+// ser PLR ao mesmo tempo). Aparece na seção "Metas PLR" da Visão Geral do Modo Apresentação,
+// mostrando só o Objetivo + o KR marcado (não o OKR inteiro). Persiste junto com o produto
+// (saveEdit → fbSaveProd).
+function toggleKRPLR(oi,ki){
+  const p=PRODS[editKey];
+  if(!p||!p.okrs[oi]||!p.okrs[oi].krs[ki]) return;
+  const kr=p.okrs[oi].krs[ki];
+  kr.plr=!kr.plr;
+  renderEditOKRs(p);
+}
 function renderEditOKRs(p){
   const cont=document.getElementById('ep-okrs');
   cont.innerHTML='';
@@ -2865,6 +3421,7 @@ function renderEditOKRs(p){
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
           <input type="text" value="${kr.lbl}" onchange="PRODS[editKey].okrs[${oi}].krs[${ki}].lbl=this.value" placeholder="Descrição do KR" style="flex:1;border:1px solid var(--bd);border-radius:5px;padding:4px 7px;font-size:10px;outline:none">
           <button type="button" title="KR destaque — resultado aparece no card da Visão Geral do Modo Apresentação" onclick="toggleKRDq(${oi},${ki})" style="border:none;background:none;cursor:pointer;font-size:14px;color:${kr.dq?'var(--a4)':'var(--t3)'};padding:0 2px">${kr.dq?'★':'☆'}</button>
+          <button type="button" title="Meta PLR da área — este KR aparece na seção Metas PLR da Visão Geral do Modo Apresentação" onclick="toggleKRPLR(${oi},${ki})" style="border:1.5px solid ${kr.plr?'var(--g)':'var(--bd)'};background:${kr.plr?'var(--gb)':'#fff'};color:${kr.plr?'var(--g)':'var(--t3)'};border-radius:20px;padding:2px 8px;font-size:9px;font-weight:800;cursor:pointer;white-space:nowrap">🏆 PLR</button>
           <button class="btn-del" onclick="delKR(${oi},${ki})">✕</button>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
@@ -4072,7 +4629,7 @@ function clearAlavancaFilter() {
 
 function renderProdRows(filterAlavanca) {
   const prodData = CV_KEYS.map(k => ({key:k, pot:CV_POT[k], etapa:cvProd(k).etapa}));
-  const maxV = 106;
+  const maxV = Math.max(...Object.values(CV_POT)); // maior potencial por produto — nunca fixo, para não ficar defasado se a alocação mudar
   const wrap = document.getElementById('prod-rows');
   if (!wrap) return;
   wrap.innerHTML = '';
@@ -4221,8 +4778,9 @@ function highlightChainAndTrace(key) {
 
 // Initialize default tab
 document.addEventListener('DOMContentLoaded', function(){
+  renderCVHeaderNumbers();
   // ── Separação de produtos (pedido dos POs) ──
-  // ECO-PAM → ECO + PAM (a Captura de Valor segue combinada via cvProd('ecopam'))
+  // ECO-PAM → ECO + PAM (agora também separados na Captura de Valor — ver cvProd)
   // Prateleira MO → Prateleira MO
   // Os dados iniciais são duplicados; os POs editam depois o que pertence a cada um.
   (function(){
@@ -4264,6 +4822,10 @@ document.addEventListener('DOMContentLoaded', function(){
   window.PRODS   = PRODS;
   window.RDMAP   = RDMAP;
   window.KR_DATA = KR_DATA;
+  window.CV_EVO  = CV_EVO;
+  window.ALAV_PCT = ALAV_PCT;
+  window.recomputeCVDerivedPct = recomputeCVDerivedPct;
+  window.recomputeCVPot = recomputeCVPot;
   window.reconcileKRData  = reconcileKRData;
   window.refreshAfterLoad = refreshAfterLoad;
   buildPort();
@@ -4943,39 +5505,36 @@ function closeKREdit() {
 
 // ── Recompute alavanca table values based on active filters ──
 function updateAlavancaTable() {
-  // valores cheios (Imagem 1): c/ custo financeiro (M) e potencial por UH (R$)
-  const ALAV_DATA = {
-    seq_mo:  {fin:'134,4', uh:'3360'},
-    rccp:    {fin:'121,0', uh:'3024'},
-    nao_q:   {fin:'44,8',  uh:'1120'},
-    spot:    {fin:'33,6',  uh:'840'},
-    hc:      {fin:'24,6',  uh:'616'},
-    prazo:   {fin:'22,4',  uh:'560'},
-    desp_fin:{fin:'15,3',  uh:'383,5'},
-    usinas:  {fin:'12,1',  uh:'302,4'},
-  };
-  const br = n => n.toFixed(1).replace('.',',');
+  // Fonte única: CV_LEVERS (nunca duplicar valores aqui — ver renderAlavTable).
+  // Duas linhas de total: com custo financeiro (soma tudo) e sem (exclui as
+  // duas linhas "financeiro derivado" — desp_fin e custo_capital).
   const anyFilter = activeValorProds.size > 0 || activeValorGestor;
+  const totRowCom = document.querySelector('.alav-tbl tfoot tr[data-tot="com"]');
+  const totRowSem = document.querySelector('.alav-tbl tfoot tr[data-tot="sem"]');
   if (!anyFilter) {
-    // Restore full values
-    Object.entries(ALAV_DATA).forEach(([ak, v]) => {
+    // Restaura os valores oficiais de cada alavanca
+    Object.entries(CV_LEVERS).forEach(([ak, d]) => {
       const row = document.querySelector(`.alav-row[data-alavanca="${ak}"]`);
       if (!row) return;
       const cells = row.querySelectorAll('td');
-      if (cells[1]) cells[1].textContent = v.fin;
-      if (cells[2]) cells[2].textContent = v.uh;
+      if (cells[1]) cells[1].textContent = cvFmtM(d.fin);
+      if (cells[2]) cells[2].textContent = cvFmtUH(d.uh);
     });
-    const totalRow = document.querySelector('.alav-tbl tbody tr:last-child');
-    if (totalRow) {
-      const cells = totalRow.querySelectorAll('td');
-      if (cells[1]) cells[1].innerHTML = '<strong>408,2</strong>';
-      if (cells[2]) cells[2].innerHTML = '<strong>10.205,9</strong>';
+    if (totRowCom) {
+      const cells = totRowCom.querySelectorAll('td');
+      if (cells[1]) cells[1].textContent = cvFmtM(CV_TOTAL_COM_FIN);
+      if (cells[2]) cells[2].textContent = cvFmtUH(CV_TOTAL_COM_FIN/1e6*25);
+    }
+    if (totRowSem) {
+      const cells = totRowSem.querySelectorAll('td');
+      if (cells[1]) cells[1].textContent = cvFmtM(CV_TOTAL_SEM_FIN);
+      if (cells[2]) cells[2].textContent = cvFmtUH(CV_TOTAL_SEM_FIN/1e6*25);
     }
     return;
   }
   // Recalcula por alavanca a partir dos produtos da Captura de Valor filtrados
-  let totalFin = 0, totalUh = 0;
-  Object.keys(ALAV_DATA).forEach(ak => {
+  let totalFinCom = 0, totalUhCom = 0, totalFinSem = 0, totalUhSem = 0;
+  Object.keys(CV_LEVERS).forEach(ak => {
     const row = document.querySelector(`.alav-row[data-alavanca="${ak}"]`);
     if (!row) return;
     let sum = 0;
@@ -4988,16 +5547,21 @@ function updateAlavancaTable() {
     });
     const uh = sum * 25; // R$ M / 40.000 UH = M * 25 (por UH)
     const cells = row.querySelectorAll('td');
-    if (cells[1]) cells[1].textContent = sum > 0 ? br(sum) : '—';
-    if (cells[2]) cells[2].textContent = sum > 0 ? Math.round(uh).toLocaleString('pt-BR') : '—';
-    totalFin += sum;
-    totalUh  += uh;
+    if (cells[1]) cells[1].textContent = sum > 0 ? cvFmtM(sum*1e6) : '—';
+    if (cells[2]) cells[2].textContent = sum > 0 ? cvFmtUH(uh) : '—';
+    totalFinCom += sum;
+    totalUhCom  += uh;
+    if (!CV_FIN_KEYS.includes(ak)) { totalFinSem += sum; totalUhSem += uh; }
   });
-  const totalRow = document.querySelector('.alav-tbl tbody tr:last-child');
-  if (totalRow) {
-    const cells = totalRow.querySelectorAll('td');
-    if (cells[1]) cells[1].innerHTML = `<strong>${br(totalFin)}</strong>`;
-    if (cells[2]) cells[2].innerHTML = `<strong>${Math.round(totalUh).toLocaleString('pt-BR')}</strong>`;
+  if (totRowCom) {
+    const cells = totRowCom.querySelectorAll('td');
+    if (cells[1]) cells[1].textContent = cvFmtM(totalFinCom*1e6);
+    if (cells[2]) cells[2].textContent = cvFmtUH(totalUhCom);
+  }
+  if (totRowSem) {
+    const cells = totRowSem.querySelectorAll('td');
+    if (cells[1]) cells[1].textContent = cvFmtM(totalFinSem*1e6);
+    if (cells[2]) cells[2].textContent = cvFmtUH(totalUhSem);
   }
 }
 
@@ -5010,10 +5574,14 @@ function updateValorChart() {
   if (!chartInst) return;
 
   const anyFilter = activeValorProds.size > 0 || activeValorGestor;
+  // CV_CHART_BAR/CV_CHART_LINE são as constantes globais, derivadas de CV_TOTAL_COM_FIN
+  // (nunca hardcoded aqui — evita divergir do resto do board).
   if (!anyFilter) {
     // Restore original data
-    chartInst.data.datasets[0].data = [1.2,2.3,2.7,1.9,1.5,0.7];
-    chartInst.data.datasets[2].data = [46,139,246,320,380,408];
+    chartInst.data.datasets[0].data = CV_CHART_BAR.slice();
+    chartInst.data.datasets[2].data = CV_CHART_LINE.slice();
+    chartInst.data.datasets[1].data = [CV_CHART_REAL2025_UH,null,null,null,null,null];
+    chartInst.data.datasets[3].data = [CV_CHART_REAL2025_MM,null,null,null,null,null];
     chartInst.update();
     return;
   }
@@ -5031,10 +5599,10 @@ function updateValorChart() {
   });
 
   // Scale chart data proportionally
-  const fullTotal = 408;
+  const fullTotal = CV_TOTAL_COM_FIN/1e6;
   const ratio = filteredTotal / fullTotal;
-  const baseBarData   = [1.2,2.3,2.7,1.9,1.5,0.7].map(v => +(v*ratio).toFixed(2));
-  const baseLineData  = [46,139,246,320,380,408].map(v  => +(v*ratio).toFixed(0));
+  const baseBarData   = CV_CHART_BAR.map(v => +(v*ratio).toFixed(3));
+  const baseLineData  = CV_CHART_LINE.map(v  => +(v*ratio).toFixed(0));
   chartInst.data.datasets[0].data = baseBarData;
   chartInst.data.datasets[2].data = baseLineData;
   chartInst.update();
@@ -5131,7 +5699,7 @@ let _lastEditDetail = null;
 let _suppressLog = false; // true durante operações que não são edição (ex.: expandir trimestre)
 function setEditDetail(action, detail) { _lastEditDetail = { action: action || '', detail: detail || '' }; }
 
-const _SCOPE_LABEL = { produtos:'Produto', rdmap:'Roadmap', kr_data:'KRs' };
+const _SCOPE_LABEL = { produtos:'Produto', rdmap:'Roadmap', kr_data:'KRs', cv_evo:'Captura de Valor', cv_pct:'Captura de Valor' };
 const _RD_LBL = {'1T':'1º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri','BL27':'Backlog 2027','JAN':'Jan','FEV':'Fev','MAR':'Mar','JUL':'Jul','AGO':'Ago','SET':'Set','OUT':'Out','NOV':'Nov','DEZ':'Dez'};
 function rdLbl(p){ return _RD_LBL[p] || p; }
 const _ST_LBL = { done:'Feito', doing:'Em andamento', todo:'Previsto' };
@@ -5146,7 +5714,7 @@ async function logEdit(collName, docId, action, detail) {
       coll: collName,
       scope: _SCOPE_LABEL[collName] || collName,
       productKey: docId,
-      product: (window.PRODS && PRODS[docId] && PRODS[docId].nm) || docId,
+      product: (window.PRODS && PRODS[docId] && PRODS[docId].nm) || ((collName==='cv_evo'||collName==='cv_pct') && ALAVANCAS[docId]) || docId,
       action: action || 'editou',
       detail: detail || '',
       ts: Date.now(),
@@ -5687,6 +6255,23 @@ function fbSaveKRData(key) {
   return fbSave('kr_data', key, flat);
 }
 
+// Apuração mensal 2026 por alavanca (Captura de Valor) — mesmo padrão de
+// persistência do KR_DATA, estrutura mais simples (não precisa flatten: um
+// único array de 12 posições, valores em Firestore como null quando vazios).
+function fbSaveCVEvo(key) {
+  if (!CV_EVO[key]) return;
+  const data = { r: CV_EVO[key].r.map(v => v === undefined ? null : v) };
+  return fbSave('cv_evo', key, data);
+}
+
+// Alocação % por produto (só as 7 alavancas-base editáveis) — salva o objeto
+// inteiro da alavanca (todas as % dos 9 produtos), mesmo padrão de outras
+// gravações "linha completa" (fbSaveProd, fbSaveKRData).
+function fbSaveCVPct(key) {
+  if (!ALAV_PCT[key] || !CV_PCT_EDITABLE.has(key)) return;
+  return fbSave('cv_pct', key, JSON.parse(JSON.stringify(ALAV_PCT[key])));
+}
+
 // ── Roadmap: expandable quarter state (starts collapsed for non-current Qs)
 const rdQExpanded = new Set();
 
@@ -6063,9 +6648,7 @@ function cxMediaFail(el){
 }
 
 function cxPotTotal(){
-  let fin=0, uh=0;
-  Object.keys(ALAV_FIN).forEach(function(k){ fin+=ALAV_FIN[k].fin; uh+=ALAV_FIN[k].uh; });
-  return {m:Math.round(fin/1e6), uh:(uh/1000).toFixed(1).replace('.',',')+'k'};
+  return {m:Math.round(CV_TOTAL_COM_FIN/1e6), uh:(CV_TOTAL_COM_FIN/1e6*25/1000).toFixed(1).replace('.',',')+'k'};
 }
 function cxStatusCounts(){
   const c={sv:0,so:0,sg:0,total:0};
@@ -6179,51 +6762,137 @@ function cxRoadmapListHTML(items,opts){
 }
 
 // ── Página 1: Visão Geral ──
-function cxPageCapa(keys){
-  const qp=cxQuarterPeriods();
-  // Visão Geral enxuta: só a grade de produtos (KPIs e Destaques/Riscos removidos a pedido)
-  let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
-    +'<div class="cx-pg-sub">Jornada Integrada da Produção · Plataformas e Sistemas · '+qp.q+'T26</div>';
+// ── Infográfico da Jornada (Visão Geral) ──
+// Estrutura fiel ao fluxo de referência da área: S&OP → Projetos/Planejamento → Orçamento →
+// Gestão de MO / Abastecimento / Replanejamento → Execução → Pós-Obra.
+// Cada pill aponta para o produto real do portfólio (key em PRODS); pills sem key ainda não
+// têm produto cadastrado e ficam sem link (ex.: BIM, Project, Oracle).
+// Nota: ECO-PAM foi separado em runtime em dois produtos (PRODS.eco / PRODS.pam — ver migração
+// "split_eco_pam_catracas" no DOMContentLoaded), por isso as pills usam essas duas keys e não
+// mais 'ecopam' (que é apagada do PRODS ao carregar).
+const CX_JOURNEY=[
+  [{ttl:'S&OP', ic:'📊', pills:[{lbl:'Sincroniza',key:'sincroniza'},{lbl:'Sistema LEGO',key:'lego'},{lbl:'SMP Digital',key:'smp'},{lbl:'Nova EAP',key:'novaeap'}]}],
+  [{ttl:'Projetos', ic:'📁', pills:[{lbl:'BIM',key:null,etapa:'pre'},{lbl:'MDM',key:'mdm'}]},
+   {ttl:'Planejamento · Linha de Base', ic:'📋', pills:[{lbl:'Nexus',key:'nexus'},{lbl:'SIMURB',key:'simurb'}]}],
+  [{ttl:'Orçamento', ic:'🧮', pills:[{lbl:'Compilador BIM',key:'compilador'}]}],
+  [{ttl:'Gestão de Mão de Obra', ic:'👥', pills:[{lbl:'DAEANE',key:'daeans'},{lbl:'Prateleira',key:'prateleira'},{lbl:'Catracas',key:'catracas'}]},
+   {ttl:'Abastecimento', ic:'🛒', grid:true, pills:[{lbl:'ECO',key:'eco'},{lbl:'PAM',key:'pam'},{lbl:'COMEX',key:'comex'},{lbl:'CD',key:'cd'},{lbl:'Inbound',key:'inbound'},{lbl:'Usina de Concreto',key:'usinaconcreto'},{lbl:'Fábrica de Kits',key:'fabricakits'},{lbl:'HUB de Formas',key:'hubformas'},{lbl:'Reforma Tributária',key:'reformatrib'},{lbl:'Radar',key:'radar'},{lbl:'Módulo de Compras 360',key:'compras360'}]},
+   {ttl:'Replanejamento', ic:'🔁', pills:[{lbl:'Project',key:null,etapa:'pre'}]}],
+  [{ttl:'Execução', ic:'🏗️', pills:[{lbl:'Obra 360',key:'obra360'},{lbl:'Zé da Obra',key:'ze'}]}],
+  [{ttl:'Pós-Obra', ic:'🏢', pills:[{lbl:'Oracle',key:null,etapa:'pos'}]}]
+];
+// Produtos do portfólio que eventualmente não se encaixem no fluxo acima ficam numa faixa
+// recolhível abaixo do infográfico, para que a Visão Geral continue cobrindo 100% do portfólio.
+// Hoje vazia — todos os produtos existentes já estão posicionados no fluxo.
+const CX_ORPHAN_KEYS=[];
 
-  // Semáforo em grade — agrupado por nível de responsabilidade (estratégia da área), etapa como subgrupo
-  const groups=[{k:'est',c:'var(--est)'},{k:'pre',c:'var(--pre)'},{k:'obra',c:'var(--obra)'}];
-  RESP_ORDER.forEach(function(rk){
-    let sect='';
-    groups.forEach(function(g){
-      let tiles='';
-      keys.forEach(function(k,i){
-        const p=PRODS[k]; if(p.etapa!==g.k||prodResp(k)!==rk) return;
-      const dq=cxDqKR(p);
-      let krv='—', krl='Sem KRs cadastrados', krc='var(--t3)', objl='', pctSpan='';
-      if(dq){
-        // Regra corporativa: verde; laranja só quando abaixo do orçado
-        krc=cxKRColor(k,dq.oi,dq.ki);
-        krv=(dq.kr.real&&dq.kr.real!=='—')?cxEsc(dq.kr.real):'—';
-        krl=cxEsc(dq.kr.lbl||'');
-        objl=cxEsc((p.okrs&&p.okrs[dq.oi]&&p.okrs[dq.oi].ttl)||'');
-        let tpct=null; try{ tpct=krPct(dq.kr); }catch(e){ tpct=null; }
-        if(tpct!==null&&tpct!==100) pctSpan=' <span style="font-size:11px;font-weight:700;color:var(--t3);letter-spacing:0">· '+tpct+'% da meta</span>';
-      } else if(p.okrs&&p.okrs[0]&&p.okrs[0].ttl){
-        // Produto com Objetivo mas sem KRs cadastrados: mostra o objetivo
-        objl=cxEsc(p.okrs[0].ttl);
-        krl='';
-      }
-      tiles+='<div class="cx-tile" style="border-top-color:'+cxEtColor(p.etapa)+'" onclick="cxGo('+(i+1)+')">'
-        +'<div class="cx-tile-nm">'+cxEsc(p.nm)+'</div>'
-        +'<div class="cx-tile-krv" style="color:'+krc+'">'+krv+pctSpan+'</div>'
-        +(objl?'<div class="cx-tile-krl" style="color:var(--g);font-weight:700" title="'+objl+'">🎯 '+objl+'</div>':'')
-        +(krl?'<div class="cx-tile-krl" title="'+krl+'">'+krl+'</div>':'')
-        +'</div>';
-      });
-      if(tiles) sect+='<div class="cx-et" style="background:'+g.c+';margin-top:14px">'+ET_LABEL[g.k]+'</div><div class="cx-tiles">'+tiles+'</div>';
-    });
-    if(sect){
-      h+='<div class="cx-resp-hd" style="border-color:'+RESP_COL[rk]+'">'
-        +'<span class="cx-resp-t" style="color:'+RESP_COL[rk]+'">'+RESP_LABEL[rk]+'</span>'
-        +'</div>'+sect;
-    }
+function cxJnPill(pl,keys){
+  const key=pl.key;
+  // Cor do pill = modelo de gestão do produto (direta/compartilhada/monitoramento), não mais a etapa
+  // (a fase já fica clara pelos títulos das caixas e na página do produto). Vem de prodResp(key),
+  // que já é o cadastro real do produto — acompanha automaticamente qualquer mudança no editor.
+  // Os 3 sistemas sem produto no portfólio (BIM, Project, Oracle) não têm modelo de gestão: ficam neutros.
+  const p=key?PRODS[key]:null;
+  const resp=p?prodResp(key):null;
+  const col=resp?RESP_COL[resp]:'var(--bd)';
+  const respLbl=resp?(RESP_LABEL[resp]||''):'';
+  const idx=(key&&p)?keys.indexOf(key):-1;
+  if(idx>=0){
+    return '<div class="cx-jn-pill on" style="border-left-color:'+col+'" onclick="cxGo('+(idx+1)+')" title="'+cxEsc(p.nm)+' · '+respLbl+'">'+cxEsc(pl.lbl)+'</div>';
+  }
+  const tip=p?(cxEsc(p.nm)+' · '+respLbl+' · ainda não ativo no Modo Apresentação'):'Ainda não incluído no portfólio';
+  return '<div class="cx-jn-pill off" style="border-left-color:'+col+'" title="'+tip+'">'+cxEsc(pl.lbl)+'</div>';
+}
+function cxJnBox(box,keys){
+  return '<div class="cx-jn-box'+(box.grid?' wide':'')+'"><div class="cx-jn-box-hd">'+(box.ic?box.ic+' ':'')+cxEsc(box.ttl)+'</div><div class="cx-jn-box-pills'+(box.grid?' grid':'')+'">'
+    +box.pills.map(function(pl){ return cxJnPill(pl,keys); }).join('')
+    +'</div></div>';
+}
+// Legenda por modelo de gestão (não mais por etapa — a fase já aparece nos títulos das
+// caixas e na página de cada produto). Tooltip explica o que cada modelo significa.
+const CX_JN_RESP_TIP = {
+  dir:  'Gestão direta do time de Sistemas e Plataformas.',
+  comp: 'Gestão compartilhada entre o time de Sistemas e Plataformas e outra área.',
+  mon:  'Monitoramento estratégico, para garantir a integração ao longo da jornada.'
+};
+function cxJourneyHTML(keys){
+  let h='<div class="cx-jn-legend">'
+    + RESP_ORDER.map(function(rk){
+        return '<span data-tip="'+cxEsc(CX_JN_RESP_TIP[rk]||'')+'"><i style="background:'+RESP_COL[rk]+'"></i>'+cxEsc(RESP_LABEL[rk])+'</span>';
+      }).join('')
+    +'</div><div class="cx-jn-flow">';
+  CX_JOURNEY.forEach(function(col,i){
+    h+='<div class="cx-jn-col">'+col.map(function(box){ return cxJnBox(box,keys); }).join('')+'</div>';
+    if(i<CX_JOURNEY.length-1) h+='<div class="cx-jn-arrow">→</div>';
   });
+  h+='</div>';
+  return h;
+}
+function cxOrphanHTML(keys){
+  const orphKeys=CX_ORPHAN_KEYS.filter(function(k){ return keys.indexOf(k)>=0; });
+  if(!orphKeys.length) return '';
+  const items=orphKeys.map(function(k){
+    const idx=keys.indexOf(k), p=PRODS[k], resp=prodResp(k);
+    return '<div class="cx-jn-pill on" style="border-left-color:'+RESP_COL[resp]+'" onclick="cxGo('+(idx+1)+')" title="'+cxEsc(p.nm)+' · '+(RESP_LABEL[resp]||'')+'">'+cxEsc(p.nm)+'</div>';
+  }).join('');
+  return '<div class="cx-jn-orphans">'
+    +'<div class="cx-jn-orphans-toggle" onclick="cxToggleOrphans(this)">+ Ver outros '+orphKeys.length+' produtos do portfólio ▾</div>'
+    +'<div class="cx-jn-orphans-body">'+items+'</div>'
+    +'</div>';
+}
+function cxToggleOrphans(el){
+  const body=el.nextElementSibling;
+  const open=body.classList.toggle('on');
+  const n=body.children.length;
+  el.textContent=(open?'– Ocultar outros ':'+ Ver outros ')+n+' produtos do portfólio '+(open?'▲':'▾');
+}
+// ── Metas PLR da área (Visão Geral) ──
+// Puxa os KRs marcados com 🏆 PLR no editor do produto (kr.plr), em qualquer produto do portfólio.
+// Mostra só o Objetivo + o KR marcado — não os demais KRs do mesmo OKR.
+function cxPLRHTML(keys){
+  const items=[];
+  keys.forEach(function(k){
+    const p=PRODS[k];
+    (p.okrs||[]).forEach(function(okr,oi){
+      (okr.krs||[]).forEach(function(kr,ki){
+        if(!kr.plr) return;
+        items.push({idx:keys.indexOf(k),p:p,k:k,okr:okr,oi:oi,kr:kr,ki:ki});
+      });
+    });
+  });
+  let h='<div class="cx-card" style="margin-top:22px"><div class="cx-card-t">🏆 Metas PLR da Área</div>';
+  if(!items.length){
+    h+='<div style="font-size:13px;color:var(--t3)">Nenhuma meta PLR marcada ainda — marque no editor do produto, no botão 🏆 PLR ao lado do KR.</div>';
+  } else {
+    h+='<div class="cx-jn-plr-grid">';
+    items.forEach(function(it){
+      let krv='—', krc='var(--t3)', pctSpan='';
+      if(it.kr){
+        krc=cxKRColor(it.k,it.oi,it.ki);
+        krv=(it.kr.real&&it.kr.real!=='—')?cxEsc(it.kr.real):'—';
+        let tpct=null; try{ tpct=krPct(it.kr); }catch(e){ tpct=null; }
+        if(tpct!==null) pctSpan=' <span style="font-size:11px;font-weight:700;color:var(--t3)">· '+tpct+'% da meta</span>';
+      }
+      h+='<div class="cx-jn-plr-card" onclick="cxGo('+(it.idx+1)+')">'
+        +'<div class="cx-jn-plr-prod">'+cxEsc(it.p.nm)+'</div>'
+        +'<div class="cx-jn-plr-ttl">'+cxEsc(it.okr.ttl)+'</div>'
+        +'<div class="cx-jn-plr-kr" style="color:'+krc+'">'+krv+pctSpan+'</div>'
+        +(it.kr&&it.kr.lbl?'<div class="cx-jn-plr-krl">'+cxEsc(it.kr.lbl)+'</div>':'')
+        +'</div>';
+    });
+    h+='</div>';
+  }
+  h+='</div>';
+  return h;
+}
 
+function cxPageCapa(keys){
+  // Visão Geral: infográfico interativo da jornada + metas PLR da área (OKRs completos ficam só na página do produto)
+  let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
+    +'<div class="cx-pg-sub">Ecossistema integrado de sistemas e iniciativas que conecta dados, processos e decisões ao longo de toda a Jornada da Produção.</div>';
+  h+='<div class="cx-card"><div class="cx-card-t">🗺️ Jornada Integrada da Produção</div>'
+    +cxJourneyHTML(keys)+cxOrphanHTML(keys)+'</div>';
+  h+=cxPLRHTML(keys);
   return h;
 }
 
