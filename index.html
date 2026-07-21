@@ -793,23 +793,25 @@ button,input,select,textarea{font-family:inherit;}
 .cx-jn-legend span{display:inline-flex;align-items:center;gap:6px;cursor:help;position:relative;}
 .cx-jn-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;}
 .cx-jn-legend i.off{background:#e2e8f0;border:1.5px dashed #94a3b8;}
-/* Tooltip customizado (não depende do title nativo do navegador, que às vezes
-   não aparece / demora demais) — some sempre no hover, com seta apontando pro item. */
-.cx-jn-legend span[data-tip]::after{
-  content:attr(data-tip);
+/* Tooltip customizado. Usa data-legend-tip (não "data-tip") de propósito: o
+   board já tem um sistema de tooltip global para os gráficos SVG que também
+   escuta "data-tip" (ver cxTipInit) — usar o mesmo nome fazia os dois
+   mecanismos dispararem juntos e duplicar a caixinha na tela. */
+.cx-jn-legend span[data-legend-tip]::after{
+  content:attr(data-legend-tip);
   position:absolute;left:50%;bottom:calc(100% + 9px);transform:translateX(-50%);
   background:#1e293b;color:#fff;padding:8px 11px;border-radius:8px;
   font-size:10.5px;font-weight:600;line-height:1.45;white-space:normal;
   width:220px;text-align:left;box-shadow:0 8px 20px rgba(0,0,0,.22);
   opacity:0;visibility:hidden;transition:opacity .12s ease;z-index:80;pointer-events:none;
 }
-.cx-jn-legend span[data-tip]::before{
+.cx-jn-legend span[data-legend-tip]::before{
   content:'';position:absolute;left:50%;bottom:calc(100% + 3px);transform:translateX(-50%);
   border:6px solid transparent;border-top-color:#1e293b;
   opacity:0;visibility:hidden;transition:opacity .12s ease;z-index:80;pointer-events:none;
 }
-.cx-jn-legend span[data-tip]:hover::after,
-.cx-jn-legend span[data-tip]:hover::before{opacity:1;visibility:visible;}
+.cx-jn-legend span[data-legend-tip]:hover::after,
+.cx-jn-legend span[data-legend-tip]:hover::before{opacity:1;visibility:visible;}
 /* Fluida como a página de produto (que usa grid 1fr 1fr): as colunas crescem
    pra preencher a largura toda em tela grande (justify-content:space-between +
    flex-grow), e encolhem/quebram linha em tela pequena (flex-wrap + min-width). */
@@ -6836,7 +6838,7 @@ const CX_JN_RESP_TIP = {
 function cxJourneyHTML(keys){
   let h='<div class="cx-jn-legend">'
     + RESP_ORDER.map(function(rk){
-        return '<span data-tip="'+cxEsc(CX_JN_RESP_TIP[rk]||'')+'"><i style="background:'+RESP_COL[rk]+'"></i>'+cxEsc(RESP_LABEL[rk])+'</span>';
+        return '<span data-legend-tip="'+cxEsc(CX_JN_RESP_TIP[rk]||'')+'"><i style="background:'+RESP_COL[rk]+'"></i>'+cxEsc(RESP_LABEL[rk])+'</span>';
       }).join('')
     +'</div><div class="cx-jn-flow">';
   CX_JOURNEY.forEach(function(col,i){
