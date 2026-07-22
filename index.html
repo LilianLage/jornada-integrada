@@ -2080,7 +2080,8 @@ const CV_LEVERS = {
   desp_fin:{
     bloco:'Custo Financeiro', tipo:'Financeiro derivado', natureza:'Derivada financeira',
     fin:15340000, uh:383.5,
-    racional:'Redução do custo financeiro anual associado a manter estoque de materiais acima do necessário.\n\nMaterial do Comex de 30/03/26 cita: adição da captura referente à redução da desp. financeira por redução do estoque de materiais (ref.: 15,3% a.a.).',
+    descricao:'Para redução de estoque de materiais: aplica-se o WACC de 15,34% sobre o capital liberado (R$ 100 milhões).\nConceito: Redução do custo de oportunidade e juros sobre o capital imobilizado em ativos circulantes (estoque de materiais).',
+    racional:'Redução do custo de oportunidade e juros sobre o capital imobilizado em ativos circulantes (estoque de materiais): aplica-se o WACC de 15,34% a.a. sobre o capital liberado (R$ 100MM), resultando no potencial de R$ 15,34MM/ano.\n\nMaterial do Comex de 30/03/26 cita: adição da captura referente à redução da desp. financeira por redução do estoque de materiais.',
     fonte_h:'Lucas', resp_apuracao:'Lilian',
     plano_acao:'Deriva da redução de estoque; não somar como captura operacional independente.',
     indicador:'Redução média efetiva do saldo de estoque',
@@ -2093,7 +2094,8 @@ const CV_LEVERS = {
   custo_capital:{
     bloco:'Custo Financeiro', tipo:'Financeiro derivado', natureza:'Derivada financeira',
     fin:38326000, uh:958.15,
-    racional:'Ao reduzir desembolso das capturas operacionais, reduz-se necessidade de capital/empréstimo. Planilha aplica 11% sobre R$ 348,42MM.\n\nMaterial do Comex de 30/03/26 cita: a promessa de captura de valor foi atualizada considerando a redução do custo financeiro associado ao menor desembolso anual (ref.: 12% a.a.).',
+    descricao:'Para redução de desembolso de obra: aplica-se a taxa de 12% (financiamento PJ) sobre o total acumulado de desembolsos evitados (R$ 369,9 milhões - meta JIP).\nConceito: Redução do custo de financiamento da produção (desembolso de obra) através de recursos de Pessoa Jurídica (PJ).',
+    racional:'Redução do custo de financiamento da produção (desembolso de obra) através de recursos de Pessoa Jurídica (PJ): aplica-se a taxa de 12% a.a. (financiamento PJ) sobre o total acumulado de desembolsos evitados (R$ 369,9MM — meta JIP).\n\nMaterial do Comex de 30/03/26 cita: a promessa de captura de valor foi atualizada considerando a redução do custo financeiro associado ao menor desembolso anual (ref.: 12% a.a.).',
     fonte_h:'Lucas', resp_apuracao:'Lilian',
     plano_acao:'Se a base operacional revisada mudar, esta linha precisa recalcular.',
     indicador:'Redução efetiva dos desembolsos operacionais elegíveis',
@@ -2107,14 +2109,17 @@ const CV_LEVERS = {
 // Regra oficial das duas linhas "financeiro derivado" — SEMPRE calculadas a
 // partir das capturas-base (nunca digitadas à mão), para que qualquer revisão
 // de captura recalcule as duas automaticamente, sem risco de divergência:
-//   • Red. Desp. Financeira (Estoque) = 15,3% × captura de Red. Estoque de Materiais
-//   • Custo de Capital (Desembolso)   = 11%   × soma de todas as demais capturas 2025
+//   • Red. Desp. Financeira (Estoque) = 15,34% (WACC) × captura de Red. Estoque de Materiais
+//   • Custo de Capital (Desembolso)   = 11% × soma de todas as demais capturas 2025
+//     ATENÇÃO: a descrição oficial cita 12% (financiamento PJ) sobre desembolsos
+//     evitados — mudar a taxa de apuração e o potencial (R$38,3MM ↔ 12%×369,9=R$44,4MM)
+//     altera números do board e depende de decisão da Lilian; até lá, apuração segue 11%.
 // Base de conversão R$/UH ↔ total: 40.000 UH (mesma referência usada na
 // apuração capturada 2025).
 const CV_UH_BASE = 40000;
 function recalcCVFinDerivadas(){
   const capEstoque = CV_LEVERS.estoque.cap2025_mm;
-  CV_LEVERS.desp_fin.cap2025_mm = (capEstoque==null) ? null : Math.round(capEstoque*0.153*1000)/1000;
+  CV_LEVERS.desp_fin.cap2025_mm = (capEstoque==null) ? null : Math.round(capEstoque*0.1534*1000)/1000;
   CV_LEVERS.desp_fin.cap2025_uh = (CV_LEVERS.desp_fin.cap2025_mm==null) ? null : Math.round(CV_LEVERS.desp_fin.cap2025_mm*1e6/CV_UH_BASE*10)/10;
 
   const somaCapturas = Object.entries(CV_LEVERS)
@@ -2348,6 +2353,9 @@ function openAlavModal(key, keepProdOpen){
       '<div style="background:var(--gyb);border-radius:9px;padding:9px 10px"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Captura atribuída</div><div style="font-size:15px;font-weight:800;color:var(--tx);margin-top:2px">'+Math.min(100,somaPct)+'%</div></div>'+
       '<div style="background:#fff8ef;border-radius:9px;padding:9px 10px;cursor:pointer" onclick="toggleCVEvoEdit(\''+key+'\')" title="Clique para apurar/editar 2026"><div style="font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3)">Apuração 2026 ✎</div><div style="font-size:13px;font-weight:800;color:var(--o);margin-top:2px">'+apur2026+'</div></div>'+
     '</div>'+
+    // Descrição da captura financeira (taxa aplicada + conceito) — só existe nas duas
+    // alavancas derivadas (Red. Desp. Financeira e Custo de Capital); nas demais, nada muda.
+    (d.descricao?'<div style="background:var(--gb);border:1px solid var(--bd);border-radius:9px;padding:9px 11px;margin-bottom:10px;font-size:11px;color:var(--t2);line-height:1.55">'+cvNl2br(d.descricao)+'</div>':'')+
     '<div id="cv-evo-wrap-'+key+'" style="display:none;margin-bottom:10px"></div>'+
     '<div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);margin:10px 0 2px">Meta acumulada por ano (R$/UH)</div>'+
     cvMetaProgressHtml(d,key)+
