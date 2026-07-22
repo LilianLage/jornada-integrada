@@ -6813,6 +6813,9 @@ function cxJnPill(pl,keys){
   // que já é o cadastro real do produto — acompanha automaticamente qualquer mudança no editor.
   // Os 3 sistemas sem produto no portfólio (BIM, Project, Oracle) não têm modelo de gestão: ficam neutros.
   const p=key?PRODS[key]:null;
+  // Produto marcado como oculto no editor (checkbox "Exibir no Modo Apresentação")
+  // some por completo do infográfico — não aparece nem como pill apagada.
+  if(p&&p.cx_hide) return '';
   const resp=p?prodResp(key):null;
   const col=resp?RESP_COL[resp]:'var(--bd)';
   const respLbl=resp?(RESP_LABEL[resp]||''):'';
@@ -6824,8 +6827,12 @@ function cxJnPill(pl,keys){
   return '<div class="cx-jn-pill off" style="border-left-color:'+col+'" title="'+tip+'">'+cxEsc(pl.lbl)+'</div>';
 }
 function cxJnBox(box,keys){
+  // Pills de produtos ocultos (cx_hide) retornam '' — se a caixa ficar sem nenhuma
+  // pill visível, ela some inteira do infográfico (retorna '' também).
+  const pillsHTML=box.pills.map(function(pl){ return cxJnPill(pl,keys); }).filter(function(h){ return h!==''; });
+  if(!pillsHTML.length) return '';
   return '<div class="cx-jn-box'+(box.grid?' wide':'')+'"><div class="cx-jn-box-hd">'+(box.ic?box.ic+' ':'')+cxEsc(box.ttl)+'</div><div class="cx-jn-box-pills'+(box.grid?' grid':'')+'">'
-    +box.pills.map(function(pl){ return cxJnPill(pl,keys); }).join('')
+    +pillsHTML.join('')
     +'</div></div>';
 }
 // Legenda por modelo de gestão (não mais por etapa — a fase já aparece nos títulos das
@@ -6841,13 +6848,19 @@ function cxJourneyHTML(keys){
         return '<span data-legend-tip="'+cxEsc(CX_JN_RESP_TIP[rk]||'')+'"><i style="background:'+RESP_COL[rk]+'"></i>'+cxEsc(RESP_LABEL[rk])+'</span>';
       }).join('')
     +'</div><div class="cx-jn-flow">';
-  CX_JOURNEY.forEach(function(col,i){
+  // Monta só as colunas que ainda têm alguma caixa visível (caixas cujos produtos
+  // foram todos ocultos via cx_hide retornam '' em cxJnBox). As setas → ficam
+  // apenas entre colunas visíveis, para o fluxo não mostrar seta "no vazio".
+  const colsHTML=[];
+  CX_JOURNEY.forEach(function(col){
     // Colunas com caixa "grid" (ex.: Abastecimento, 11 itens) crescem mais que as
     // demais — mantém a proporção que existia com max-width fixo, mas agora fluida.
     const isWide = col.some(function(box){ return box.grid; });
-    h+='<div class="cx-jn-col'+(isWide?' wide':'')+'">'+col.map(function(box){ return cxJnBox(box,keys); }).join('')+'</div>';
-    if(i<CX_JOURNEY.length-1) h+='<div class="cx-jn-arrow">→</div>';
+    const boxes=col.map(function(box){ return cxJnBox(box,keys); }).filter(function(b){ return b!==''; });
+    if(!boxes.length) return;
+    colsHTML.push('<div class="cx-jn-col'+(isWide?' wide':'')+'">'+boxes.join('')+'</div>');
   });
+  h+=colsHTML.join('<div class="cx-jn-arrow">→</div>');
   h+='</div>';
   return h;
 }
