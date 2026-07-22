@@ -815,7 +815,11 @@ button,input,select,textarea{font-family:inherit;}
 /* Fluida como a página de produto (que usa grid 1fr 1fr): as colunas crescem
    pra preencher a largura toda em tela grande (justify-content:space-between +
    flex-grow), e encolhem/quebram linha em tela pequena (flex-wrap + min-width). */
-.cx-jn-flow{display:flex;flex-wrap:wrap;align-items:stretch;justify-content:space-between;gap:14px 10px;width:100%;}
+/* O fluxo nunca quebra linha: abaixo de 1100px de largura ele mantém o layout
+   e é reduzido via transform:scale() pelo cxJnFit(), para caber tudo na horizontal
+   (evita o Pós-Obra virar uma faixa sozinha na base em telas pequenas). */
+.cx-jn-scale{width:100%;overflow:hidden;}
+.cx-jn-flow{display:flex;flex-wrap:nowrap;align-items:stretch;justify-content:space-between;gap:14px 10px;width:100%;min-width:1100px;transform-origin:left top;}
 .cx-jn-col{display:flex;flex-direction:column;gap:8px;justify-content:center;flex:1 1 150px;min-width:120px;}
 .cx-jn-col.wide{flex:1.5 1 220px;}
 .cx-jn-arrow{display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--bd);flex-shrink:0;padding:0 1px;}
@@ -863,6 +867,10 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .cx-media-link{display:flex;align-items:center;justify-content:center;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px dashed var(--bd);background:var(--gyb);font-size:13px;font-weight:800;color:var(--g);text-decoration:none;}
 @page{margin:10mm 8mm;}
 @media print{
+  /* infográfico da jornada: no papel volta ao comportamento anterior (quebra de
+     linha permitida, sem scale) — a escala é só para ajuste de tela */
+  .cx-jn-flow{transform:none!important;min-width:0!important;flex-wrap:wrap!important;}
+  .cx-jn-scale{height:auto!important;}
   /* preserva as cores/fundos do board — sem isso o Chrome imprime tudo em branco */
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
   body.cx-open>*:not(#comex-ov){display:none!important;}
@@ -1117,6 +1125,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div class="cx-qgrp" id="cx-qgrp">
         <button class="cx-qbtn" onclick="cxSetQ(0)">1T</button><button class="cx-qbtn" onclick="cxSetQ(1)">2T</button><button class="cx-qbtn" onclick="cxSetQ(2)">3T</button><button class="cx-qbtn" onclick="cxSetQ(3)">4T</button>
       </div>
+      <button class="cx-btn cx-btn-ic" id="cx-eye-btn" onclick="cxToggleShowHidden()" title="Exibir produtos ocultos nesta sessão — sempre desligado ao recarregar a página"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
       <button class="cx-btn cx-btn-ic" onclick="printComex()" title="Imprimir / Exportar PDF">🖨</button>
       <button class="cx-btn" onclick="closeComex()">✕ Sair</button>
     </div>
@@ -2154,11 +2163,12 @@ const CV_CHART_BAR = CV_CHART_PCTS.map((p,i) => {
 const CV_CHART_REAL2025_UH = Math.round(CV_CAP2025_COM_FIN/1e6/40*1000)/1000; // realizado 2025, R$/UH mil
 const CV_CHART_REAL2025_MM = Math.round(CV_CAP2025_COM_FIN/1e6*10)/10;        // realizado 2025, R$ MM
 // Popula todos os pontos do board que mostravam "R$408M" fixo — sempre os dois totais
-// (com e sem custo financeiro), pedido explícito da Lilian. Chamado 1x no DOMContentLoaded.
+// (com e sem custo financeiro), EXCETO a pill do cabeçalho (hd-pill-pot), que por pedido
+// da Lilian mostra só o total SEM custo financeiro, sem rótulo — apenas o número.
 function renderCVHeaderNumbers(){
   const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
   const potUHcom = CV_TOTAL_COM_FIN/1e6*25, potUHsem = CV_TOTAL_SEM_FIN/1e6*25;
-  set('hd-pill-pot', 'R$ '+Math.round(CV_TOTAL_COM_FIN/1e6)+'M · '+(potUHcom/1000).toFixed(1).replace('.',',')+'k/UH <span style="opacity:.7;font-weight:600">(R$'+Math.round(CV_TOTAL_SEM_FIN/1e6)+'M s/ fin.)</span>');
+  set('hd-pill-pot', 'R$ '+Math.round(CV_TOTAL_SEM_FIN/1e6)+'M · '+(potUHsem/1000).toFixed(1).replace('.',',')+'k/UH');
   set('kpi-mapa-pot', 'R$ '+cvFmtM(CV_TOTAL_COM_FIN)+'M');
   set('kpi-mapa-pot-sub', 'c/ custo financeiro · R$'+cvFmtM(CV_TOTAL_SEM_FIN)+'M sem · '+CV_KEYS.length+' produtos');
   set('kpi-mapa-uh', 'R$ '+(potUHcom/1000).toFixed(1).replace('.',',')+'k');
@@ -6644,6 +6654,11 @@ console.log('[JIP] build i6 — sanitização de alavancas + alavancas/ambiçõe
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
+// Modo "exibir ocultos": quando true, produtos com cx_hide aparecem normalmente em todo o
+// Modo Apresentação (infográfico, faixa do topo e páginas). Variável de runtime, de propósito
+// NUNCA persistida (nem localStorage nem Firebase): a cada refresh — e a cada abertura do
+// Modo Apresentação — volta a false, para ocultos jamais aparecerem numa apresentação por engano.
+let cxShowHidden = false;
 
 function cxEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function cxMedia(url){
@@ -6699,11 +6714,12 @@ function cxProdKeys(){
   const order=['est','pre','obra'];
   const keys=[];
   // Faixa do topo e páginas seguem a jornada: Estratégia → Pré-Obra → Obra
-  // Produtos com cx_hide=true ficam fora do Modo Apresentação (Visão Geral, faixa do topo e página própria)
+  // Produtos com cx_hide=true ficam fora do Modo Apresentação (Visão Geral, faixa do topo
+  // e página própria) — exceto com o botão 👁 "exibir ocultos" ativo (cxShowHidden)
   order.forEach(function(et){
-    Object.keys(PRODS).forEach(function(k){ if(PRODS[k].etapa===et&&!PRODS[k].cx_hide) keys.push(k); });
+    Object.keys(PRODS).forEach(function(k){ if(PRODS[k].etapa===et&&(cxShowHidden||!PRODS[k].cx_hide)) keys.push(k); });
   });
-  Object.keys(PRODS).forEach(function(k){ if(order.indexOf(PRODS[k].etapa)<0&&!PRODS[k].cx_hide) keys.push(k); });
+  Object.keys(PRODS).forEach(function(k){ if(order.indexOf(PRODS[k].etapa)<0&&(cxShowHidden||!PRODS[k].cx_hide)) keys.push(k); });
   return keys;
 }
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
@@ -6814,8 +6830,9 @@ function cxJnPill(pl,keys){
   // Os 3 sistemas sem produto no portfólio (BIM, Project, Oracle) não têm modelo de gestão: ficam neutros.
   const p=key?PRODS[key]:null;
   // Produto marcado como oculto no editor (checkbox "Exibir no Modo Apresentação")
-  // some por completo do infográfico — não aparece nem como pill apagada.
-  if(p&&p.cx_hide) return '';
+  // some por completo do infográfico — não aparece nem como pill apagada —,
+  // a menos que o botão 👁 "exibir ocultos" (cxShowHidden) esteja ativo.
+  if(p&&p.cx_hide&&!cxShowHidden) return '';
   const resp=p?prodResp(key):null;
   const col=resp?RESP_COL[resp]:'var(--bd)';
   const respLbl=resp?(RESP_LABEL[resp]||''):'';
@@ -6847,7 +6864,7 @@ function cxJourneyHTML(keys){
     + RESP_ORDER.map(function(rk){
         return '<span data-legend-tip="'+cxEsc(CX_JN_RESP_TIP[rk]||'')+'"><i style="background:'+RESP_COL[rk]+'"></i>'+cxEsc(RESP_LABEL[rk])+'</span>';
       }).join('')
-    +'</div><div class="cx-jn-flow">';
+    +'</div><div class="cx-jn-scale" id="cx-jn-scale"><div class="cx-jn-flow">';
   // Monta só as colunas que ainda têm alguma caixa visível (caixas cujos produtos
   // foram todos ocultos via cx_hide retornam '' em cxJnBox). As setas → ficam
   // apenas entre colunas visíveis, para o fluxo não mostrar seta "no vazio".
@@ -6861,7 +6878,7 @@ function cxJourneyHTML(keys){
     colsHTML.push('<div class="cx-jn-col'+(isWide?' wide':'')+'">'+boxes.join('')+'</div>');
   });
   h+=colsHTML.join('<div class="cx-jn-arrow">→</div>');
-  h+='</div>';
+  h+='</div></div>';
   return h;
 }
 function cxOrphanHTML(keys){
@@ -6882,6 +6899,24 @@ function cxToggleOrphans(el){
   const n=body.children.length;
   el.textContent=(open?'– Ocultar outros ':'+ Ver outros ')+n+' produtos do portfólio '+(open?'▲':'▾');
 }
+// ── Ajuste de escala do infográfico da jornada ──
+// O fluxo tem min-width de 1100px e nunca quebra linha; quando o container é mais
+// estreito que isso, aplica transform:scale() para caber tudo na horizontal e ajusta
+// a altura do wrapper (o transform não afeta o layout ao redor por si só).
+// Chamado ao abrir o Modo Apresentação, ao navegar para a Visão Geral e no resize.
+function cxJnFit(){
+  const wrap=document.getElementById('cx-jn-scale'); if(!wrap) return;
+  const flow=wrap.querySelector('.cx-jn-flow'); if(!flow) return;
+  flow.style.transform=''; wrap.style.height='';
+  if(!wrap.clientWidth||!flow.offsetWidth) return; // página oculta — refaz quando ficar visível
+  const need=flow.offsetWidth, have=wrap.clientWidth;
+  if(need>have+1){
+    const s=have/need;
+    flow.style.transform='scale('+s+')';
+    wrap.style.height=(flow.offsetHeight*s)+'px';
+  }
+}
+window.addEventListener('resize',cxJnFit);
 // ── Metas PLR da área (Visão Geral) ──
 // Puxa os KRs marcados com 🏆 PLR no editor do produto (kr.plr), em qualquer produto do portfólio.
 // Mostra só o Objetivo + o KR marcado — não os demais KRs do mesmo OKR.
@@ -7357,6 +7392,7 @@ function cxGo(i){
     pl.classList.toggle('on',j===i);
     if(j===i&&pl.scrollIntoView) pl.scrollIntoView({block:'nearest',inline:'nearest'});
   });
+  if(i===0) cxJnFit(); // Visão Geral acabou de ficar visível — ajusta a escala do infográfico
 }
 function cxNav(dir){ cxGo(cxPage+dir); }
 function cxSetQ(i){
@@ -7379,6 +7415,8 @@ function openComex(){
   const menu=document.getElementById('hd-menu'); if(menu) menu.style.display='none';
   cxPage=0;
   cxQ=Math.floor(CUR_M/3);
+  cxShowHidden=false; // segurança: toda abertura do Modo Apresentação começa sem os ocultos
+  cxSyncEyeBtn();
   cxSyncQBtns();
   buildComexPages();
   const d=new Date();
@@ -7390,6 +7428,7 @@ function openComex(){
   let collapsed=false;
   try{ collapsed=localStorage.getItem('cxHdCollapsed')==='1'; }catch(e){}
   cxSetHdCollapsed(collapsed);
+  cxJnFit(); // overlay acabou de abrir — infográfico já está visível e mensurável
 }
 function closeComex(){
   document.getElementById('comex-ov').classList.remove('open');
@@ -7412,6 +7451,28 @@ function cxToggleHd(){
   try{ localStorage.setItem('cxHdCollapsed',collapsed?'1':'0'); }catch(e){}
 }
 function printComex(){ window.print(); }
+// ── Botão 👁 "exibir ocultos" do header do Modo Apresentação ──
+// Alterna a exibição dos produtos com cx_hide em toda a apresentação. Só vive em memória:
+// refresh da página (e reabertura do Modo Apresentação) sempre volta para desligado.
+// Ícones em SVG (traço estilo Feather): olho cortado = ocultos escondidos (padrão),
+// olho aberto = exibindo ocultos. Sem emoji, para manter o tom corporativo do header.
+const CX_EYE_SVG_ATTRS='width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"';
+const CX_EYE_OFF_SVG='<svg '+CX_EYE_SVG_ATTRS+'><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+const CX_EYE_ON_SVG='<svg '+CX_EYE_SVG_ATTRS+'><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+function cxSyncEyeBtn(){
+  const b=document.getElementById('cx-eye-btn'); if(!b) return;
+  b.innerHTML=cxShowHidden?CX_EYE_ON_SVG:CX_EYE_OFF_SVG;
+  b.style.opacity=cxShowHidden?'1':'';
+  b.title=cxShowHidden
+    ?'Exibindo também os produtos ocultos — clique para voltar a ocultá-los'
+    :'Exibir produtos ocultos nesta sessão — sempre desligado ao recarregar a página';
+}
+function cxToggleShowHidden(){
+  cxShowHidden=!cxShowHidden;
+  cxSyncEyeBtn();
+  buildComexPages();
+  cxGo(cxPage); // mantém a página atual após rebuild (mesmo padrão do troca-trimestre)
+}
 
 
 </script>
