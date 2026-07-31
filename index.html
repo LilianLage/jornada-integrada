@@ -850,7 +850,7 @@ button,input,select,textarea{font-family:inherit;}
 .cx-phd-desc{font-size:14.5px;color:var(--t2);margin-top:10px;line-height:1.55;max-width:760px;}
 .cx-phd-media{flex-shrink:0;}
 .cx-phd-tags{flex-shrink:0;max-width:320px;}
-.cx-phd-tags .tl{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin:0 0 6px;}
+.cx-phd-tags .tl{font-size:10px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin:0 0 6px;background:transparent;}
 .cx-phd-tags .tl+.tl-group+.tl{margin-top:12px;}
 .cx-tagchip{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:4px 9px;margin:0 4px 4px 0;border:1px solid;line-height:1.3;}
 /* Carrossel de KRs no card de OKRs do Modo Apresentação */
@@ -944,6 +944,21 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           const midiaSnap = await getDocs(collection(db, 'produto_midia'));
           midiaSnap.forEach(d => { const v = d.data(); if (v && v.data) window.PROD_MIDIA[d.id] = v.data; });
         } catch(e) { console.warn('produto_midia load:', e); }
+        // Indicadores complementares do Modo Apresentação (até 3 prints por produto):
+        // coleção própria, um doc por imagem (produto_indicadores/{key}__{i})
+        window.PROD_IND = window.PROD_IND || {};
+        try {
+          const indSnap = await getDocs(collection(db, 'produto_indicadores'));
+          indSnap.forEach(d => {
+            const v = d.data(); if (!v || !v.data) return;
+            const sep = d.id.lastIndexOf('__');
+            if (sep < 0) return;
+            const k = d.id.slice(0, sep), i = parseInt(d.id.slice(sep + 2), 10);
+            if (isNaN(i) || i < 0 || i > 2) return;
+            if (!window.PROD_IND[k]) window.PROD_IND[k] = [null, null, null];
+            window.PROD_IND[k][i] = { data: v.data, ttl: v.ttl || '' };
+          });
+        } catch(e) { console.warn('produto_indicadores load:', e); }
         // Load RDMAP overrides
         const rdSnap = await getDocs(collection(db, 'rdmap'));
         rdSnap.forEach(d => {
@@ -1583,6 +1598,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           <select id="kred-reg-agg" onchange="setKRRegAgg(this.value)" style="border:1.5px solid var(--bd);border-radius:5px;padding:2px 6px;font-size:10px;outline:none">
             <option value="soma">Soma das regionais</option>
             <option value="media">Média das regionais</option>
+            <option value="manual">Informado manualmente</option>
           </select>
         </span>
       </div>
@@ -1642,6 +1658,9 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           <input type="file" id="ep-midia-file" accept="image/*" style="display:none" onchange="epMidiaUpload(this)">
         </div>
         <div id="ep-midia-prev" style="margin-top:6px"></div>
+      </div>
+      <div class="fg"><label>Indicadores complementares · até 3 prints de gráficos, aparecem no Modo Apresentação após os OKRs</label>
+        <div id="ep-ind-wrap"></div>
       </div>
       <div class="fg" style="display:flex;align-items:center;gap:8px">
         <input type="checkbox" id="ep-cxshow" checked style="width:16px;height:16px;accent-color:var(--g);margin:0;flex-shrink:0">
@@ -3337,6 +3356,7 @@ function openEdit(key){
   if(_m&&String(_m).indexOf('data:image')===0){ epMidiaData=_m; document.getElementById('ep-midia').value=''; }
   else { epMidiaData=null; document.getElementById('ep-midia').value=_m||''; }
   epMidiaPreview();
+  epIndLoad(key);
   renderEditOKRs(p);
   document.getElementById('edit-mbg').classList.add('open');
   document.addEventListener('keydown',editKeyHandler);
@@ -3395,6 +3415,57 @@ function epMidiaPreview(){
   }
 }
 function epMidiaClear(){ epMidiaData=null; epMidiaPreview(); }
+
+// ── Indicadores complementares (Modo Apresentação): até 3 prints com título ──
+let epInd=[null,null,null];        // {data,ttl} | null por slot
+let epIndDirty=[false,false,false];
+function epIndLoad(key){
+  const src=(window.PROD_IND&&window.PROD_IND[key])?window.PROD_IND[key]:[];
+  epInd=[0,1,2].map(function(i){ const v=src[i]; return (v&&v.data)?{data:v.data,ttl:v.ttl||''}:null; });
+  epIndDirty=[false,false,false];
+  epIndRender();
+}
+function epIndRender(){
+  const w=document.getElementById('ep-ind-wrap'); if(!w) return;
+  let h='';
+  for(let i=0;i<3;i++){
+    const v=epInd[i];
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-top:'+(i?'6px':'0')+'">';
+    if(v){
+      h+='<img src="'+v.data+'" style="height:44px;border-radius:6px;border:1px solid var(--bd);flex-shrink:0">'
+        +'<input value="'+cxEsc(v.ttl)+'" placeholder="Título do indicador (opcional)" oninput="epIndTtl('+i+',this.value)" style="flex:1">'
+        +'<span style="font-size:9px;color:var(--t3);white-space:nowrap">'+Math.round(v.data.length/1024)+' KB</span>'
+        +'<button class="btn-sm" type="button" onclick="epIndClear('+i+')">× Remover</button>';
+    } else {
+      h+='<button class="btn-sm" type="button" onclick="document.getElementById(\'ep-ind-file-'+i+'\').click()">📊 Carregar imagem '+(i+1)+'</button>'
+        +'<input type="file" id="ep-ind-file-'+i+'" accept="image/*" style="display:none" onchange="epIndUpload('+i+',this)">'
+        +'<span style="font-size:9px;color:var(--t3)">Slot vazio não aparece na apresentação</span>';
+    }
+    h+='</div>';
+  }
+  w.innerHTML=h;
+}
+function epIndUpload(i,inp){
+  const f=inp.files&&inp.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=function(ev){
+    const img=new Image();
+    img.onload=function(){
+      const out=epCompressImage(img);
+      if(!out){ alert('Não foi possível comprimir a imagem para um tamanho seguro (limite ~700 KB). Tente uma imagem menor ou um recorte.'); return; }
+      const prev=epInd[i];
+      epInd[i]={data:out, ttl:prev?prev.ttl:''};
+      epIndDirty[i]=true;
+      epIndRender();
+    };
+    img.onerror=function(){ alert('Arquivo de imagem inválido.'); };
+    img.src=ev.target.result;
+  };
+  rd.readAsDataURL(f);
+  inp.value='';
+}
+function epIndTtl(i,v){ if(epInd[i]){ epInd[i].ttl=v; epIndDirty[i]=true; } }
+function epIndClear(i){ epInd[i]=null; epIndDirty[i]=true; epIndRender(); }
 
 function calcKRProgress(realVal, metaVal) {
   // Parse real and meta to numbers for % calculation
@@ -3564,6 +3635,22 @@ async function saveEdit(){
     if(window.PROD_MIDIA&&window.PROD_MIDIA[editKey]){
       delete window.PROD_MIDIA[editKey];
       fbSaveMidia(editKey,'').catch(function(e){console.warn('limpeza produto_midia:',e);});
+    }
+  }
+  // Indicadores complementares: salva só os slots alterados (coleção própria,
+  // um doc por imagem — nunca disputa o limite de 1 MB do doc do produto)
+  for(let _ii=0;_ii<3;_ii++){
+    if(!epIndDirty[_ii]) continue;
+    const _v=epInd[_ii];
+    try{
+      await fbSaveIndicador(editKey,_ii,_v?_v.data:'',_v?_v.ttl:'');
+      window.PROD_IND=window.PROD_IND||{};
+      if(!window.PROD_IND[editKey]) window.PROD_IND[editKey]=[null,null,null];
+      window.PROD_IND[editKey][_ii]=_v?{data:_v.data,ttl:_v.ttl||''}:null;
+      epIndDirty[_ii]=false;
+    }catch(e){
+      console.warn('produto_indicadores save (slot '+_ii+'):',e);
+      alert('⚠️ O indicador complementar '+(_ii+1)+' não foi salvo no banco ('+(e&&e.message?e.message:'erro')+'). Os demais campos seguem sendo salvos.');
     }
   }
   // refresh built pages — protegido: um erro de UI aqui NUNCA pode impedir a gravação abaixo
@@ -3930,6 +4017,8 @@ const PERIOD_LABELS = {
 const _M2P = ['1T','1T','1T','ABR','MAI','JUN','3T','3T','3T','4T','4T','4T'];
 const _NM  = new Date().getMonth();
 const CURRENT_PERIOD = _M2P[_NM] || 'MAI';
+// Chave do trimestre corrente no roadmap — atualiza sozinha na virada de trimestre
+const RD_CUR_Q = _NM<=2?'1T':_NM<=5?'2T':_NM<=8?'3T':'4T';
 const EXPANDED_Q = _NM<=2?[]:_NM<=5?['ABR','MAI','JUN']:_NM<=8?['JUL','AGO','SET']:['OUT','NOV','DEZ'];
 
 let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set(), fase:new Set()};
@@ -4119,6 +4208,7 @@ function renderRdmap() {
   if (!wrap) return;
 
   const q1Exp = rdQExpanded.has('1T');
+  const q2Exp = rdQExpanded.has('2T');
   const q3Exp = rdQExpanded.has('3T');
   const q4Exp = rdQExpanded.has('4T');
 
@@ -4133,38 +4223,26 @@ function renderRdmap() {
   let row2 = `<th class="col-hd" style="background:#003d22;width:32px;padding:0"></th>
     <th class="col-hd" style="background:#003d22;border-right:1.5px solid rgba(255,255,255,.2)"></th>`;
 
-  // Q1
-  if (!q1Exp) {
-    row1 += `<th class="col-hd${curQ==='Q1'?' current':''}" style="cursor:pointer;white-space:nowrap" onclick="toggleRdQ('1T')" title="Expandir por mês">1º Tri ▶<br><span style="font-size:8px;opacity:.7">Jan · Fev · Mar</span></th>`;
-    row2 += `<th class="col-hd" style="font-size:8px;opacity:.8"></th>`;
-  } else {
-    row1 += `<th class="col-hd" colspan="3" style="cursor:pointer" onclick="toggleRdQ('1T')">1º Tri ▼<br><span style="font-size:8px;opacity:.7">expandido — clique para recolher</span></th>`;
-    row2 += `<th class="month-hd">Jan</th><th class="month-hd">Fev</th><th class="month-hd">Mar</th>`;
-  }
-  // Q2 always expanded
-  row1 += `<th class="col-hd${curQ==='Q2'?' current':''}" colspan="3">2º Tri${curQ==='Q2'?' (atual)':''}<br><span style="font-size:8px;opacity:.7">Abr · Mai · Jun</span></th>`;
-  ['ABR','MAI','JUN'].forEach(m => {
-    const isCur = m===CURRENT_PERIOD;
-    row2 += `<th class="month-hd"${isCur?' style="background:#005535;color:#fff"':''}>
-      ${m==='ABR'?'Abril':m==='MAI'?'Maio':'Junho'}${isCur?' ◀':''}
-    </th>`;
-  });
-  // Q3
-  if (!q3Exp) {
-    row1 += `<th class="col-hd${curQ==='Q3'?' current':''}" style="cursor:pointer;white-space:nowrap" onclick="toggleRdQ('3T')" title="Expandir por mês">3º Tri ▶<br><span style="font-size:8px;opacity:.7">Jul · Ago · Set</span></th>`;
-    row2 += `<th class="col-hd" style="font-size:8px;opacity:.8"></th>`;
-  } else {
-    row1 += `<th class="col-hd" colspan="3" style="cursor:pointer" onclick="toggleRdQ('3T')">3º Tri ▼<br><span style="font-size:8px;opacity:.7">expandido — clique para recolher</span></th>`;
-    row2 += `<th class="month-hd">Jul</th><th class="month-hd">Ago</th><th class="month-hd">Set</th>`;
-  }
-  // Q4
-  if (!q4Exp) {
-    row1 += `<th class="col-hd${curQ==='Q4'?' current':''}" style="cursor:pointer;white-space:nowrap" onclick="toggleRdQ('4T')" title="Expandir por mês">4º Tri ▶<br><span style="font-size:8px;opacity:.7">Out · Nov · Dez</span></th>`;
-    row2 += `<th class="col-hd" style="font-size:8px;opacity:.8"></th>`;
-  } else {
-    row1 += `<th class="col-hd" colspan="3" style="cursor:pointer" onclick="toggleRdQ('4T')">4º Tri ▼<br><span style="font-size:8px;opacity:.7">expandido — clique para recolher</span></th>`;
-    row2 += `<th class="month-hd">Out</th><th class="month-hd">Nov</th><th class="month-hd">Dez</th>`;
-  }
+  // Cabeçalho de trimestre — todos recolhíveis; o trimestre em andamento abre
+  // expandido por padrão (rdQExpanded já inicia com RD_CUR_Q) e recebe "(atual)".
+  const qHdr = (qk, num, mLbls, mKeys) => {
+    const exp   = rdQExpanded.has(qk);
+    const isCur = curQ === 'Q'+num;
+    if (!exp) {
+      row1 += `<th class="col-hd${isCur?' current':''}" style="cursor:pointer;white-space:nowrap" onclick="toggleRdQ('${qk}')" title="Expandir por mês">${num}º Tri ▶<br><span style="font-size:8px;opacity:.7">${mLbls.join(' · ')}</span></th>`;
+      row2 += `<th class="col-hd" style="font-size:8px;opacity:.8"></th>`;
+    } else {
+      row1 += `<th class="col-hd${isCur?' current':''}" colspan="3" style="cursor:pointer" onclick="toggleRdQ('${qk}')" title="Recolher trimestre">${num}º Tri${isCur?' (atual)':''} ▼<br><span style="font-size:8px;opacity:.7">expandido — clique para recolher</span></th>`;
+      mKeys.forEach((m,i) => {
+        const isCurM = m===CURRENT_PERIOD;
+        row2 += `<th class="month-hd"${isCurM?' style="background:#005535;color:#fff"':''}>${mLbls[i]}${isCurM?' ◀':''}</th>`;
+      });
+    }
+  };
+  qHdr('1T', 1, ['Jan','Fev','Mar'], ['JAN','FEV','MAR']);
+  qHdr('2T', 2, ['Abr','Mai','Jun'], ['ABR','MAI','JUN']);
+  qHdr('3T', 3, ['Jul','Ago','Set'], ['JUL','AGO','SET']);
+  qHdr('4T', 4, ['Out','Nov','Dez'], ['OUT','NOV','DEZ']);
   // Backlog 2027 — parking-lot (entra em 2027, roadmap ainda não detalhado)
   row1 += `<th class="col-hd rd-bl-hd" style="white-space:nowrap">Backlog 2027<br><span style="font-size:8px;opacity:.7">a detalhar</span></th>`;
   row2 += `<th class="col-hd rd-bl-hd"></th>`;
@@ -4253,10 +4331,14 @@ function renderRdmap() {
       cells.push(buildCell(prodKey, p, 'FEV', CURRENT_PERIOD==='FEV'));
       cells.push(buildCell(prodKey, p, 'MAR', CURRENT_PERIOD==='MAR'));
     }
-    // Q2 always expanded
-    cells.push(buildCell(prodKey, p, 'ABR', CURRENT_PERIOD==='ABR'));
-    cells.push(buildCell(prodKey, p, 'MAI', CURRENT_PERIOD==='MAI'));
-    cells.push(buildCell(prodKey, p, 'JUN', CURRENT_PERIOD==='JUN'));
+    // Q2
+    if (!q2Exp) {
+      cells.push(buildCollapsedCell(prodKey, '2T'));
+    } else {
+      cells.push(buildCell(prodKey, p, 'ABR', CURRENT_PERIOD==='ABR'));
+      cells.push(buildCell(prodKey, p, 'MAI', CURRENT_PERIOD==='MAI'));
+      cells.push(buildCell(prodKey, p, 'JUN', CURRENT_PERIOD==='JUN'));
+    }
     // Q3
     if (!q3Exp) {
       cells.push(buildCollapsedCell(prodKey, '3T'));
@@ -4382,16 +4464,16 @@ function setRdView(v){
 }
 // período (chave) → faixa de meses [ini,fim]; 13 = Backlog 2027
 const RD_MLBL2={JAN:'Jan',FEV:'Fev',MAR:'Mar',ABR:'Abr',MAI:'Mai',JUN:'Jun',JUL:'Jul',AGO:'Ago',SET:'Set',OUT:'Out',NOV:'Nov',DEZ:'Dez'};
-const RD_PRANGE={JAN:[1,1],FEV:[2,2],MAR:[3,3],ABR:[4,4],MAI:[5,5],JUN:[6,6],JUL:[7,7],AGO:[8,8],SET:[9,9],OUT:[10,10],NOV:[11,11],DEZ:[12,12],'1T':[1,3],'3T':[7,9],'4T':[10,12],BL27:[13,13]};
+const RD_PRANGE={JAN:[1,1],FEV:[2,2],MAR:[3,3],ABR:[4,4],MAI:[5,5],JUN:[6,6],JUL:[7,7],AGO:[8,8],SET:[9,9],OUT:[10,10],NOV:[11,11],DEZ:[12,12],'1T':[1,3],'2T':[4,6],'3T':[7,9],'4T':[10,12],BL27:[13,13]};
 const RD_MOPTS=[[1,'Jan'],[2,'Fev'],[3,'Mar'],[4,'Abr'],[5,'Mai'],[6,'Jun'],[7,'Jul'],[8,'Ago'],[9,'Set'],[10,'Out'],[11,'Nov'],[12,'Dez'],[13,'Backlog 2027']];
 // Colunas visíveis do Gantt — espelham a matriz (mês a mês, trimestres recolhíveis)
 function rdGanttCols(){
   const cols=[];
   const mon=(mn)=>cols.push({key:mn,label:RD_MLBL2[mn],sub:'',ms:RD_PRANGE[mn][0],me:RD_PRANGE[mn][1],quarter:false,toggle:null,collapseArrow:false,cur:mn===CURRENT_PERIOD});
   const qcol=(qk,lbl,sub)=>cols.push({key:qk,label:lbl,sub:sub,ms:RD_PRANGE[qk][0],me:RD_PRANGE[qk][1],quarter:true,toggle:qk,collapseArrow:false,cur:CURRENT_PERIOD===qk});
-  const q1=rdQExpanded.has('1T'),q3=rdQExpanded.has('3T'),q4=rdQExpanded.has('4T');
+  const q1=rdQExpanded.has('1T'),q2=rdQExpanded.has('2T'),q3=rdQExpanded.has('3T'),q4=rdQExpanded.has('4T');
   if(q1){['JAN','FEV','MAR'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='1T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('1T','1º Tri','Jan–Mar');
-  ['ABR','MAI','JUN'].forEach(mon);
+  if(q2){['ABR','MAI','JUN'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='2T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('2T','2º Tri','Abr–Jun');
   if(q3){['JUL','AGO','SET'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='3T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('3T','3º Tri','Jul–Set');
   if(q4){['OUT','NOV','DEZ'].forEach((mn,i)=>{mon(mn);cols[cols.length-1].toggle='4T';if(i===0)cols[cols.length-1].collapseArrow=true;});}else qcol('4T','4º Tri','Out–Dez');
   cols.push({key:'BL27',label:'Backlog',sub:'2027',ms:13,me:13,quarter:false,toggle:null,collapseArrow:false,cur:false});
@@ -5088,6 +5170,7 @@ let okrevChart   = null;
 let okrevBuilt   = false;
 let okrevRegView = 'cons'; // 'cons' = consolidado · 'reg' = por regional
 let editModalKey = null; // {key,oi,ki}
+let _kredManualR = null; // backup do realizado consolidado manual ao ligar "por regional" (restaurado se desistir)
 
 function buildOKRev() {
   if (okrevBuilt) return;
@@ -5269,12 +5352,26 @@ function buildBarChart(key, oi, ki) {
           backgroundColor:col+'cc', borderColor:col, borderWidth:1, borderRadius:2, order:3,
           datalabels:{display:false} });
       } else {
+        // Linhas finas e translúcidas — a barra do total consolidado é a protagonista
         regSets.push({ type:'line', label:rg, data,
-          borderColor:col, backgroundColor:'transparent', borderWidth:2,
-          pointRadius:3, pointBackgroundColor:col, tension:0.25, spanGaps:true, order:2,
+          borderColor:col+'8c', backgroundColor:'transparent', borderWidth:1.4,
+          pointRadius:2, pointBackgroundColor:col+'b3', tension:0.25, spanGaps:true, order:2,
           datalabels:{display:false} });
       }
     });
+    // Visão média (linhas): barra verde do realizado consolidado por trás das linhas
+    // (order maior = desenhada antes, atrás; mesma regra de cor da visão consolidada)
+    if (agg !== 'soma') {
+      const GRr='#006B3F', ORr='#FF8B22';
+      const regBarCol = MONTHS.map((_,mi)=>{
+        const r=rData[mi], o=oData[mi];
+        return (r!=null&&o!=null&&r<o)?ORr:GRr;
+      });
+      regSets.unshift({ type:'bar', label:'Realizado', data:rData,
+        backgroundColor: MONTHS.map((_,mi)=> mi===CUR_M ? regBarCol[mi] : regBarCol[mi]+'aa'),
+        borderColor: regBarCol, borderWidth:1.5, borderRadius:4, order:3,
+        datalabels:{display:false} });
+    }
     okrevChart = new Chart(ctx, {
       data: { labels: MONTHS, datasets: regSets.concat([
         { type:'bar', label:'Orçado', data:oData,
@@ -5436,11 +5533,12 @@ function renderKREditTable(){
   const kr = PRODS[key].okrs[oi].krs[ki];
   const kd = kredKD();
   const isReg = !!kr.regional;
+  const isManual = isReg && kr.regAgg==='manual'; // consolidado informado manualmente (ex.: % ponderada por volume)
   const th='padding:5px 6px;font-size:8px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;text-align:center;';
   let hd='<tr><th style="'+th+'color:var(--t3);text-align:left">Mês</th>';
   if(isReg){
     REGIONAIS.forEach(function(rg){ hd+='<th style="'+th+'color:var(--g)">'+rg+'</th>'; });
-    hd+='<th style="'+th+'color:var(--g);background:#f0fdf4">▮ Consolid.</th>';
+    hd+='<th style="'+th+'color:var(--g);background:#f0fdf4">▮ Consolid.'+(isManual?' (manual)':'')+'</th>';
   } else {
     hd+='<th style="'+th+'color:var(--g)">▮ Realizado %</th>';
   }
@@ -5462,7 +5560,11 @@ function renderKREditTable(){
         const v = kd.reg && kd.reg[gi] ? kd.reg[gi][mi] : null;
         rows+=inp(v,'updateKRDataCellReg('+gi+','+mi+',this.value)','var(--g)');
       });
-      rows+='<td id="kred-cons-'+mi+'" style="padding:3px 6px;text-align:center;font-size:11px;font-weight:700;color:var(--g);background:#f0fdf4;border-radius:5px">'+(kd.r[mi]===null||kd.r[mi]===undefined?'—':String(kd.r[mi]).replace('.',','))+'</td>';
+      if(isManual){
+        rows+=inp(kd.r[mi],'updateKRDataCell(\'r\','+mi+',this.value)','var(--g)');
+      } else {
+        rows+='<td id="kred-cons-'+mi+'" style="padding:3px 6px;text-align:center;font-size:11px;font-weight:700;color:var(--g);background:#f0fdf4;border-radius:5px">'+(kd.r[mi]===null||kd.r[mi]===undefined?'—':String(kd.r[mi]).replace('.',','))+'</td>';
+      }
     } else {
       rows+=inp(kd.r[mi],'updateKRDataCell(\'r\','+mi+',this.value)','var(--g)');
     }
@@ -5482,6 +5584,7 @@ function renderKREditTable(){
 function openKRDataEdit(key, oi, ki) {
   if(!requireEditor(()=>openKRDataEdit(key, oi, ki)))return;
   editModalKey = {key, oi, ki};
+  _kredManualR = null; // novo KR aberto — descarta backup do toggle regional anterior
   const p   = PRODS[key];
   const kr  = p.okrs[oi].krs[ki];
   document.getElementById('kred-title').textContent = `✏️ ${p.nm} · ${kr.lbl.substring(0,42)} · unidade: ${krUnit(kr)||'%'}`;
@@ -5489,6 +5592,9 @@ function openKRDataEdit(key, oi, ki) {
   document.getElementById('kred-modal-bg').classList.add('open');
 }
 
+function kredHasRegVals(kd){
+  return !!(kd.reg && kd.reg.some(function(a){ return a && a.some(function(v){ return v!==null && v!==undefined; }); }));
+}
 function toggleKRRegional(on){
   const {key,oi,ki}=editModalKey;
   const kr=PRODS[key].okrs[oi].krs[ki];
@@ -5497,18 +5603,25 @@ function toggleKRRegional(on){
   if(on){
     if(!kr.regAgg) kr.regAgg='soma';
     if(!kd.reg) kd.reg=REGIONAIS.map(function(){return Array(12).fill(null);});
-    recomputeKRConsolidated(kd, kr.regAgg);
+    // Guarda o realizado preenchido manualmente para restaurar se o usuário desistir
+    // do formato regional; só recalcula o consolidado se já houver valor regional
+    // (regionais vazias não podem apagar o que estava preenchido).
+    if(_kredManualR===null) _kredManualR=(kd.r||[]).slice();
+    if(kr.regAgg!=='manual' && kredHasRegVals(kd)) recomputeKRConsolidated(kd, kr.regAgg);
+  } else {
+    // Desligou (desistiu do formato): restaura o realizado que existia antes de ligar.
+    // Os dados regionais são preservados (kd.reg fica guardado) e o consolidado
+    // volta a ser editável manualmente.
+    if(_kredManualR!==null){ kd.r=_kredManualR.slice(); _kredManualR=null; }
   }
-  // Ao desligar, os dados regionais são preservados (kd.reg fica guardado) e o
-  // consolidado volta a ser editável manualmente.
   renderKREditTable();
 }
 function setKRRegAgg(v){
   const {key,oi,ki}=editModalKey;
   const kr=PRODS[key].okrs[oi].krs[ki];
-  kr.regAgg=(v==='media')?'media':'soma';
+  kr.regAgg=(v==='media'||v==='manual')?v:'soma';
   const kd=kredKD();
-  if(kr.regional){ recomputeKRConsolidated(kd, kr.regAgg); renderKREditTable(); }
+  if(kr.regional){ if(kr.regAgg!=='manual' && kredHasRegVals(kd)) recomputeKRConsolidated(kd, kr.regAgg); renderKREditTable(); }
 }
 function updateKRDataCellReg(gi, mi, val){
   const {key,oi,ki}=editModalKey;
@@ -5516,6 +5629,7 @@ function updateKRDataCellReg(gi, mi, val){
   const kd=kredKD();
   if(!kd.reg) kd.reg=REGIONAIS.map(function(){return Array(12).fill(null);});
   kd.reg[gi][mi]=(val===''||val===null)?null:parseFloat(val);
+  if(kr.regAgg==='manual') return; // consolidado informado manualmente — nunca derivado
   recomputeKRConsolidated(kd, kr.regAgg||'soma');
   const cell=document.getElementById('kred-cons-'+mi);
   if(cell) cell.textContent=(kd.r[mi]===null||kd.r[mi]===undefined)?'—':String(kd.r[mi]).replace('.',',');
@@ -5738,7 +5852,7 @@ let _suppressLog = false; // true durante operações que não são edição (ex
 function setEditDetail(action, detail) { _lastEditDetail = { action: action || '', detail: detail || '' }; }
 
 const _SCOPE_LABEL = { produtos:'Produto', rdmap:'Roadmap', kr_data:'KRs', cv_evo:'Captura de Valor', cv_pct:'Captura de Valor' };
-const _RD_LBL = {'1T':'1º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri','BL27':'Backlog 2027','JAN':'Jan','FEV':'Fev','MAR':'Mar','JUL':'Jul','AGO':'Ago','SET':'Set','OUT':'Out','NOV':'Nov','DEZ':'Dez'};
+const _RD_LBL = {'1T':'1º Tri','2T':'2º Tri','ABR':'Abril','MAI':'Maio','JUN':'Junho','3T':'3º Tri','4T':'4º Tri','BL27':'Backlog 2027','JAN':'Jan','FEV':'Fev','MAR':'Mar','JUL':'Jul','AGO':'Ago','SET':'Set','OUT':'Out','NOV':'Nov','DEZ':'Dez'};
 function rdLbl(p){ return _RD_LBL[p] || p; }
 const _ST_LBL = { done:'Feito', doing:'Em andamento', todo:'Previsto' };
 
@@ -5890,6 +6004,15 @@ function prodMidiaSrc(key) {
   if (p.midia === '@fs') return (window.PROD_MIDIA && window.PROD_MIDIA[key]) || '';
   return p.midia;
 }
+// Indicadores complementares do Modo Apresentação (produto_indicadores/{key}__{i}):
+// um doc por imagem para nunca estourar o limite de 1 MB. Data vazia limpa o slot.
+// Lança erro em caso de falha (o chamador avisa o usuário).
+async function fbSaveIndicador(key, i, data, ttl) {
+  let attempts = 0;
+  while (!window._fbReady && attempts < 30) { await new Promise(r => setTimeout(r, 100)); attempts++; }
+  if (!window._fbReady) throw new Error('Firebase indisponível');
+  await window._fsSetDoc(window._fsDoc(window._db, 'produto_indicadores', key + '__' + i), { data: data || '', ttl: ttl || '' });
+}
 
 // Save RDMAP entry for a product
 function fbSaveRdmap(key) {
@@ -5988,6 +6111,10 @@ async function _poInclui(p, nome){
 async function applyPendingMigrations(){
   try {
     if (!window._fbReady || !window._db) return;
+    // Trimestre corrente abre expandido por padrão: entregas ainda agregadas na
+    // chave do trimestre (ex.: '3T') são distribuídas para o último mês, senão
+    // ficariam invisíveis nas colunas mensais. Roda após o load do Firestore.
+    if (typeof rdMigrateQToMonths === 'function') rdMigrateQToMonths(RD_CUR_Q);
     // Limpa arrays legados `riscos:[...]` persistidos no Firestore. O conteúdo
     // fixo foi removido do seed do HTML; a fonte única de riscos passa a ser o
     // campo Riscos + Plano de Ação (riscos_txt) preenchido pelo time.
@@ -6310,29 +6437,37 @@ function fbSaveCVPct(key) {
   return fbSave('cv_pct', key, JSON.parse(JSON.stringify(ALAV_PCT[key])));
 }
 
-// ── Roadmap: expandable quarter state (starts collapsed for non-current Qs)
-const rdQExpanded = new Set();
+// ── Roadmap: expandable quarter state — o trimestre em andamento (RD_CUR_Q)
+// abre expandido por padrão; todos os quatro podem expandir/recolher.
+const rdQExpanded = new Set([RD_CUR_Q]);
 
-const Q_MONTH_MAP  = {'1T':['JAN','FEV','MAR'],'3T':['JUL','AGO','SET'],'4T':['OUT','NOV','DEZ']};
-const Q_LAST_MONTH = {'1T':'MAR','3T':'SET','4T':'DEZ'};
+const Q_MONTH_MAP  = {'1T':['JAN','FEV','MAR'],'2T':['ABR','MAI','JUN'],'3T':['JUL','AGO','SET'],'4T':['OUT','NOV','DEZ']};
+const Q_LAST_MONTH = {'1T':'MAR','2T':'JUN','3T':'SET','4T':'DEZ'};
+
+// Migra entregas ainda guardadas sob a chave do trimestre (não distribuídas por mês)
+// para o último mês do trimestre — mesma regra usada ao expandir manualmente.
+function rdMigrateQToMonths(qKey) {
+  const lastMonth = Q_LAST_MONTH[qKey];
+  if (!lastMonth) return;
+  _suppressLog = true; // migração não é edição
+  Object.keys(PRODS).forEach(prodKey => {
+    if (!RDMAP[prodKey]) return;
+    const items = (RDMAP[prodKey][qKey] || []).slice();
+    if (!items.length) return; // already distributed to months — leave as is
+    if (!RDMAP[prodKey][lastMonth]) RDMAP[prodKey][lastMonth] = [];
+    RDMAP[prodKey][lastMonth].push(...items);
+    RDMAP[prodKey][qKey] = [];
+    fbSaveRdmap(prodKey);
+  });
+  _suppressLog = false;
+}
 
 function toggleRdQ(qKey) {
   const expanding = !rdQExpanded.has(qKey);
   if (expanding) {
     rdQExpanded.add(qKey);
     // Only migrate items that are still under the quarter key (not yet distributed)
-    const lastMonth = Q_LAST_MONTH[qKey];
-    _suppressLog = true; // migração ao expandir não é edição
-    Object.keys(PRODS).forEach(prodKey => {
-      if (!RDMAP[prodKey]) return;
-      const items = (RDMAP[prodKey][qKey] || []).slice();
-      if (!items.length) return; // already distributed to months — leave as is
-      if (!RDMAP[prodKey][lastMonth]) RDMAP[prodKey][lastMonth] = [];
-      RDMAP[prodKey][lastMonth].push(...items);
-      RDMAP[prodKey][qKey] = [];
-      fbSaveRdmap(prodKey);
-    });
-    _suppressLog = false;
+    rdMigrateQToMonths(qKey);
   } else {
     // COLLAPSE: just hide the columns visually — do NOT merge data back
     // Items stay in their month keys, collapsed view reads from month keys too
@@ -6393,7 +6528,7 @@ function moveMarcoPeriod(prodKey, fromPeriod, idx, dir) {
   // Build visible period sequence based on current expand state
   const visP = [];
   if (rdQExpanded.has('1T')) visP.push('JAN','FEV','MAR'); else visP.push('1T');
-  visP.push('ABR','MAI','JUN');
+  if (rdQExpanded.has('2T')) visP.push('ABR','MAI','JUN'); else visP.push('2T');
   if (rdQExpanded.has('3T')) visP.push('JUL','AGO','SET'); else visP.push('3T');
   if (rdQExpanded.has('4T')) visP.push('OUT','NOV','DEZ'); else visP.push('4T');
   visP.push('BL27');
@@ -6761,14 +6896,14 @@ function cxRdItems(k, qp){
 const CX_MONTH_FULL={JAN:'janeiro',FEV:'fevereiro',MAR:'março',ABR:'abril',MAI:'maio',JUN:'junho',JUL:'julho',AGO:'agosto',SET:'setembro',OUT:'outubro',NOV:'novembro',DEZ:'dezembro'};
 const CX_MONTH_BY_NUM=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
 // Ordem cronológica de todas as chaves de período possíveis no RDMAP
-const CX_ROADMAP_ORDER=['1T','JAN','FEV','MAR','ABR','MAI','JUN','3T','JUL','AGO','SET','4T','OUT','NOV','DEZ','BL27'];
+const CX_ROADMAP_ORDER=['1T','JAN','FEV','MAR','2T','ABR','MAI','JUN','3T','JUL','AGO','SET','4T','OUT','NOV','DEZ','BL27'];
 function cxPeriodMonthYear(period,m){
   if(period==='BL27') return '2027';
   if(CX_MONTH_FULL[period]) return CX_MONTH_FULL[period]+'/26';
   // período agregado de trimestre (1T/3T/4T): usa o mês específico da entrega, se houver
   const specific=(typeof m.fim==='number')?m.fim:((typeof m.ini==='number')?m.ini:null);
   if(specific&&specific>=1&&specific<=12) return CX_MONTH_FULL[CX_MONTH_BY_NUM[specific-1]]+'/26';
-  const qLbl={'1T':'1º tri','3T':'3º tri','4T':'4º tri'};
+  const qLbl={'1T':'1º tri','2T':'2º tri','3T':'3º tri','4T':'4º tri'};
   return (qLbl[period]||period)+'/26';
 }
 function cxRoadmapFull(k){
@@ -6803,6 +6938,24 @@ function cxRoadmapListHTML(items,opts){
     }
     return '<div class="cx-li" style="padding:6px 0">'+ic+'<div>'+tag+cxEsc(m.txt)+'</div></div>';
   }).join('');
+}
+// Roadmap previsto em 3 colunas (Modo Apresentação): Concluído · Em andamento · A iniciar.
+// Mantém exatamente a formatação de cada item (ícone + tag mês/ano), só organiza por status.
+function cxRoadmapColsHTML(items){
+  const groups={done:[],doing:[],todo:[]};
+  (items||[]).forEach(function(m){ (groups[m.s]||groups.todo).push(m); });
+  const cols=[
+    {s:'done', lbl:'Concluído',    ic:'✓', c:'var(--gm)'},
+    {s:'doing',lbl:'Em andamento', ic:'▸', c:'var(--o)'},
+    {s:'todo', lbl:'A iniciar',    ic:'○', c:'var(--t3)'}
+  ];
+  return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start">'
+    +cols.map(function(c){
+      const list=groups[c.s].length?cxRoadmapListHTML(groups[c.s])
+        :'<div style="font-size:13px;color:var(--t3);padding:4px 0">—</div>';
+      return '<div><div style="font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:'+c.c+';margin-bottom:6px;padding-bottom:5px;border-bottom:1.5px solid var(--bd)"><span style="font-weight:800">'+c.ic+'</span> '+c.lbl+'</div>'+list+'</div>';
+    }).join('')
+    +'</div>';
 }
 
 // ── Página 1: Visão Geral ──
@@ -7011,8 +7164,8 @@ function cxKRChartSVG(key,oi,ki,kr){
   [rD,oD,pD].forEach(function(a){a.forEach(function(v){if(v!=null){has=true;if(v>max)max=v;}});});
   // KR com apuração por regional: modo padrão do gráfico é a visão regional
   const regOn=!!(kr.regional&&kd.reg&&kd.reg.some(function(a){return a&&a.some(function(v){return v!=null;});}));
-  const regAgg=(kr.regAgg==='media')?'media':'soma';
-  if(regOn&&regAgg==='media'){
+  const regAgg=(kr.regAgg==='media'||kr.regAgg==='manual')?kr.regAgg:'soma'; // manual = consolidado informado (linhas + barra do total)
+  if(regOn&&regAgg!=='soma'){
     // Linhas por regional podem passar do consolidado (média) — escala inclui os valores regionais
     kd.reg.forEach(function(a){ if(a) a.forEach(function(v,mi){ if(mi<=CUR_M&&v!=null){has=true;if(v>max)max=v;} }); });
   }
@@ -7023,6 +7176,7 @@ function cxKRChartSVG(key,oi,ki,kr){
   const ch=H-T-B, cw=W-L-Rr, slot=cw/12;
   const yv=function(v){return T+ch-(v/max)*ch;};
   const bw=slot*0.46, gp=slot*0.04;
+  const totLbls=[]; // rótulos do total na visão regional — desenhados por cima das linhas
   let s='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;margin-top:6px">';
   s+='<line x1="'+L+'" y1="'+(T+ch)+'" x2="'+(W-Rr)+'" y2="'+(T+ch)+'" stroke="#e2e8f0" stroke-width="1"/>';
   if(metaN!=null&&metaN>0){
@@ -7047,9 +7201,9 @@ function cxKRChartSVG(key,oi,ki,kr){
           acc+=v;
         });
         if(rD[mi]>0) s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
-      } else if(regOn&&regAgg==='media'){
-        // Visão regional (média): sem barra de realizado — linhas por regional desenhadas após o loop
       } else {
+        // Visão regional (média) cai aqui também: barra verde do realizado consolidado
+        // por trás das linhas por regional (desenhadas depois do loop, ficam por cima)
       if(rD[mi]>0){
         // Quebra por regional no tooltip (KRs com apuração regional)
         let regTip='';
@@ -7060,7 +7214,13 @@ function cxKRChartSVG(key,oi,ki,kr){
         }
         s+='<rect x="'+(cx0-gp/2-bw).toFixed(1)+'" y="'+yv(rD[mi]).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(T+ch-yv(rD[mi])).toFixed(1)+'" rx="2" fill="'+bc+(mi===CUR_M?'':'aa')+'" stroke="'+bc+'" stroke-width="1" data-tip="'+MONTHS[mi]+' · Realizado: '+cxFmtN(rD[mi])+unit+(oD[mi]!=null?' (orçado '+cxFmtN(oD[mi])+unit+')':'')+regTip+'"/>';
       }
+      if(regOn&&regAgg!=='soma'){
+        // Visão regional: rótulo do total desenhado por último (depois das linhas),
+        // com contorno branco, para nunca ficar sobreposto pelas linhas regionais
+        totLbls.push({x:(cx0-gp/2-bw/2).toFixed(1), y:(yv(rD[mi])-3).toFixed(1), txt:cxFmtN(rD[mi])+unit});
+      } else {
       s+='<text x="'+(cx0-gp/2-bw/2).toFixed(1)+'" y="'+(yv(rD[mi])-3).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(rD[mi])+unit+'</text>';
+      }
       }
     }
     s+='<text x="'+cx0.toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="11" font-weight="600" fill="'+(mi===CUR_M?'#F58220':'#94a3b8')+'" font-family="Plus Jakarta Sans,sans-serif">'+MONTHS[mi]+'</text>';
@@ -7078,8 +7238,9 @@ function cxKRChartSVG(key,oi,ki,kr){
       s+='<text x="'+pt.x.toFixed(1)+'" y="'+(pt.y-6).toFixed(1)+'" text-anchor="middle" font-size="11" font-weight="700" fill="#793F98" font-family="Plus Jakarta Sans,sans-serif">'+cxFmtN(pt.v)+unit+'</text>';
     });
   }
-  // Visão regional (média): uma linha por regional
-  if(regOn&&regAgg==='media'){
+  // Visão regional (média/manual): linhas finas e translúcidas por regional — a
+  // barra verde do total é a protagonista; as linhas dão o detalhe sem poluir
+  if(regOn&&regAgg!=='soma'){
     kd.reg.forEach(function(a,gi){
       if(!a) return;
       const col=KR_COLS[gi%KR_COLS.length];
@@ -7088,11 +7249,15 @@ function cxKRChartSVG(key,oi,ki,kr){
       if(!rpts.length) return;
       let pl2='';
       rpts.forEach(function(pt){ pl2+=(pl2?' ':'')+pt.x.toFixed(1)+','+pt.y.toFixed(1); });
-      if(rpts.length>1) s+='<polyline points="'+pl2+'" fill="none" stroke="'+col+'" stroke-width="2"/>';
+      if(rpts.length>1) s+='<polyline points="'+pl2+'" fill="none" stroke="'+col+'" stroke-width="1.4" stroke-opacity="0.55"/>';
       rpts.forEach(function(pt){
-        s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="3" fill="'+col+'"/>';
+        s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="2.2" fill="'+col+'" fill-opacity="0.7"/>';
         s+='<circle cx="'+pt.x.toFixed(1)+'" cy="'+pt.y.toFixed(1)+'" r="9" fill="transparent" data-tip="'+pt.m+' · '+(REGIONAIS[gi]||('R'+gi))+': '+cxFmtN(pt.v)+unit+'"/>';
       });
+    });
+    // Rótulos do total por cima de tudo, com contorno branco (halo)
+    totLbls.forEach(function(lb){
+      s+='<text x="'+lb.x+'" y="'+lb.y+'" text-anchor="middle" font-size="11" font-weight="700" fill="#003d22" stroke="#fff" stroke-width="3.5" stroke-linejoin="round" paint-order="stroke" font-family="Plus Jakarta Sans,sans-serif">'+lb.txt+'</text>';
     });
   }
   s+='</svg>';
@@ -7155,6 +7320,24 @@ function cxKRZone(ev,k){
   cxKRSet(k,(i+dir+n)%n);
 }
 
+// ── Indicadores complementares (prints carregados pelo PO no editor do produto) ──
+// Seção opcional da página do produto no Modo Apresentação, exibida após os OKRs.
+// Some por completo quando o produto não tem imagem carregada.
+function cxIndicadoresHTML(k){
+  const src=(window.PROD_IND&&window.PROD_IND[k])?window.PROD_IND[k]:[];
+  const arr=src.filter(function(x){ return x&&x.data; }).slice(0,3);
+  if(!arr.length) return '';
+  let g='<div style="display:grid;grid-template-columns:repeat('+arr.length+',1fr);gap:16px;align-items:start">';
+  arr.forEach(function(im){
+    g+='<figure style="margin:0">'
+      +'<img src="'+im.data+'" style="width:100%;border:1.5px solid var(--bd);border-radius:8px;display:block;background:#fff">'
+      +(im.ttl?'<figcaption style="font-size:11px;font-weight:700;color:var(--t2);margin-top:6px;text-align:center">'+cxEsc(im.ttl)+'</figcaption>':'')
+      +'</figure>';
+  });
+  g+='</div>';
+  return '<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">📊 Indicadores complementares</div>'+g+'</div>';
+}
+
 // ── Uma página por produto ──
 function cxPageProduto(k){
   const p=PRODS[k], qp=cxQuarterPeriods();
@@ -7165,8 +7348,17 @@ function cxPageProduto(k){
   // header
   const media=cxMedia(prodMidiaSrc(k));
   // Alavancas de valor e ambições que o produto potencializa (onde estava o potencial)
+  // ECO e PAM tiveram p.alavancas zerado na separação do ECO-PAM: quando a lista do
+  // produto está vazia, deriva das 7 alavancas-base com alocação > 0 na Captura de
+  // Valor (ALAV_PCT), que já traz ECO e PAM separados — fonte oficial da área.
+  let alavList=p.alavancas||[];
+  if(!alavList.length && typeof ALAV_PCT!=='undefined' && typeof CV_PCT_EDITABLE!=='undefined'){
+    alavList=Object.keys(ALAVANCAS).filter(function(ak){
+      return CV_PCT_EDITABLE.has(ak) && ALAV_PCT[ak] && (ALAV_PCT[ak][k]||0)>0;
+    });
+  }
   let alavChips='';
-  (p.alavancas||[]).forEach(function(ak){
+  alavList.forEach(function(ak){
     if(!ALAVANCAS[ak]) return;
     // Só o título da alavanca — sem valores no Modo Apresentação
     alavChips+='<span class="cx-tagchip" style="background:var(--ob);border-color:var(--o);color:#7a3d00">'+cxEsc(ALAVANCAS[ak])+'</span>';
@@ -7327,8 +7519,9 @@ function cxPageProduto(k){
       +'<div class="cx-card"><div class="cx-card-t">📈 OKRs</div>'+okrh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
       +'</div>';
+    h+=cxIndicadoresHTML(k);
     h+='<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">🗺️ Roadmap previsto</div>'
-      +cxRoadmapLegendHTML()+cxRoadmapListHTML(cxRoadmapFull(k))
+      +cxRoadmapColsHTML(cxRoadmapFull(k))
       +'</div>';
   } else if(rsp==='comp'){
     // Gestão compartilhada: destaques/riscos logo após a descrição, depois indicadores +
@@ -7341,8 +7534,9 @@ function cxPageProduto(k){
       +'<div class="cx-card"><div class="cx-card-t">📈 Indicadores</div>'+okrh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
       +'</div>';
+    h+=cxIndicadoresHTML(k);
     h+='<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">🗺️ Roadmap previsto</div>'
-      +cxRoadmapLegendHTML()+cxRoadmapListHTML(cxRoadmapFull(k))
+      +cxRoadmapColsHTML(cxRoadmapFull(k))
       +'</div>';
   } else {
     // Monitoramento estratégico: só grandes marcos e indicador mínimo — card enxuto por desenho, não por falta
@@ -7367,6 +7561,7 @@ function cxPageProduto(k){
       +'<div class="cx-card"><div class="cx-card-t">🚩 Grandes marcos · '+qp.q+'T26</div>'+rdh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t">📈 Indicador de referência</div>'+monInd+'</div>'
       +'</div>';
+    h+=cxIndicadoresHTML(k);
   }
   return h;
 }
