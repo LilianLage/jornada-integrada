@@ -3389,18 +3389,33 @@ function epMidiaUpload(inp){
   rd.readAsDataURL(f);
   inp.value='';
 }
-function epCompressImage(img){
-  const tries=[[900,0.72],[720,0.55],[560,0.42],[440,0.35]];
+function epCompressImage(img,hq){
+  // hq=true (indicadores complementares): cada print tem doc próprio no Firestore
+  // (produto_indicadores/{key}__{i}), então o limite seguro é ~700 KB — não os 300 KB
+  // do doc compartilhado. Tenta PNG sem perdas primeiro (ideal para gráficos com
+  // texto), e só cai para JPEG se o PNG estourar o limite.
+  // Sem hq (mídia do produto): comportamento original inalterado.
+  const lim=hq?700000:300000;
+  function draw(w){
+    const ww=Math.min(w,img.width||w);
+    const hh=Math.max(1,Math.round((img.height||1)*ww/(img.width||1)));
+    const cv=document.createElement('canvas'); cv.width=ww; cv.height=hh;
+    cv.getContext('2d').drawImage(img,0,0,ww,hh);
+    return cv;
+  }
+  if(hq){
+    const png=draw(1600).toDataURL('image/png');
+    if(png.length<lim) return png;
+  }
+  const tries=hq
+    ?[[1600,0.85],[1400,0.80],[1100,0.70],[900,0.72],[720,0.55],[560,0.42],[440,0.35]]
+    :[[900,0.72],[720,0.55],[560,0.42],[440,0.35]];
   let out=null;
   for(let i=0;i<tries.length;i++){
-    const w=Math.min(tries[i][0],img.width||tries[i][0]);
-    const h=Math.max(1,Math.round((img.height||1)*w/(img.width||1)));
-    const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
-    cv.getContext('2d').drawImage(img,0,0,w,h);
-    out=cv.toDataURL('image/jpeg',tries[i][1]);
-    if(out.length<300000) return out;
+    out=draw(tries[i][0]).toDataURL('image/jpeg',tries[i][1]);
+    if(out.length<lim) return out;
   }
-  return (out&&out.length<450000)?out:null;
+  return (out&&out.length<(hq?750000:450000))?out:null;
 }
 function epMidiaPreview(){
   const pv=document.getElementById('ep-midia-prev');
@@ -3454,7 +3469,7 @@ function epIndUpload(i,inp){
   rd.onload=function(ev){
     const img=new Image();
     img.onload=function(){
-      const out=epCompressImage(img);
+      const out=epCompressImage(img,true);
       if(!out){ alert('Não foi possível comprimir a imagem para um tamanho seguro (limite ~700 KB). Tente uma imagem menor ou um recorte.'); return; }
       const prev=epInd[i];
       epInd[i]={data:out, ttl:prev?prev.ttl:''};
