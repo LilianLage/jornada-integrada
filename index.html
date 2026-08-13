@@ -862,6 +862,9 @@ button,input,select,textarea{font-family:inherit;}
 .cx-krdot.on{width:20px;background:var(--g);}
 .cx-krleg{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:9px;font-weight:800;letter-spacing:.3px;color:var(--t3);margin-top:6px;}
 .cx-tipbox{position:fixed;z-index:99999;background:#0f172a;color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;pointer-events:none;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);}
+/* Lightbox dos indicadores complementares (Modo Apresentação): clique no print expande ao tamanho original */
+.cx-ind-lb{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:24px;}
+.cx-ind-lb img{max-width:95vw;max-height:92vh;width:auto;height:auto;border-radius:10px;background:#fff;box-shadow:0 12px 48px rgba(0,0,0,.5);display:block;}
 .cx-media{display:block;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px solid var(--bd);object-fit:contain;background:#fff;}
 iframe.cx-media{border:1.5px solid var(--bd);}
 .cx-media-link{display:flex;align-items:center;justify-content:center;width:340px;max-width:38vw;height:192px;border-radius:12px;border:1.5px dashed var(--bd);background:var(--gyb);font-size:13px;font-weight:800;color:var(--g);text-decoration:none;}
@@ -7330,12 +7333,31 @@ function cxIndicadoresHTML(k){
   let g='<div style="display:grid;grid-template-columns:repeat('+arr.length+',1fr);gap:16px;align-items:start">';
   arr.forEach(function(im){
     g+='<figure style="margin:0">'
-      +'<img src="'+im.data+'" style="width:100%;border:1.5px solid var(--bd);border-radius:8px;display:block;background:#fff">'
+      +'<img src="'+im.data+'" onclick="cxIndZoom(this)" title="Clique para ampliar" style="width:100%;border:1.5px solid var(--bd);border-radius:8px;display:block;background:#fff;cursor:zoom-in">'
       +(im.ttl?'<figcaption style="font-size:11px;font-weight:700;color:var(--t2);margin-top:6px;text-align:center">'+cxEsc(im.ttl)+'</figcaption>':'')
       +'</figure>';
   });
   g+='</div>';
   return '<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">📊 Indicadores complementares</div>'+g+'</div>';
+}
+
+// Lightbox: expande o print do indicador complementar ao tamanho original (limitado à tela).
+// Fecha ao clicar em qualquer lugar ou com a tecla Esc.
+function cxIndZoom(img){
+  if(!img||!img.src) return;
+  const ov=document.createElement('div');
+  ov.className='cx-ind-lb';
+  const big=document.createElement('img');
+  big.src=img.src;
+  ov.appendChild(big);
+  function close(){
+    if(ov.parentNode) ov.parentNode.removeChild(ov);
+    document.removeEventListener('keydown',onKey);
+  }
+  function onKey(e){ if(e.key==='Escape') close(); }
+  ov.addEventListener('click',close);
+  document.addEventListener('keydown',onKey);
+  document.body.appendChild(ov);
 }
 
 // ── Uma página por produto ──
