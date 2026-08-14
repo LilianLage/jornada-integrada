@@ -2007,26 +2007,26 @@ const PRODS = {
 // em calcGovAdeq() e não pode ser editada.
 // Valores salvos no Firestore sobrescrevem esta carga.
 const GOV_SEED = {
-  sincroniza:   {gov_sl:'Adenízio',      gov_sr:'Sênior',       gov_acao:'Manter'},
-  compilador:   {gov_sl:'Giuseppe',      gov_sr:'Especialista', gov_acao:'Manter'},
-  lego:         {gov_sl:'Stephanie',     gov_sr:'Pleno',        gov_acao:'Manter'},
-  ecopam:       {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Manter'},
-  novaeap:      {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Risco: PO em transição — plano de sucessão'},
-  obra360:      {gov_sl:'Adenízio',      gov_sr:'Pleno',        gov_acao:'Manter'},
-  prateleira:   {gov_sl:'Michele Dias',  gov_sr:'Sênior',       gov_acao:'Avaliar reforço de PO (gap de 30pp vs alvo 90%)'},
-  ze:           {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter'},
-  daeans:       {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter'},
-  smp:          {gov_sl:'Stephanie',     gov_sr:'Junior',       gov_acao:'Manter (PO júnior: maior acompanhamento do gestor)'},
-  mdm:          {gov_sl:'Rodrigo',       gov_sr:'Especialista', gov_acao:'Manter (modelo de referência)'},
-  nexus:        {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL e ponto focal'},
-  simurb:       {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL e ponto focal'},
-  inbound:      {gov_sl:'Helder',        gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
-  cd:           {gov_sl:'Iriam',         gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
-  reformatrib:  {gov_sl:'Lidiana',       gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
-  radar:        {gov_sl:'Giuseppe',      gov_sr:'Sênior',       gov_acao:'Focal designada ✓'},
-  hubformas:    {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
-  usinaconcreto:{gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
-  fabricakits:  {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  sincroniza:   {gov_sl:'Adenízio',      gov_sr:'Sênior',       gov_acao:'Manter estrutura atual.'},
+  compilador:   {gov_sl:'Giuseppe',      gov_sr:'Especialista', gov_acao:'Manter estrutura atual.'},
+  lego:         {gov_sl:'Stephanie',     gov_sr:'Pleno',        gov_acao:'Manter estrutura atual.'},
+  ecopam:       {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Manter estrutura atual.'},
+  novaeap:      {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Manter, com plano de sucessão: PO em transição é risco conhecido para a continuidade.'},
+  obra360:      {gov_sl:'Adenízio',      gov_sr:'Pleno',        gov_acao:'Manter estrutura atual.'},
+  prateleira:   {gov_sl:'Michele Dias',  gov_sr:'Sênior',       gov_acao:'Avaliar reforço de PO: dedicação atual fica abaixo do alvo de 90% da gestão direta.'},
+  ze:           {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter: PO acumula as duas iniciativas de IA, que compartilham time e tecnologia.'},
+  daeans:       {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter: PO acumula as duas iniciativas de IA, que compartilham time e tecnologia.'},
+  smp:          {gov_sl:'Stephanie',     gov_sr:'Junior',       gov_acao:'Manter, com acompanhamento próximo do gestor enquanto a PO amadurece na função.'},
+  mdm:          {gov_sl:'Rodrigo',       gov_sr:'Especialista', gov_acao:'Manter: modelo de referência para os demais produtos.'},
+  nexus:        {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL padrinho e ponto focal na gestão; validar critérios de acompanhamento.'},
+  simurb:       {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL padrinho e ponto focal na gestão; validar critérios de acompanhamento.'},
+  inbound:      {gov_sl:'Helder',        gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
+  cd:           {gov_sl:'Iriam',         gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
+  reformatrib:  {gov_sl:'Lidiana',       gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
+  radar:        {gov_sl:'Giuseppe',      gov_sr:'Sênior',       gov_acao:'Focal já designada; formalizar a dedicação no modelo.'},
+  hubformas:    {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Manter o SL único: as três iniciativas de industrialização compartilham tecnologia e fornecedores, e separá-las fragmentaria o conhecimento. Risco aceito enquanto seguem em monitoramento; designar ponto focal na gestão e reavaliar se alguma evoluir para gestão direta.'},
+  usinaconcreto:{gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Manter o SL único: as três iniciativas de industrialização compartilham tecnologia e fornecedores, e separá-las fragmentaria o conhecimento. Risco aceito enquanto seguem em monitoramento; designar ponto focal na gestão e reavaliar se alguma evoluir para gestão direta.'},
+  fabricakits:  {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Manter o SL único: as três iniciativas de industrialização compartilham tecnologia e fornecedores, e separá-las fragmentaria o conhecimento. Risco aceito enquanto seguem em monitoramento; designar ponto focal na gestão e reavaliar se alguma evoluir para gestão direta.'},
 };
 Object.keys(GOV_SEED).forEach(k=>{ if(PRODS[k]) Object.assign(PRODS[k], GOV_SEED[k]); });
 // Produtos sem dado na matriz (ex.: Comex, Compras 360) nascem vazios e podem ser preenchidos no editor.
@@ -2064,7 +2064,8 @@ function calcGovAdeq(key, loads){
   const L=loads||govLoads();
   const sr=(p.gov_sr||'').trim();
   const po=(p.po||'').trim();
-  const sl=(p.gov_sl||'').trim();
+  let sl=(p.gov_sl||'').trim();
+  if(/^(s\/r|a designar|—)$/i.test(sl)) sl='';
   if(!sr) return {ad:'',motivos:['Senioridade do PO não informada — preencha para classificar.']};
   const mot=[]; let ad='ad';
   const lim=GOV_LIM_PO[sr];
@@ -3146,8 +3147,9 @@ function buildGovCap(){
   const _loads=govLoads();
   const rows=Object.keys(PRODS).map(k=>{
     const p=PRODS[k];
-    return {k:k, nm:p.nm, po:p.po||'—', sr:p.gov_sr||'—', sl:p.gov_sl||'— a designar —',
-            resp:prodResp(k), ad:govAdeqOf(k,_loads), acao:p.gov_acao||''};
+    const _r=calcGovAdeq(k,_loads);
+    return {k:k, nm:p.nm, po:p.po||'—', sr:p.gov_sr||'—', sl:p.gov_sl||'S/R',
+            resp:prodResp(k), ad:_r.ad, mot:_r.motivos, acao:p.gov_acao||''};
   }).sort((a,b)=>(ORD[a.ad]-ORD[b.ad])||a.nm.localeCompare(b.nm));
 
   const c={ad:0,at:0,in:0,vazio:0};
@@ -3237,7 +3239,7 @@ function buildGovCap(){
       +'<tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px">'
       +'<th style="padding:6px">Produto</th><th style="padding:6px">PO</th>'
       +'<th style="padding:6px">Senioridade</th><th style="padding:6px">Squad Leader</th>'
-      +'<th style="padding:6px">Adequação</th><th style="padding:6px">Ação proposta</th></tr>';
+      +'<th style="padding:6px">Adequação</th><th style="padding:6px">Motivo e ação proposta</th></tr>';
     grupo.forEach(r=>{
       const cfg=GOV_ADEQ[r.ad];
       const lbl=cfg?cfg.lbl:'Sem classificação';
@@ -3250,7 +3252,9 @@ function buildGovCap(){
         +'<td style="padding:6px;color:var(--t2)">'+r.sl+'</td>'
         +'<td style="padding:6px"><span style="display:inline-block;background:'+bg+';border:1px solid '+cor
         +';color:'+cor+';border-radius:5px;padding:2px 7px;font-size:9.5px;font-weight:800;white-space:nowrap">'+lbl+'</span></td>'
-        +'<td style="padding:6px;color:var(--t2);line-height:1.45">'+(r.acao||'<span style="color:var(--t3)">—</span>')+'</td>'
+        +'<td style="padding:6px;line-height:1.45;min-width:230px">'
+        +(r.ad&&r.ad!=='ad'&&r.mot&&r.mot.length?'<div style="color:'+cor+';font-weight:700;font-size:9.5px;margin-bottom:2px">'+r.mot.join(' ')+'</div>':'')
+        +'<div style="color:var(--t2)">'+(r.acao||'<span style="color:var(--t3)">—</span>')+'</div></td>'
         +'</tr>';
     });
     h+='</table></div></div>';
