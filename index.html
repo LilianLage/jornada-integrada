@@ -1161,6 +1161,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   <div class="nt"     onclick="goTab('rdmap',this)">📅 Roadmap Integrado</div>
   <div class="nt"     onclick="goTab('okrev',this)">📈 Evolução de KRs</div>
   <div class="nt"     onclick="goTab('valor',this)">💰 Captura de Valor</div>
+  <div class="nt"     onclick="goTab('govcap',this)">🧭 Governança &amp; Capacidade</div>
 </div>
 
 <!-- ══════ MAPA ══════ -->
@@ -1340,6 +1341,19 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <button type="button" class="msdd-clr" onclick="msddClear('port-fase', event)">Limpar</button>
       </div>
     </div>
+    <div class="msdd" id="msdd-port-adeq">
+      <button class="msdd-btn" type="button" onclick="msddOpen('port-adeq', event)">
+        <span class="msdd-lbl">Adequação</span><span class="msdd-val">Todas</span><span class="msdd-arr">▼</span>
+      </button>
+      <div class="msdd-panel">
+        <label class="msdd-opt"><input type="checkbox" value="ad" data-lbl="Adequado" onchange="msddChange('port-adeq')"><span class="msdd-dot" style="background:var(--gm)"></span>Adequado</label>
+        <label class="msdd-opt"><input type="checkbox" value="at" data-lbl="Atenção" onchange="msddChange('port-adeq')"><span class="msdd-dot" style="background:var(--o)"></span>Atenção</label>
+        <label class="msdd-opt"><input type="checkbox" value="in" data-lbl="Inadequado" onchange="msddChange('port-adeq')"><span class="msdd-dot" style="background:#dc2626"></span>Inadequado</label>
+        <button type="button" class="msdd-clr" onclick="msddClear('port-adeq', event)">Limpar</button>
+      </div>
+    </div>
+
+    <span id="port-adeq-count" style="font-size:9.5px;font-weight:700;color:var(--t3);margin-left:auto"></span>
   </div>
 
   <!-- TABLE HEADER -->
@@ -1579,6 +1593,11 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 
 </div>
 
+<!-- ══════ GOVERNANÇA & CAPACIDADE ══════ -->
+<div class="pg" id="pg-govcap">
+  <div id="govcap-body"></div>
+</div>
+
 
 <!-- KR DATA EDIT MODAL -->
 <div class="kpi-mbg" id="kred-modal-bg" onclick="if(event.target.id==='kred-modal-bg')closeKREdit()" style="z-index:800">
@@ -1654,6 +1673,29 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <div class="fg"><label>Status</label><select id="ep-s"><option value="sv">No prazo</option><option value="so">Atenção / Atenção</option><option value="sg">Acompanhar</option></select></div>
       </div>
       <div class="fg"><label>Descrição</label><textarea id="ep-desc" rows="2" style="resize:vertical"></textarea></div>
+      <div class="fg" style="margin-top:4px"><label>Governança &amp; Capacidade · Matriz de Capacidade</label>
+        <details style="margin:2px 0 8px;background:var(--gyb);border:1px solid var(--bd);border-radius:7px;padding:7px 10px">
+          <summary style="cursor:pointer;font-size:10px;font-weight:800;color:var(--t2);outline:none">ℹ️ O que é e como preencher</summary>
+          <div style="font-size:10px;color:var(--t2);line-height:1.55;margin-top:7px">
+            Esta seção registra <b>quem sustenta o produto</b> e se a estrutura atual é suficiente. Vem da Matriz de Capacidade, que compara a dedicação real de PO, Squad Leader e gestor com a dedicação-alvo de cada modelo de gestão.
+            <div style="margin-top:6px"><b>Squad Leader</b> — conduz os ritos do produto (planning e review). Regra: no máximo 2 produtos por SL.</div>
+            <div><b>Senioridade do PO</b> — define quanto o PO pode se dividir: júnior e pleno não dividem; sênior assume até 2 produtos; especialista até 3.</div>
+            <div style="margin-top:6px"><b>Adequação</b> — <b>calculada automaticamente</b> a partir dos campos acima e da carga de cada pessoa no portfólio. Não é editável:</div>
+            <div style="margin-left:4px">🟢 <b>Adequado</b> — PO e SL designados, ambos dentro dos limites de acúmulo.</div>
+            <div style="margin-left:4px">🟡 <b>Atenção</b> — falta um papel: sem PO designado (S/R) ou sem Squad Leader.</div>
+            <div style="margin-left:4px">🔴 <b>Inadequado</b> — alguém excedeu o limite: PO acima do que a senioridade permite, ou SL com mais de 2 produtos.</div>
+            <div style="margin-top:6px"><b>Ação proposta</b> — o encaminhamento acordado para fechar o gap. Aparece na aba Governança &amp; Capacidade.</div>
+          </div>
+        </details>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="fg"><label style="font-size:9px">Squad Leader</label><input id="ep-gov-sl" placeholder="Nome do SL" oninput="renderGovAdeq(editKey)"></div>
+          <div class="fg"><label style="font-size:9px">Senioridade do PO</label>
+            <select id="ep-gov-sr" onchange="renderGovAdeq(editKey)"><option value="">—</option><option>Junior</option><option>Pleno</option><option>Sênior</option><option>Especialista</option><option>S/R</option></select></div>
+          <div class="fg"><label style="font-size:9px">Adequação (calculada · não editável)</label>
+            <div id="ep-gov-adeq-box" style="border:1.5px solid var(--bd);border-radius:7px;padding:7px 9px;background:var(--gyb);font-size:10px;color:var(--t3)">—</div></div>
+        </div>
+        <div class="fg" style="margin-top:6px"><label style="font-size:9px">Ação proposta</label><input id="ep-gov-acao" placeholder="Ex.: Designar ponto focal na gestão"></div>
+      </div>
       <div class="fg"><label>Mídia do produto · aparece no Modo Apresentação</label>
         <div style="display:flex;gap:8px;align-items:center">
           <input id="ep-midia" placeholder="URL de vídeo (YouTube, Drive, .mp4) ou imagem…" style="flex:1">
@@ -1958,6 +2000,94 @@ const PRODS = {
     rd:{done:['Hot Lead · Chatbot IA Gen'],doing:['Autoagendamento visita em obra'],todo:['Integração Prateleira MO · Expansão regionais (3T26)']}
   },
 };
+
+// ── Governança & Capacidade: carga inicial da Matriz de Capacidade v9 ──
+// Campos editáveis: gov_sl (Squad Leader), gov_sr (senioridade do PO),
+// gov_acao (ação proposta). A ADEQUAÇÃO NÃO é campo: é calculada pelas regras
+// em calcGovAdeq() e não pode ser editada.
+// Valores salvos no Firestore sobrescrevem esta carga.
+const GOV_SEED = {
+  sincroniza:   {gov_sl:'Adenízio',      gov_sr:'Sênior',       gov_acao:'Manter'},
+  compilador:   {gov_sl:'Giuseppe',      gov_sr:'Especialista', gov_acao:'Manter'},
+  lego:         {gov_sl:'Stephanie',     gov_sr:'Pleno',        gov_acao:'Manter'},
+  ecopam:       {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Manter'},
+  novaeap:      {gov_sl:'Vivian',        gov_sr:'Especialista', gov_acao:'Risco: PO em transição — plano de sucessão'},
+  obra360:      {gov_sl:'Adenízio',      gov_sr:'Pleno',        gov_acao:'Manter'},
+  prateleira:   {gov_sl:'Michele Dias',  gov_sr:'Sênior',       gov_acao:'Avaliar reforço de PO (gap de 30pp vs alvo 90%)'},
+  ze:           {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter'},
+  daeans:       {gov_sl:'Luanna (COE)',  gov_sr:'Sênior',       gov_acao:'Manter'},
+  smp:          {gov_sl:'Stephanie',     gov_sr:'Junior',       gov_acao:'Manter (PO júnior: maior acompanhamento do gestor)'},
+  mdm:          {gov_sl:'Rodrigo',       gov_sr:'Especialista', gov_acao:'Manter (modelo de referência)'},
+  nexus:        {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL e ponto focal'},
+  simurb:       {gov_sl:'',              gov_sr:'S/R',          gov_acao:'Designar SL e ponto focal'},
+  inbound:      {gov_sl:'Helder',        gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  cd:           {gov_sl:'Iriam',         gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  reformatrib:  {gov_sl:'Lidiana',       gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  radar:        {gov_sl:'Giuseppe',      gov_sr:'Sênior',       gov_acao:'Focal designada ✓'},
+  hubformas:    {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  usinaconcreto:{gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+  fabricakits:  {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão'},
+};
+Object.keys(GOV_SEED).forEach(k=>{ if(PRODS[k]) Object.assign(PRODS[k], GOV_SEED[k]); });
+// Produtos sem dado na matriz (ex.: Comex, Compras 360) nascem vazios e podem ser preenchidos no editor.
+Object.keys(PRODS).forEach(k=>{
+  const p=PRODS[k];
+  if(p.gov_sl===undefined)p.gov_sl=''; if(p.gov_sr===undefined)p.gov_sr='';
+  if(p.gov_acao===undefined)p.gov_acao='';
+});
+// Limite de produtos que um PO acumula, por senioridade (Matriz de Capacidade).
+const GOV_LIM_PO = {'Junior':1,'Pleno':1,'Sênior':2,'Especialista':3};
+const GOV_LIM_SL = 2;
+
+// Carga atual de cada PO e de cada SL no portfólio — base do cálculo de adequação.
+function govLoads(){
+  const po={}, sl={};
+  Object.keys(PRODS).forEach(k=>{
+    const p=PRODS[k];
+    const n=(p.po||'').trim();
+    if(n && n!=='A definir') po[n]=(po[n]||0)+1;
+    const s=(p.gov_sl||'').trim();
+    if(s) sl[s]=(sl[s]||0)+1;
+  });
+  return {po:po, sl:sl};
+}
+
+// ADEQUAÇÃO AUTOMÁTICA — não editável. Deriva das regras da Matriz de Capacidade:
+//  · sem senioridade informada        → sem classificação
+//  · PO acima do limite da senioridade → Inadequado
+//  · SL conduzindo mais de 2 produtos  → Inadequado
+//  · sem PO designado (S/R) ou sem SL  → Atenção
+//  · dentro de todos os limites        → Adequado
+// Retorna {ad, motivos[]} — os motivos aparecem no editor e explicam a classificação.
+function calcGovAdeq(key, loads){
+  const p=PRODS[key]; if(!p) return {ad:'',motivos:[]};
+  const L=loads||govLoads();
+  const sr=(p.gov_sr||'').trim();
+  const po=(p.po||'').trim();
+  const sl=(p.gov_sl||'').trim();
+  if(!sr) return {ad:'',motivos:['Senioridade do PO não informada — preencha para classificar.']};
+  const mot=[]; let ad='ad';
+  const lim=GOV_LIM_PO[sr];
+  if(lim && po && po!=='A definir' && L.po[po]>lim){
+    ad='in'; mot.push(po+' acumula '+L.po[po]+' produtos como PO '+sr+' (limite: '+lim+').');
+  }
+  if(sl && L.sl[sl]>GOV_LIM_SL){
+    ad='in'; mot.push(sl+' conduz '+L.sl[sl]+' produtos como Squad Leader (limite: '+GOV_LIM_SL+').');
+  }
+  if(sr==='S/R' || !po || po==='A definir'){
+    if(ad!=='in') ad='at';
+    mot.push('Produto sem PO designado.');
+  }
+  if(!sl){
+    if(ad!=='in') ad='at';
+    mot.push('Produto sem Squad Leader designado.');
+  }
+  if(ad==='ad') mot.push('PO e Squad Leader designados, ambos dentro dos limites de acúmulo.');
+  return {ad:ad, motivos:mot};
+}
+function govAdeqOf(key, loads){ return calcGovAdeq(key, loads).ad; }
+
+const GOV_ADEQ={ad:{lbl:'Adequado',col:'var(--gm)'},at:{lbl:'Atenção',col:'var(--o)'},in:{lbl:'Inadequado',col:'#dc2626'}};
 
 const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
@@ -2601,6 +2731,7 @@ function goTab(id,el){
   if(id==='valor') { buildValor(); buildConn(); }
   if(id==='rdmap') buildRdmap();
   if(id==='okrev') buildOKRev();
+  if(id==='govcap') buildGovCap();
 }
 
 // ══════════════════════════════════════════
@@ -2877,10 +3008,11 @@ function buildPort(){
       }).join('');
 
       return `
-      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}" data-fase="${prodResp(key)}">
+      <div class="port-card" id="pc-${key}" data-g="${p.gestor}" data-s="${_liveStatus}" data-e="${p.etapa}" data-fase="${prodResp(key)}" data-adeq="${govAdeqOf(key)}">
         <div class="port-hd" onclick="togglePort('pb-${key}','arr-${key}')">
           <div class="phd-cell">
             <div class="phd-nm">${p.nm}</div>
+            ${(p.gov_sl||p.gov_sr)?('<div style="font-size:8.5px;color:var(--t3);margin-top:2px;line-height:1.3">'+[p.gov_sl?('SL: '+p.gov_sl):'',p.gov_sr?('PO: '+(p.po||'—')+' ('+p.gov_sr+')'):''].filter(Boolean).join(' · ')+'</div>'):''}
           </div>
 
           <div class="phd-cell"><div class="phd-people">${p.po}<small>${gs}</small></div></div>
@@ -2972,6 +3104,7 @@ function buildPort(){
 
   initPortFilters();
   applyPortFilt();
+  updateAdeqCount();
 }
 
 
@@ -3001,11 +3134,184 @@ function delNota(key,i){
 // Multi-dimensional filter state
 // Filtros do Portfólio agora usam dropdowns multisseleção (msdd):
 //   port-etapa | port-gestor | port-status
+// ══════ ABA GOVERNANÇA & CAPACIDADE ══════
+// Resumo da estratégia de sustentação do portfólio: como os produtos estão
+// estruturadas, onde estão os gaps e quais ações estão propostas.
+// Alimentada pelos campos gov_* de cada produto (editáveis no editor do produto).
+function buildGovCap(){
+  const box=document.getElementById('govcap-body');
+  if(!box) return;
+
+  const ORD={in:0, at:1, '':2, ad:3};
+  const _loads=govLoads();
+  const rows=Object.keys(PRODS).map(k=>{
+    const p=PRODS[k];
+    return {k:k, nm:p.nm, po:p.po||'—', sr:p.gov_sr||'—', sl:p.gov_sl||'— a designar —',
+            resp:prodResp(k), ad:govAdeqOf(k,_loads), acao:p.gov_acao||''};
+  }).sort((a,b)=>(ORD[a.ad]-ORD[b.ad])||a.nm.localeCompare(b.nm));
+
+  const c={ad:0,at:0,in:0,vazio:0};
+  rows.forEach(r=>{ if(c[r.ad]!==undefined)c[r.ad]++; else c.vazio++; });
+  const pend=c.in+c.at;
+
+  // ── Cabeçalho executivo: a leitura da situação em uma frase
+  let h='<div style="background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:14px 18px;margin-bottom:12px">'
+    +'<div style="font-size:13px;font-weight:800;color:var(--tx)">Governança &amp; Capacidade do Portfólio</div>'
+    +'<div style="font-size:10.5px;color:var(--t2);line-height:1.6;margin-top:6px">'
+    +'Cada produto é sustentado por um <b>PO</b> — cuja senioridade define quanto ele pode se dividir entre produtos '
+    +'(júnior e pleno não dividem; sênior até 2; especialista até 3) — e por um <b>Squad Leader</b>, que conduz os ritos '
+    +'(máximo de 2 produtos por SL). A <b>adequação</b> é calculada automaticamente a partir desses limites — não é preenchida à mão. '
+    +'<b>'+pend+' de '+rows.length+' produtos exigem ação.</b> Os dados são editáveis no editor de cada produto.'
+    +'</div></div>';
+
+  // ── Referência didática: como cada modelo de gestão deve ser estruturado.
+  // Valores vindos da Matriz de Capacidade (dedicações-alvo por modelo).
+  const MOD_REF=[
+    {k:'dir', po:'90%', poN:'PO dedicado ao produto (10% quando em sustentação)',
+     sl:'50%', slN:'+25% por produto adicional sob o mesmo SL',
+     gs:'12%', ritos:'Planning e review quinzenais, conduzidos pelo SL',
+     res:'Time completo: o produto tem dono, condução técnica e acompanhamento próximo do gestor.'},
+    {k:'comp', po:'10%', poN:'PO compartilhado organiza prioridades e backlog',
+     sl:'50%', slN:'liderança tecnológica dedicada ao produto',
+     gs:'8%', ritos:'Planning e review quinzenais; prioridade acordada entre as áreas',
+     res:'A área parceira executa; a gestão garante prioridade, backlog e ritos.'},
+    {k:'mon', po:'5%', poN:'ponto focal designado — não é PO dedicado',
+     sl:'50%', slN:'condução técnica na área dona da iniciativa',
+     gs:'2%', ritos:'Review alimenta a ficha mínima e o report executivo bimestral',
+     res:'Acompanhamento leve: visibilidade e ponto de contato, sem squad próprio.'}
+  ];
+  const linha=(lbl,v,nota,col)=>'<div style="display:flex;align-items:baseline;gap:8px;padding:5px 0;border-top:1px dashed var(--bd)">'
+    +'<span style="font-size:13px;font-weight:800;color:'+col+';min-width:42px">'+v+'</span>'
+    +'<div><div style="font-size:9.5px;font-weight:800;color:var(--tx)">'+lbl+'</div>'
+    +'<div style="font-size:9px;color:var(--t3);line-height:1.4">'+nota+'</div></div></div>';
+  h+='<details style="margin-bottom:12px;background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:11px 16px">'
+    +'<summary style="cursor:pointer;font-size:11px;font-weight:800;color:var(--tx);outline:none">Como cada modelo deve ser estruturado</summary>'
+    +'<div style="font-size:9.5px;color:var(--t3);margin:7px 0 10px">Dedicação-alvo de cada papel por modelo de gestão. É esta referência que a classificação de adequação compara com a estrutura real de cada produto.</div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">';
+  MOD_REF.forEach(m=>{
+    const col=RESP_COL[m.k];
+    h+='<div style="flex:1;min-width:240px;border:1.5px solid var(--bd);border-top:4px solid '+col+';border-radius:9px;padding:11px 13px;background:#fcfcfd">'
+      +'<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px">'+RESP_LABEL[m.k]+'</div>'
+      +'<div style="font-size:9.5px;color:var(--t2);line-height:1.45;margin:5px 0 7px">'+m.res+'</div>'
+      +linha('Product Owner',m.po,m.poN,col)
+      +linha('Squad Leader',m.sl,m.slN,col)
+      +linha('Gestor',m.gs,'dedicação do gestor de portfólio por produto',col)
+      +'<div style="padding:6px 0 0;border-top:1px dashed var(--bd);margin-top:4px">'
+      +'<div style="font-size:9.5px;font-weight:800;color:var(--tx)">Ritos</div>'
+      +'<div style="font-size:9px;color:var(--t3);line-height:1.4">'+m.ritos+'</div></div>'
+      +'</div>';
+  });
+  h+='</div>'
+    +'<div style="font-size:9px;color:var(--t3);line-height:1.5;margin-top:9px;border-top:1px solid var(--bd);padding-top:8px">'
+    +'<b>Limites que valem para todos os modelos:</b> um Squad Leader conduz no máximo 2 produtos. '
+    +'A senioridade do PO define quantos produtos ele acumula — júnior e pleno não dividem (1); sênior até 2; especialista até 3. '
+    +'Estes limites são o que determina a classificação de adequação de cada produto.</div>'
+    +'</details>';
+
+  // ── Faixa-resumo clicável: cada card filtra a lista abaixo (clique de novo p/ limpar)
+  const chip=(key,lbl,v,col,bg)=>'<div class="gc-chip" data-adeq="'+key+'" onclick="govCapFilter(\''+key+'\')"'
+    +' style="background:'+bg+';border:1.5px solid '+col+';border-radius:8px;padding:8px 14px;flex:1;min-width:120px;cursor:pointer;transition:box-shadow .15s,transform .1s">'
+    +'<div style="font-size:20px;font-weight:800;color:'+col+';line-height:1.1">'+v+'</div>'
+    +'<div style="font-size:9.5px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.3px;margin-top:2px">'+lbl+'</div></div>';
+  h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">'
+    +chip('in','Inadequado',c.in,'#dc2626','#fef2f2')
+    +chip('at','Atenção',c.at,'var(--o)','var(--ob)')
+    +chip('','Sem classificação',c.vazio,'var(--gy)','var(--gyb)')
+    +chip('ad','Adequado',c.ad,'var(--gm)','var(--gb)')
+    +'</div>';
+
+  // ── Uma seção por modelo de gestão (mesma ordem e cores da aba Portfólio),
+  // cada uma com sua tabela ordenada por criticidade.
+  RESP_ORDER.forEach(respKey=>{
+    const grupo=rows.filter(r=>r.resp===respKey);
+    if(!grupo.length) return;
+    const col=RESP_COL[respKey];
+    const pendG=grupo.filter(r=>r.ad==='in'||r.ad==='at').length;
+    h+='<div class="gc-sec" data-resp="'+respKey+'">'
+      +'<div class="port-resp-hd" style="border-color:'+col+'">'
+      +'<span class="port-resp-t" style="color:'+col+'">'+RESP_LABEL[respKey]+'</span>'
+      +'<span class="port-resp-sub">'+grupo.length+' produto'+(grupo.length>1?'s':'')
+      +(pendG?' · '+pendG+' exige'+(pendG>1?'m':'')+' ação':'')+'</span></div>'
+      +'<div style="background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:10px 16px">'
+      +'<table style="width:100%;border-collapse:collapse;font-size:10px">'
+      +'<tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px">'
+      +'<th style="padding:6px">Produto</th><th style="padding:6px">PO</th>'
+      +'<th style="padding:6px">Senioridade</th><th style="padding:6px">Squad Leader</th>'
+      +'<th style="padding:6px">Adequação</th><th style="padding:6px">Ação proposta</th></tr>';
+    grupo.forEach(r=>{
+      const cfg=GOV_ADEQ[r.ad];
+      const lbl=cfg?cfg.lbl:'Sem classificação';
+      const cor=cfg?cfg.col:'var(--gy)';
+      const bg=r.ad==='in'?'#fef2f2':r.ad==='at'?'var(--ob)':r.ad==='ad'?'var(--gb)':'var(--gyb)';
+      h+='<tr class="gc-row" data-adeq="'+r.ad+'" style="border-top:1px solid var(--bd)">'
+        +'<td style="padding:6px;font-weight:700;color:var(--tx)">'+r.nm+'</td>'
+        +'<td style="padding:6px;color:var(--t2)">'+r.po+'</td>'
+        +'<td style="padding:6px;color:var(--t2)">'+r.sr+'</td>'
+        +'<td style="padding:6px;color:var(--t2)">'+r.sl+'</td>'
+        +'<td style="padding:6px"><span style="display:inline-block;background:'+bg+';border:1px solid '+cor
+        +';color:'+cor+';border-radius:5px;padding:2px 7px;font-size:9.5px;font-weight:800;white-space:nowrap">'+lbl+'</span></td>'
+        +'<td style="padding:6px;color:var(--t2);line-height:1.45">'+(r.acao||'<span style="color:var(--t3)">—</span>')+'</td>'
+        +'</tr>';
+    });
+    h+='</table></div></div>';
+  });
+  h+='<div id="gc-empty" style="display:none;font-size:10px;color:var(--t3);padding:10px 16px">Nenhum produto nesta classificação.</div>';
+  box.innerHTML=h;
+  govCapApply();
+}
+
+// Filtro da aba: clicar num card do topo mostra só os produtos daquela adequação.
+// Clicar no card já ativo limpa o filtro.
+let govCapSel=null;
+function govCapFilter(k){
+  govCapSel = (govCapSel===k) ? null : k;
+  govCapApply();
+}
+function govCapApply(){
+  let n=0;
+  document.querySelectorAll('.gc-row').forEach(tr=>{
+    const ok = govCapSel===null || (tr.getAttribute('data-adeq')||'')===govCapSel;
+    tr.style.display = ok ? '' : 'none';
+    if(ok) n++;
+  });
+  // Esconde a seção de modelo de gestão que ficar sem nenhuma linha visível
+  document.querySelectorAll('.gc-sec').forEach(sec=>{
+    const vis=[...sec.querySelectorAll('.gc-row')].some(tr=>tr.style.display!=='none');
+    sec.style.display = vis ? '' : 'none';
+  });
+  document.querySelectorAll('.gc-chip').forEach(ch=>{
+    const on = govCapSel!==null && (ch.getAttribute('data-adeq')||'')===govCapSel;
+    ch.style.boxShadow = on ? '0 0 0 2px #0f172a' : 'none';
+    ch.style.transform = on ? 'translateY(-1px)' : 'none';
+  });
+  const e=document.getElementById('gc-empty');
+  if(e) e.style.display = n===0 ? 'block' : 'none';
+}
+
+// Contador agregado de adequação de capacidade, exibido na barra de filtros.
+function updateAdeqCount(){
+  const el=document.getElementById('port-adeq-count');
+  if(!el) return;
+  const c={ad:0,at:0,in:0,vazio:0};
+  const _l=govLoads();
+  Object.keys(PRODS).forEach(k=>{
+    const a=govAdeqOf(k,_l);
+    if(a==='ad')c.ad++; else if(a==='at')c.at++; else if(a==='in')c.in++; else c.vazio++;
+  });
+  const parts=[];
+  if(c.ad)parts.push('<span style="color:var(--gm)">●</span> '+c.ad+' Adequado');
+  if(c.at)parts.push('<span style="color:var(--o)">●</span> '+c.at+' Atenção');
+  if(c.in)parts.push('<span style="color:#dc2626">●</span> '+c.in+' Inadequado');
+  if(c.vazio)parts.push('<span style="color:var(--t3)">○</span> '+c.vazio+' sem classificação');
+  el.innerHTML='Capacidade: '+parts.join(' &nbsp;·&nbsp; ');
+}
+
 function initPortFilters(){
   msddInit('port-etapa',  applyPortFilt, 'Todas');
   msddInit('port-gestor', applyPortFilt, 'Todos');
   msddInit('port-status', applyPortFilt, 'Todos');
   msddInit('port-fase',   applyPortFilt, 'Todas');
+  msddInit('port-adeq',   applyPortFilt, 'Todas');
 }
 
 function setNavActive(group, activeId) {
@@ -3023,13 +3329,15 @@ function applyPortFilt() {
   const gSel = msddSel('port-gestor');
   const sSel = msddSel('port-status');
   const fSel = msddSel('port-fase');
+  const aSel = msddSel('port-adeq');
   document.querySelectorAll('.port-card').forEach(c => {
     const g = c.dataset.g, s = c.dataset.s, e = c.dataset.e, f = c.dataset.fase;
     const gOk = gSel.size === 0 || g === 'lm' || gSel.has(g);
     const sOk = sSel.size === 0 || sSel.has(s);
     const eOk = eSel.size === 0 || eSel.has(e);
     const fOk = fSel.size === 0 || fSel.has(f);
-    c.style.display = (gOk && sOk && eOk && fOk) ? '' : 'none';
+    const aOk = aSel.size === 0 || aSel.has(c.dataset.adeq || '');
+    c.style.display = (gOk && sOk && eOk && fOk && aOk) ? '' : 'none';
   });
   // Hide each etapa group whose cards are all hidden (agora pode haver um por nível de responsabilidade)
   ['est','pre','obra'].forEach(ek => {
@@ -3342,6 +3650,27 @@ function buildTraceTable(){
 
 // ══ EDIT MODAL ══
 let editKey=null;
+// Mostra a adequação calculada no editor (somente leitura) com os motivos da classificação.
+// Reavalia com os valores digitados agora, para o usuário ver o efeito antes de salvar.
+function renderGovAdeq(key){
+  const box=document.getElementById('ep-gov-adeq-box');
+  if(!box||!key||!PRODS[key]) return;
+  const p=PRODS[key];
+  const _sl=document.getElementById('ep-gov-sl'), _sr=document.getElementById('ep-gov-sr');
+  const bkSl=p.gov_sl, bkSr=p.gov_sr;
+  if(_sl) p.gov_sl=_sl.value.trim();
+  if(_sr) p.gov_sr=_sr.value;
+  const r=calcGovAdeq(key);
+  p.gov_sl=bkSl; p.gov_sr=bkSr;
+  const cfg=GOV_ADEQ[r.ad];
+  const lbl=cfg?cfg.lbl:'Sem classificação';
+  const col=cfg?cfg.col:'var(--gy)';
+  const bg=r.ad==='in'?'#fef2f2':r.ad==='at'?'var(--ob)':r.ad==='ad'?'var(--gb)':'var(--gyb)';
+  box.style.background=bg; box.style.borderColor=col;
+  box.innerHTML='<div style="font-size:10.5px;font-weight:800;color:'+col+'">'+lbl+'</div>'
+    +'<div style="font-size:9px;color:var(--t2);line-height:1.45;margin-top:2px">'+r.motivos.join(' ')+'</div>';
+}
+
 function openEdit(key){
   if(!requireEditor(()=>openEdit(key)))return;
   editKey=key;
@@ -3353,6 +3682,10 @@ function openEdit(key){
   // Status is auto-calculated
   setTimeout(() => applyAutoStatus(key), 50);
   document.getElementById('ep-desc').value=p.desc;
+  document.getElementById('ep-gov-sl').value=p.gov_sl||'';
+  document.getElementById('ep-gov-sr').value=p.gov_sr||'';
+  renderGovAdeq(key);
+  document.getElementById('ep-gov-acao').value=p.gov_acao||'';
   const _cxs=document.getElementById('ep-cxshow'); if(_cxs) _cxs.checked=!p.cx_hide;
   const _rsp=document.getElementById('ep-resp'); if(_rsp) _rsp.value=prodResp(key);
   const _m=prodMidiaSrc(key);
@@ -3632,6 +3965,9 @@ async function saveEdit(){
   p.etapa=document.getElementById('ep-e').value;
   p.status = calcAutoStatus(editKey);
   p.desc=document.getElementById('ep-desc').value;
+  p.gov_sl=document.getElementById('ep-gov-sl').value.trim();
+  p.gov_sr=document.getElementById('ep-gov-sr').value;
+  p.gov_acao=document.getElementById('ep-gov-acao').value.trim();
   const _cxs=document.getElementById('ep-cxshow'); if(_cxs) p.cx_hide=!_cxs.checked;
   const _rsp=document.getElementById('ep-resp'); if(_rsp) p.resp=_rsp.value;
   // Mídia: imagem carregada vai para a coleção produto_midia (aguarda e avisa se falhar)
