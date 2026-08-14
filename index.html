@@ -489,7 +489,7 @@ button,input,select,textarea{font-family:inherit;}
 /* Inline add input */
 .rd-add-input-wrap{display:none;margin-top:5px;gap:4px;}
 .rd-add-input-wrap.open{display:flex;}
-.rd-add-input{flex:1;border:1.5px solid var(--gm);border-radius:5px;padding:4px 7px;font-size:10px;outline:none;}
+.rd-add-input{flex:1;border:1.5px solid var(--gm);border-radius:5px;padding:4px 7px;font-size:10px;outline:none;line-height:1.45;font-family:inherit;resize:none;overflow:hidden;box-sizing:border-box;min-width:0;}
 .rd-add-confirm{background:var(--g);color:#fff;border:none;border-radius:5px;padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer;}
 /* Edit mode toggle */
 .rd-edit-toggle{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--t2);cursor:pointer;padding:5px 10px;border-radius:6px;border:1.5px solid var(--bd);background:var(--wh);transition:all .15s;}
@@ -4194,13 +4194,16 @@ function deleteMarco(prodKey, period, idx) {
   renderRdmap();
 }
 
+// Auto-expande o textarea de "adicionar entrega" conforme o texto cresce.
+function rdAddFit(el){ el.style.height='auto'; el.style.height=(el.scrollHeight+2)+'px'; }
+
 function showAddInput(prodKey, period) {
   const inputWrapId = `rd-add-wrap-${prodKey}-${period.replace(/\s/g,'_')}`;
   const wrap = document.getElementById(inputWrapId);
   if (wrap) {
     wrap.classList.add('open');
     const inp = wrap.querySelector('.rd-add-input');
-    if (inp) inp.focus();
+    if (inp) { inp.focus(); rdAddFit(inp); }
   }
 }
 
@@ -4301,7 +4304,7 @@ function renderRdmap() {
     const addSection = rdEditMode ? `
       <button class="rd-add-btn" onclick="showAddInput('${prodKey}','${colKey}')">+ adicionar entrega</button>
       <div class="rd-add-input-wrap" id="rd-add-wrap-${prodKey}-${periodId}">
-        <input class="rd-add-input" placeholder="Descrever entrega..." onkeydown="if(event.key==='Enter')confirmAddMarco('${prodKey}','${colKey}')">
+        <textarea class="rd-add-input" rows="1" placeholder="Descrever entrega..." oninput="rdAddFit(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmAddMarco('${prodKey}','${colKey}')}"></textarea>
         <button class="rd-add-confirm" onclick="confirmAddMarco('${prodKey}','${colKey}')">✓</button>
       </div>` : '';
 
@@ -4332,7 +4335,7 @@ function renderRdmap() {
       const addSection = rdEditMode ? `
         <button class="rd-add-btn" onclick="showAddInput('${prodKey}','${qKey}')">+ adicionar entrega</button>
         <div class="rd-add-input-wrap" id="rd-add-wrap-${prodKey}-${periodId}">
-          <input class="rd-add-input" placeholder="Descrever entrega..." onkeydown="if(event.key==='Enter')confirmAddMarco('${prodKey}','${qKey}')">
+          <textarea class="rd-add-input" rows="1" placeholder="Descrever entrega..." oninput="rdAddFit(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmAddMarco('${prodKey}','${qKey}')}"></textarea>
           <button class="rd-add-confirm" onclick="confirmAddMarco('${prodKey}','${qKey}')">✓</button>
         </div>` : '';
       const inner = all.length||rdEditMode
@@ -6503,11 +6506,16 @@ function startEditMarco(event, prodKey, period, idx) {
   const txtEl = el.querySelector('.marco-txt');
   if (!txtEl) return;
   const cur = RDMAP[prodKey][period][idx].txt;
-  const inp = document.createElement('input');
+  // Textarea auto-expansível: quebra linha e cresce em altura conforme o texto,
+  // resolvendo o campo de linha única que cortava descrições longas na célula estreita.
+  const inp = document.createElement('textarea');
   inp.value = cur;
-  inp.style.cssText = 'font-size:10px;border:1.5px solid var(--gm);border-radius:4px;padding:2px 6px;width:100%;outline:none;background:#fff;box-sizing:border-box';
+  inp.rows = 1;
+  inp.style.cssText = 'font-size:10px;line-height:1.45;font-family:inherit;border:1.5px solid var(--gm);border-radius:4px;padding:2px 6px;width:100%;outline:none;background:#fff;box-sizing:border-box;resize:none;overflow:hidden;display:block';
+  const fit = () => { inp.style.height='auto'; inp.style.height=(inp.scrollHeight+2)+'px'; };
+  inp.oninput = fit;
   const save = () => {
-    const v = inp.value.trim();
+    const v = inp.value.replace(/\s+/g,' ').trim();
     if (v && v !== cur) {
       setEditDetail('renomeou entrega', `${rdLbl(period)}: "${cur}" → "${v}"`);
       RDMAP[prodKey][period][idx].txt = v; fbSaveRdmap(prodKey);
@@ -6517,7 +6525,9 @@ function startEditMarco(event, prodKey, period, idx) {
   inp.onblur   = save;
   inp.onkeydown = e => { if(e.key==='Enter'){e.preventDefault();inp.blur();} if(e.key==='Escape'){renderRdmap();} };
   txtEl.replaceWith(inp);
-  inp.focus(); inp.select();
+  inp.focus(); inp.select(); fit();
+  // Reforço: alguns navegadores só calculam scrollHeight corretamente após o layout.
+  requestAnimationFrame(fit);
 }
 
 // ── Reorder marco within period
