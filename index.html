@@ -7790,9 +7790,12 @@ function cxLvBlocksHTML(items, opts){
         +'<span class="rdx-txt">'+cxRowTxt(m.txt)+(late?'<span class="rdx-late">atrasada</span>':'')+'</span>'
         +prz+'</div>';
     }).join('');
+    // No Roadmap previsto (cp) o rótulo vem sem a frase explicativa: ela já aparece
+    // na seção de entregas do período, e repeti-la nas 3 colunas só polui.
     const railHtml = rail
       ? '<div class="rdx-rail"><span class="rdx-ric">'+meta.ic+'</span>'
-        +'<div><div class="rdx-rlbl">'+meta.lbl+'</div><div class="rdx-rdesc">'+meta.desc+'</div></div></div>'
+        +'<div><div class="rdx-rlbl">'+meta.lbl+'</div>'
+        +(cp?'':'<div class="rdx-rdesc">'+meta.desc+'</div>')+'</div></div>'
       : '';
     h+='<div class="rdx-grp rdx-lv-'+(lv||'none')+(cp?' cp':'')+(rail?'':' norail')+'">'
       +railHtml+'<div class="rdx-card">'+rows+'</div></div>';
