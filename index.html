@@ -207,6 +207,76 @@ button,input,select,textarea{font-family:inherit;}
 .kr-num{font-size:10px;font-weight:800;white-space:nowrap;}
 /* roadmap in portfolio */
 .rd-item{display:flex;gap:6px;align-items:flex-start;font-size:10px;color:var(--t2);padding:2px 0;line-height:1.4;}
+/* ═══ Roadmap em blocos por nível (Modo Apresentação) ═══
+   Duas variações do mesmo componente:
+   · Roadmap previsto — 3 colunas por status; nas colunas estreitas o nível vira
+     um cabeçalho compacto (chip + nome) e a linha mostra o chip de prazo.
+   · Entregas do período — cartão largo, com a calha de rótulo (nível + descrição)
+     à esquerda e SEM prazo, já que a entrega do período já aconteceu.
+   Cor do nível vem das variáveis --lv / --lvb definidas no bloco. */
+/* Título da coluna: barra colorida do status + nome, como o "EM ANDAMENTO" da referência */
+.rdx-colh{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:800;letter-spacing:-.1px;text-transform:uppercase;color:var(--tx);margin-bottom:13px;}
+.rdx-colh::before{content:'';width:4px;height:19px;border-radius:2px;background:var(--sc,var(--t3));flex-shrink:0;}
+/* Cabeçalho Entrega · Prazo */
+.rdx-hdr{display:grid;grid-template-columns:158px 1fr;gap:20px;margin-bottom:7px;}
+.rdx-hdr.norail{grid-template-columns:1fr;}
+.rdx-hcols{display:grid;grid-template-columns:26px 1fr 106px;gap:12px;padding:0 18px;font-size:9.5px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--t3);}
+.rdx-hcols>span:last-child{text-align:center;}
+.rdx-hdr.cp{grid-template-columns:104px 1fr;gap:11px;margin-bottom:5px;}
+.rdx-hcols.cp{grid-template-columns:16px 1fr 66px;gap:7px;padding:0 10px;font-size:8px;letter-spacing:.9px;}
+/* Filete vertical separando a calha de rótulos do conteúdo, como na referência */
+.rdx-body{position:relative;}
+/* Coluna estreita: mesma anatomia (calha + cartão), em escala reduzida */
+.rdx-grp.cp{grid-template-columns:104px 1fr;gap:11px;margin-bottom:12px;}
+.rdx-grp.cp .rdx-rail{padding-top:9px;gap:7px;}
+.rdx-grp.cp .rdx-ric{width:26px;height:26px;border-radius:7px;font-size:12px;}
+.rdx-grp.cp .rdx-rlbl{font-size:9.5px;letter-spacing:.4px;}
+.rdx-grp.cp .rdx-rdesc{font-size:8.5px;line-height:1.4;margin-top:3px;}
+.rdx-grp.norail{grid-template-columns:1fr;margin-bottom:14px;}
+.rdx-row.np{grid-template-columns:26px 1fr;}
+.rdx-row.cp{grid-template-columns:16px 1fr 66px;gap:7px;align-items:start;padding:9px 10px;}
+.rdx-row.cp .rdx-ar{font-size:10px;line-height:1.6;}
+.rdx-row.cp .rdx-txt{font-size:11.5px;line-height:1.5;}
+.rdx-row.cp .rdx-prz{font-size:9px;padding:3px 5px;gap:3px;margin-top:1px;}
+.rdx-grp{display:grid;grid-template-columns:158px 1fr;gap:20px;align-items:start;margin-bottom:14px;--lv:#64748b;--lvb:#f1f5f9;}
+.rdx-grp.norail .rdx-rail{display:none;}
+.rdx-rail{display:flex;gap:10px;align-items:flex-start;padding-top:13px;}
+.rdx-ric{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;background:var(--lvb);color:var(--lv);}
+.rdx-rlbl{font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--lv);line-height:1.2;}
+.rdx-rdesc{font-size:10.5px;color:var(--t3);line-height:1.45;margin-top:5px;}
+.rdx-card{background:#fff;border:1px solid var(--bd);border-radius:13px;overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.05);}
+.rdx-row{display:grid;grid-template-columns:26px 1fr 106px;gap:12px;align-items:center;padding:13px 18px;}
+.rdx-row+.rdx-row{border-top:1px solid var(--bd);}
+.rdx-ar{font-size:13px;font-weight:800;line-height:1;text-align:center;}
+.rdx-txt{font-size:13.5px;color:var(--t2);line-height:1.5;}
+.rdx-txt b{color:var(--tx);font-weight:800;}
+.rdx-prz{display:inline-flex;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:800;border-radius:8px;padding:6px 8px;background:var(--lvb);color:var(--lv);white-space:nowrap;}
+.rdx-late{display:inline-block;margin-left:7px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--o);background:var(--ob);border-radius:5px;padding:2px 6px;white-space:nowrap;}
+.rdx-lv-marco{--lv:#1b3a5f;--lvb:#eef2f7;}
+.rdx-lv-melhoria{--lv:var(--gm);--lvb:var(--gb);}
+.rdx-lv-op{--lv:var(--o);--lvb:var(--ob);}
+.rdx-lv-none{--lv:#64748b;--lvb:#f1f5f9;}
+@media print{ .rdx-grp,.rdx-row{break-inside:avoid;} }
+/* ─── Linha do Roadmap previsto ───
+   Três colunas fixas: status · calha de mês · texto. A calha faz todos os textos
+   começarem no mesmo ponto e tira do mês a aparência de selo (o que o confundia
+   com o nível da entrega). O nível agora é dado pelo cabeçalho do bloco, não por pílula. */
+.cx-rdrow{display:grid;grid-template-columns:16px 60px 1fr;gap:9px;align-items:baseline;padding:5px 0;}
+.cx-rdrow>.rd-ic{font-weight:800;font-size:15px;text-align:center;line-height:1;}
+.cx-rdrow>.rd-when{font-size:10px;font-weight:700;color:var(--t3);text-align:right;white-space:nowrap;}
+.cx-rdrow>.rd-txt{font-size:13px;color:var(--t2);line-height:1.45;}
+.cx-rdrow.lv-marco>.rd-txt{font-weight:800;color:var(--tx);}
+.cx-rdrow.lv-op>.rd-txt{opacity:.7;font-size:12px;}
+.cx-rdrow.cp{grid-template-columns:12px 48px 1fr;gap:6px;padding:2px 0;}
+.cx-rdrow.cp>.rd-ic{font-size:11px;}
+.cx-rdrow.cp>.rd-when{font-size:8.5px;}
+.cx-rdrow.cp>.rd-txt{font-size:10px;line-height:1.4;}
+.cx-rdrow.cp.lv-op>.rd-txt{font-size:9.5px;}
+/* Cabeçalho de bloco de nível — subordinado ao cabeçalho de status (sem régua, menor, cinza) */
+.rd-lvh{font-size:9px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);margin:14px 0 3px;}
+.rd-lvh:first-child{margin-top:2px;}
+.rd-lvh.lv-marco{color:#1e293b;}
+.rd-lvh.cp{font-size:7.5px;letter-spacing:.7px;margin:8px 0 2px;}
 .rd-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
 .rd-more{margin-top:2px;}
 .rd-more>summary{cursor:pointer;font-size:9.5px;font-weight:800;color:var(--g);list-style:none;padding:4px 0;}
@@ -431,6 +501,21 @@ button,input,select,textarea{font-family:inherit;}
 .marco-txt.todo{color:var(--t3);}
 /* Milestone tooltip */
 .marco:hover .marco-txt{text-decoration:underline;text-underline-offset:2px;}
+/* ─── Tipo de entrega (Marco · Melhoria · Operacional) ───
+   Canal visual separado do status: a cor segue sendo só o status, o tipo é forma + peso.
+   Marco = losango maior e texto forte · Melhoria = quadrado padrão · Operacional = ponto pequeno e discreto.
+   Entrega sem tipo definido pelo PO fica exatamente como antes. */
+.rd-t.t-marco>.marco-dot,.marco.t-marco .marco-dot{width:11px;height:11px;border-radius:2px;transform:rotate(45deg);margin-top:2px;}
+.rd-t.t-marco>.marco-txt,.marco.t-marco .marco-txt{font-weight:800;}
+.marco.t-marco{box-shadow:inset 2px 0 0 rgba(15,23,42,.35);padding-left:6px;}
+.rd-t.t-op>.marco-dot,.marco.t-op .marco-dot{width:6px;height:6px;border-radius:50%;margin-top:4px;}
+.rd-t.t-op>.marco-txt,.marco.t-op .marco-txt{font-size:9px;opacity:.75;}
+/* Legenda de tipos no cabeçalho do Roadmap */
+.rd-tleg{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--t2);}
+.rd-tleg i{display:inline-block;background:var(--t3);flex-shrink:0;}
+.rd-tleg i.marco{width:10px;height:10px;transform:rotate(45deg);border-radius:2px;}
+.rd-tleg i.melhoria{width:9px;height:9px;border-radius:2px;}
+.rd-tleg i.op{width:6px;height:6px;border-radius:50%;}
 /* Empty cell placeholder */
 .rd-empty{width:100%;height:100%;min-height:32px;display:flex;align-items:center;justify-content:center;}
 .rd-dash{width:20px;height:1px;background:var(--bd);}
@@ -439,15 +524,31 @@ button,input,select,textarea{font-family:inherit;}
 /* ─── ROADMAP EDITING ─── */
 .marco{cursor:pointer;border-radius:5px;padding:2px 3px;margin:-2px -3px;}
 .marco:hover{background:rgba(0,0,0,.04);}
-.marco-actions{display:none;gap:3px;margin-top:4px;flex-direction:column;}
+.marco-actions{display:none;gap:4px;margin-top:6px;flex-direction:column;min-width:126px;padding:7px;background:var(--wh);border:1px solid var(--bd);border-radius:8px;box-shadow:0 2px 8px rgba(15,23,42,.07);cursor:default;}
 .marco.expanded .marco-actions{display:flex;}
 .rdmap-mcell .marco:hover{background:var(--gyb);border-radius:4px;}
-.ma-btn{border:none;border-radius:4px;padding:2px 7px;font-size:9px;font-weight:700;cursor:pointer;transition:all .12s;}
+/* ─── Arrastar e soltar entregas (modo edição) ─── */
+.marco[draggable="true"]{cursor:grab;}
+.marco[draggable="true"]:active{cursor:grabbing;}
+.marco.rd-dragging{opacity:.4;}
+/* Linha indicando onde a entrega será inserida */
+.marco.rd-drop-before{box-shadow:inset 0 2px 0 var(--g);}
+.marco.rd-drop-after{box-shadow:inset 0 -2px 0 var(--g);}
+/* Célula de destino em evidência, inclusive quando está vazia */
+td.rd-drop-cell{background:var(--gb)!important;outline:2px dashed var(--gm);outline-offset:-2px;}
+/* Rótulo de cada grupo de controles — sem ele os ícones não dizem a que se referem */
+.ma-cap{font-size:7.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--t3);}
+.ma-row{display:flex;gap:3px;flex-wrap:wrap;}
+.ma-btn{border:1px solid transparent;border-radius:5px;padding:3px 7px;font-size:8.5px;font-weight:700;cursor:pointer;transition:all .12s;line-height:1.35;white-space:nowrap;}
+/* Estado selecionado: anel interno, para o PO enxergar o que já está marcado */
+.ma-btn.on{box-shadow:inset 0 0 0 1.5px currentColor;}
 .ma-done{background:var(--gb);color:var(--g);}
 .ma-doing{background:var(--ob);color:var(--o);}
 .ma-todo{background:var(--gyb);color:var(--gy);}
-.ma-del{background:#fee2e2;color:#dc2626;margin-left:auto;}
-.ma-btn:hover{filter:brightness(.9);}
+.ma-tp{background:var(--gyb);color:var(--t2);}
+.ma-tp.on{background:#1e293b;color:#fff;box-shadow:none;}
+.ma-edit{background:var(--gb);color:var(--g);width:100%;text-align:center;padding:5px;font-size:9px;margin-top:2px;}
+.ma-btn:hover{filter:brightness(.94);}
 /* Add marco button per cell */
 .rd-add-btn{display:none;width:100%;margin-top:5px;padding:4px;font-size:9px;font-weight:700;color:var(--t3);background:none;border:1px dashed var(--bd);border-radius:5px;cursor:pointer;text-align:center;transition:all .15s;}
 .rdmap-mcell:hover .rd-add-btn,
@@ -477,6 +578,11 @@ button,input,select,textarea{font-family:inherit;}
 .gnt-bar.done{background:#e7f7ee;color:#0a6b3b;border-left-color:var(--gm);}
 .gnt-bar.doing{background:#fff1e3;color:#9a4d00;border-left-color:var(--o);}
 .gnt-bar.todo{background:#f1f5f9;color:#64748b;border-left-color:#cbd5e1;border-left-style:dashed;}
+/* Tipo de entrega no Gantt: peso e destaque, mantendo a cor como status */
+.gnt-tp{font-size:8px;opacity:.55;flex-shrink:0;}
+.gnt-bar.t-marco{font-weight:800;border-left-width:5px;box-shadow:0 1px 4px rgba(15,23,42,.12);}
+.gnt-bar.t-marco .gnt-tp{opacity:.9;font-size:9px;}
+.gnt-bar.t-op{font-weight:600;opacity:.78;font-size:9px;}
 .gnt-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:9999;}
 .gnt-modal-bg.open{display:flex;}
 .gnt-modal{background:#fff;border-radius:12px;padding:18px 20px;width:340px;max-width:92vw;box-shadow:0 20px 50px rgba(0,0,0,.3);}
@@ -728,6 +834,9 @@ button,input,select,textarea{font-family:inherit;}
 .cx-qbtn{background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.65);font-size:12px;font-weight:800;padding:8px 13px;cursor:pointer;transition:all .15s;}
 .cx-qbtn:hover{background:rgba(255,255,255,.18);color:#fff;}
 .cx-qbtn.on{background:var(--o);color:#fff;}
+/* Recorte por mês — mesmo grupo visual dos trimestres, um degrau abaixo na hierarquia */
+.cx-mgrp .cx-qbtn{font-size:11px;padding:8px 11px;}
+.cx-mgrp .cx-qbtn.on{background:rgba(255,255,255,.92);color:#00341d;}
 .cx-body{flex:1;min-height:0;position:relative;overflow:hidden;}
 .cx-strip-wrap{display:flex;align-items:center;gap:6px;background:var(--bg);flex-shrink:0;padding-right:12px;}
 .cx-strip{display:flex;gap:3px;align-items:center;padding:10px 20px 8px;overflow-x:auto;flex:1;min-width:0;scrollbar-width:thin;scrollbar-color:#dde4ec var(--bg);}
@@ -856,11 +965,41 @@ button,input,select,textarea{font-family:inherit;}
 /* Carrossel de KRs no card de OKRs do Modo Apresentação */
 .cx-krsl{display:none;}
 .cx-krsl.on{display:block;}
-.cx-krdots{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:10px;}
-.cx-krdot{width:7px;height:7px;border-radius:99px;background:var(--bd);cursor:pointer;border:none;padding:0;transition:width .2s,background .2s;}
-.cx-krdot:hover{background:var(--t3);}
-.cx-krdot.on{width:20px;background:var(--g);}
+/* Bolinhas maiores: são o único controle de navegação do carrossel, precisam de alvo confortável */
+.cx-krdots{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:12px;}
+.cx-krdot{width:12px;height:12px;border-radius:99px;background:var(--bd);cursor:pointer;border:none;padding:0;transition:width .2s,background .2s,transform .12s;}
+.cx-krdot:hover{background:var(--t3);transform:scale(1.15);}
+.cx-krdot.on{width:30px;background:var(--g);}
 .cx-krleg{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:9px;font-weight:800;letter-spacing:.3px;color:var(--t3);margin-top:6px;}
+/* ─── Destaque de foco (Modo Apresentação) ───
+   Clique num card (ou num item dentro dele) destaca o alvo e apaga o resto,
+   para a plateia olhar exatamente o que está sendo falado.
+   Clique fora, no mesmo alvo, ou Esc, limpa o destaque. */
+.cx-page.cx-focus .cx-card,
+.cx-page.cx-focus .cx-phd,
+.cx-page.cx-focus .cx-kpi,
+.cx-page.cx-focus .cx-risk,
+.cx-page.cx-focus .cx-jn-plr-card,
+.cx-page.cx-focus .cx-tile{opacity:.2;filter:saturate(.3);transition:opacity .2s ease,filter .2s ease;}
+.cx-page.cx-focus .cx-foco{opacity:1;filter:none;position:relative;z-index:2;
+  box-shadow:0 12px 34px rgba(15,23,42,.18),0 0 0 2px rgba(0,107,63,.35);}
+/* Legenda de status das entregas do período */
+.rdx-lgd{display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding-bottom:11px;margin-bottom:14px;border-bottom:1px solid var(--bd);}
+.rdx-lg{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--t2);}
+.rdx-lg-ic{font-size:11px;font-weight:800;line-height:1;display:inline-block;width:11px;text-align:center;}
+/* Coluna de status destacada dentro do card do Roadmap previsto */
+.cx-page.cx-focus .cx-foco.cx-fc .rdx-col{opacity:.18;transition:opacity .2s ease;}
+.cx-page.cx-focus .cx-foco.cx-fc .rdx-col.cx-foco-c{opacity:1;}
+/* Item destacado dentro de um card em foco */
+.cx-page.cx-focus .cx-foco.cx-fi .cx-li,
+.cx-page.cx-focus .cx-foco.cx-fi .rd-item,
+.cx-page.cx-focus .cx-foco.cx-fi .cx-rdrow,
+.cx-page.cx-focus .cx-foco.cx-fi .rdx-row{opacity:.22;transition:opacity .2s ease;}
+.cx-page.cx-focus .cx-foco.cx-fi .cx-li.cx-foco-i,
+.cx-page.cx-focus .cx-foco.cx-fi .rd-item.cx-foco-i,
+.cx-page.cx-focus .cx-foco.cx-fi .cx-rdrow.cx-foco-i,
+.cx-page.cx-focus .cx-foco.cx-fi .rdx-row.cx-foco-i{opacity:1;background:#f2fbf6;border-radius:8px;
+  box-shadow:inset 3px 0 0 var(--gm);padding-left:10px;padding-right:8px;}
 .cx-tipbox{position:fixed;z-index:99999;background:#0f172a;color:#fff;font-size:11px;font-weight:700;padding:5px 10px;border-radius:7px;pointer-events:none;display:none;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.28);}
 /* Lightbox dos indicadores complementares (Modo Apresentação): clique no print expande ao tamanho original */
 .cx-ind-lb{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;cursor:zoom-out;padding:24px;}
@@ -879,6 +1018,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   body.cx-open>*:not(#comex-ov){display:none!important;}
   #comex-ov{position:static;display:block!important;background:#f4f7fb;}
   .cx-hd,.cx-strip-wrap{display:none!important;}
+  /* o destaque de foco é recurso de tela: no papel tudo volta a 100% */
+  .cx-page.cx-focus .cx-card,.cx-page.cx-focus .cx-phd,.cx-page.cx-focus .cx-kpi,
+  .cx-page.cx-focus .cx-risk,.cx-page.cx-focus .cx-jn-plr-card,.cx-page.cx-focus .cx-tile,
+  .cx-page.cx-focus .cx-li,.cx-page.cx-focus .rd-item,
+  .cx-page.cx-focus .cx-rdrow,.cx-page.cx-focus .rdx-row,
+  .cx-page.cx-focus .rdx-col{opacity:1!important;filter:none!important;}
+  .cx-page.cx-focus .cx-foco{box-shadow:none!important;}
   .cx-body{overflow:visible;position:static;}
   .cx-page{display:block!important;position:static;overflow:visible;page-break-after:always;padding:16px 10px;}
   .cx-krsl{display:block!important;}
@@ -1143,6 +1289,8 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div class="cx-qgrp" id="cx-qgrp">
         <button class="cx-qbtn" onclick="cxSetQ(0)">1T</button><button class="cx-qbtn" onclick="cxSetQ(1)">2T</button><button class="cx-qbtn" onclick="cxSetQ(2)">3T</button><button class="cx-qbtn" onclick="cxSetQ(3)">4T</button>
       </div>
+      <!-- Recorte por mês dentro do trimestre selecionado: "Tri" = trimestre inteiro (padrão) -->
+      <div class="cx-qgrp cx-mgrp" id="cx-mgrp" title="Recorte do período — as entregas seguem o mês selecionado"></div>
       <button class="cx-btn cx-btn-ic" id="cx-eye-btn" onclick="cxToggleShowHidden()" title="Exibir produtos ocultos nesta sessão — sempre desligado ao recarregar a página"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></button>
       <button class="cx-btn cx-btn-ic" onclick="printComex()" title="Imprimir / Exportar PDF">🖨</button>
       <button class="cx-btn" onclick="closeComex()">✕ Sair</button>
@@ -1517,7 +1665,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     <div style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--g)"><span style="width:10px;height:10px;border-radius:3px;background:var(--gm);display:inline-block"></span>Feito</div>
     <div style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--o)"><span style="width:10px;height:10px;border-radius:3px;background:var(--o);display:inline-block"></span>Em andamento</div>
     <div style="display:flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--t3)"><span style="width:10px;height:10px;border-radius:3px;background:#cbd5e1;display:inline-block"></span>Previsto</div>
-    <div style="margin-left:auto;font-size:10px;color:var(--t3);font-style:italic">Modo edição (✏️): altere status e adicione/remova entregas</div>
+    <div style="width:1px;height:16px;background:var(--bd)"></div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap" title="Nível da entrega — a cor indica o status, a forma indica o tipo">
+      <span class="rd-tleg"><i class="marco"></i>Marco</span>
+      <span class="rd-tleg"><i class="melhoria"></i>Melhoria</span>
+      <span class="rd-tleg"><i class="op"></i>Operacional</span>
+    </div>
+    <div style="margin-left:auto;font-size:10px;color:var(--t3);font-style:italic">Modo edição (✏️): clique numa entrega para mudar status e tipo · "Editar" abre texto, datas e ordem</div>
   </div>
       <div id="rdmap-wrap"></div>
       <div id="rdmap-gantt-wrap" style="display:none"></div>
@@ -1538,9 +1692,23 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <option value="doing">▸ Em andamento</option>
       <option value="done">✓ Feito</option>
     </select>
+    <label>Tipo de entrega</label>
+    <select id="gnt-e-tp">
+      <option value="">— não definido</option>
+      <option value="marco">◆ Marco — maior impacto / mudança de patamar</option>
+      <option value="melhoria">■ Melhoria — funcionalidade ou incremento relevante</option>
+      <option value="op">● Operacional — chamado, ajuste ou recorrente</option>
+    </select>
     <div class="gnt-mrow">
       <div><label>Início</label><select id="gnt-e-ini"></select></div>
       <div><label>Fim (prazo)</label><select id="gnt-e-fim"></select></div>
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin:-4px 0 8px">O mês de <b>fim</b> define em qual coluna a entrega aparece na Matriz.</div>
+    <label>Ordem dentro do mês</label>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <button id="gnt-e-up" onclick="gntMoveOrdem(-1)" style="border:1px solid var(--bd);background:#fff;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer">↑ Subir</button>
+      <button id="gnt-e-dn" onclick="gntMoveOrdem(1)" style="border:1px solid var(--bd);background:#fff;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer">↓ Descer</button>
+      <span id="gnt-e-ord" style="font-size:10px;color:var(--t3);font-weight:700"></span>
     </div>
     <div class="gnt-mbtns">
       <button onclick="deleteGanttEdit()" style="border:none;background:none;color:#dc2626;font-size:11px;font-weight:700;cursor:pointer">Excluir</button>
@@ -2961,7 +3129,8 @@ function buildPort(){
 
       // Roadmap — mesma visão completa e cronológica do Modo Apresentação (todas as
       // entregas, com mês/ano previsto), com "mostrar mais" quando a lista é longa
-      const rdFullItems = cxRoadmapFull(key);
+      // Reordena por nível ANTES de truncar, para os marcos caberem nos primeiros visíveis
+      const rdFullItems = cxRoadmapByLevel(cxRoadmapFull(key));
       const RD_VISIBLE_N = 6;
       const rdVisible = rdFullItems.slice(0, RD_VISIBLE_N);
       const rdRest = rdFullItems.slice(RD_VISIBLE_N);
@@ -4378,6 +4547,24 @@ const CURRENT_PERIOD = _M2P[_NM] || 'MAI';
 const RD_CUR_Q = _NM<=2?'1T':_NM<=5?'2T':_NM<=8?'3T':'4T';
 const EXPANDED_Q = _NM<=2?[]:_NM<=5?['ABR','MAI','JUN']:_NM<=8?['JUL','AGO','SET']:['OUT','NOV','DEZ'];
 
+// ── Tipo de entrega (opcional, indicado pelo PO no modo de edição) ──
+// Três níveis de leitura do roadmap, guardados em m.t:
+//   marco    = entregas de maior impacto, visibilidade ou mudança de patamar
+//   melhoria = funcionalidades, incrementos e aperfeiçoamentos relevantes
+//   op       = chamados, ajustes, correções e atividades recorrentes
+// A COR continua significando exclusivamente o STATUS (feito/andamento/previsto);
+// o tipo é codificado por FORMA + PESO + selo neutro, para os dois canais não competirem.
+// Entrega sem tipo definido renderiza exatamente como antes da mudança.
+const RD_TIPOS = {
+  marco:    {lbl:'Marco',       ic:'◆'},
+  melhoria: {lbl:'Melhoria',    ic:'■'},
+  op:       {lbl:'Operacional', ic:'●'}
+};
+function rdTipo(m){ return (m && RD_TIPOS[m.t]) ? m.t : ''; }
+function rdTipoCls(m){ const t = rdTipo(m); return t ? ' t-' + t : ''; }
+// No Modo Apresentação o nível é comunicado pela calha de rótulo dos blocos
+// (CX_LV_META), não por selo em cada linha. Aqui o tipo serve à Matriz e ao Gantt.
+
 let rdFiltState = {etapa:new Set(), gestor:new Set(), prods:new Set(), fase:new Set()};
 
 // Helpers de visibilidade (filtros multisseleção; Set vazio = sem filtro)
@@ -4516,12 +4703,140 @@ function marcoClick(event, prodKey, period, idx) {
   if (el) el.classList.toggle('expanded');
 }
 
+// ══════════════════════════════════════════
+//  ARRASTAR E SOLTAR ENTREGAS NA MATRIZ
+// ══════════════════════════════════════════
+// Subir/descer dentro da mesma célula e mover lateralmente entre meses.
+// Só ativo no modo edição. A posição de inserção é definida pela metade
+// superior/inferior da entrega sob o cursor; soltando no vazio da célula,
+// a entrega vai para o fim da lista daquele mês.
+let rdDragSrc = null;
+
+function rdDragStart(ev){
+  const el = ev.currentTarget;
+  rdDragSrc = { pk: el.dataset.pk, per: el.dataset.per, idx: parseInt(el.dataset.idx, 10) };
+  el.classList.add('rd-dragging');
+  try {
+    ev.dataTransfer.effectAllowed = 'move';
+    // Safari exige algum dado no dataTransfer para iniciar o arraste
+    ev.dataTransfer.setData('text/plain', el.id || 'marco');
+  } catch(e){}
+  ev.stopPropagation();
+}
+
+function rdDragEnd(){
+  rdDragSrc = null;
+  document.querySelectorAll('.rd-dragging').forEach(function(e){ e.classList.remove('rd-dragging'); });
+  rdClearDropMarks();
+}
+
+function rdClearDropMarks(){
+  document.querySelectorAll('.rd-drop-before,.rd-drop-after').forEach(function(e){
+    e.classList.remove('rd-drop-before','rd-drop-after');
+  });
+  document.querySelectorAll('.rd-drop-cell').forEach(function(e){ e.classList.remove('rd-drop-cell'); });
+}
+
+// Sobre outra entrega: marca se vai entrar antes ou depois dela
+function rdDragOverItem(ev){
+  if(!rdDragSrc) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+  ev.dataTransfer.dropEffect = 'move';
+  const el = ev.currentTarget;
+  const r = el.getBoundingClientRect();
+  const antes = (ev.clientY - r.top) < r.height/2;
+  rdClearDropMarks();
+  const td = el.closest('td');
+  if(td) td.classList.add('rd-drop-cell');
+  el.classList.add(antes ? 'rd-drop-before' : 'rd-drop-after');
+}
+
+// Sobre a área livre da célula: destaca a célula como destino
+function rdDragOverCell(ev){
+  if(!rdDragSrc) return;
+  ev.preventDefault();
+  ev.dataTransfer.dropEffect = 'move';
+  if(ev.target.closest && ev.target.closest('.marco')) return; // o item cuida do próprio realce
+  rdClearDropMarks();
+  ev.currentTarget.classList.add('rd-drop-cell');
+}
+
+function rdDragLeaveCell(ev){
+  const td = ev.currentTarget;
+  if(!td.contains(ev.relatedTarget)) td.classList.remove('rd-drop-cell');
+}
+
+function rdDrop(ev){
+  if(!rdDragSrc) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+  const src = rdDragSrc;
+  const alvoItem = ev.currentTarget.classList.contains('marco') ? ev.currentTarget : null;
+  const td = ev.currentTarget.closest('td');
+  const destPer = alvoItem ? alvoItem.dataset.per : (td && td.dataset.per);
+  const destPk  = alvoItem ? alvoItem.dataset.pk  : (td && td.dataset.pk);
+  rdDragEnd();
+  if(!destPer || destPk !== src.pk) return; // não move entre produtos
+
+  const origem = RDMAP[src.pk] && RDMAP[src.pk][src.per];
+  if(!origem || !origem[src.idx]) return;
+
+  // Posição de destino: antes/depois do item sob o cursor, ou fim da célula
+  let destIdx;
+  if(alvoItem){
+    const r = alvoItem.getBoundingClientRect();
+    const antes = (ev.clientY - r.top) < r.height/2;
+    destIdx = parseInt(alvoItem.dataset.idx, 10) + (antes ? 0 : 1);
+  } else {
+    destIdx = (RDMAP[src.pk][destPer] || []).length;
+  }
+
+  const item = origem[src.idx];
+  const mesmaCelula = (destPer === src.per);
+  if(mesmaCelula && (destIdx === src.idx || destIdx === src.idx + 1)) return; // não saiu do lugar
+
+  origem.splice(src.idx, 1);
+  if(mesmaCelula && destIdx > src.idx) destIdx--;
+  if(!RDMAP[src.pk][destPer]) RDMAP[src.pk][destPer] = [];
+  RDMAP[src.pk][destPer].splice(destIdx, 0, item);
+  if(!origem.length) delete RDMAP[src.pk][src.per];
+
+  setEditDetail(
+    mesmaCelula ? 'reordenou (arrastar)' : 'moveu de período (arrastar)',
+    mesmaCelula ? `${rdLbl(destPer)}: "${item.txt}"`
+                : `"${item.txt}": ${rdLbl(src.per)} → ${rdLbl(destPer)}`
+  );
+  fbSaveRdmap(src.pk);
+  renderRdmap();
+}
+
+// Reabre o painel de edição da entrega após o re-render, para o PO poder
+// ajustar status e tipo em sequência sem ter que clicar de novo na entrega.
+function rdReopenMarco(prodKey, period, idx) {
+  const el = document.getElementById(`marco-${prodKey}-${period}-${idx}`);
+  if (el) el.classList.add('expanded');
+}
+
 function setMarcoStatus(prodKey, period, idx, status) {
   const m = RDMAP[prodKey][period][idx];
   setEditDetail('alterou status', `${rdLbl(period)}: "${m.txt}" → ${_ST_LBL[status]||status}`);
   m.s = status;
   fbSaveRdmap(prodKey);
   renderRdmap();
+  rdReopenMarco(prodKey, period, idx);
+}
+
+// Define (ou limpa, com tipo vazio) o nível da entrega indicado pelo PO
+function setMarcoTipo(prodKey, period, idx, tipo) {
+  const m = RDMAP[prodKey] && RDMAP[prodKey][period] && RDMAP[prodKey][period][idx];
+  if (!m) return;
+  const lbl = RD_TIPOS[tipo] ? RD_TIPOS[tipo].lbl : 'sem tipo';
+  setEditDetail('definiu tipo', `${rdLbl(period)}: "${m.txt}" → ${lbl}`);
+  if (RD_TIPOS[tipo]) m.t = tipo; else delete m.t;
+  fbSaveRdmap(prodKey);
+  renderRdmap();
+  rdReopenMarco(prodKey, period, idx);
 }
 
 function deleteMarco(prodKey, period, idx) {
@@ -4618,21 +4933,29 @@ function renderRdmap() {
     const marcosHtml = marcos.map((m, i) => {
       const elId = `marco-${prodKey}-${colKey}-${i}`;
       const editPanel = rdEditMode ? `
-        <div class="marco-actions">
-          <div style="display:flex;gap:2px;flex-wrap:wrap">
-            <button class="ma-btn ma-done"  onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'done')">✓</button>
-            <button class="ma-btn ma-doing" onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'doing')">⏳</button>
-            <button class="ma-btn ma-todo"  onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'todo')">○</button>
-            <button class="ma-del ma-btn"   onclick="deleteMarco('${prodKey}','${colKey}',${i})">✕</button>
+        <div class="marco-actions" onclick="event.stopPropagation()">
+          <div class="ma-cap">Status</div>
+          <div class="ma-row">
+            <button class="ma-btn ma-done${m.s==='done'?' on':''}"   onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'done')">✓ Feito</button>
+            <button class="ma-btn ma-doing${m.s==='doing'?' on':''}" onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'doing')">⏳ Andamento</button>
+            <button class="ma-btn ma-todo${(!m.s||m.s==='todo')?' on':''}" onclick="setMarcoStatus('${prodKey}','${colKey}',${i},'todo')">○ Previsto</button>
           </div>
-          <div style="display:flex;gap:2px;margin-top:2px">
-            <button class="ma-btn" style="padding:1px 5px" title="Subir"    onclick="moveMarco('${prodKey}','${colKey}',${i},-1)">↑</button>
-            <button class="ma-btn" style="padding:1px 5px" title="Descer"   onclick="moveMarco('${prodKey}','${colKey}',${i},1)">↓</button>
-            <button class="ma-btn" style="padding:1px 5px" title="Mês anterior" onclick="moveMarcoPeriod('${prodKey}','${colKey}',${i},-1)">←</button>
-            <button class="ma-btn" style="padding:1px 5px" title="Próximo mês"  onclick="moveMarcoPeriod('${prodKey}','${colKey}',${i},1)">→</button>
+          <div class="ma-cap">Tipo de entrega</div>
+          <div class="ma-row">
+            <button class="ma-btn ma-tp${rdTipo(m)==='marco'?' on':''}"    title="Entrega de maior impacto ou mudança de patamar" onclick="setMarcoTipo('${prodKey}','${colKey}',${i},'marco')">◆ Marco</button>
+            <button class="ma-btn ma-tp${rdTipo(m)==='melhoria'?' on':''}" title="Funcionalidade, incremento ou aperfeiçoamento" onclick="setMarcoTipo('${prodKey}','${colKey}',${i},'melhoria')">■ Melhoria</button>
+            <button class="ma-btn ma-tp${rdTipo(m)==='op'?' on':''}"       title="Chamado, ajuste, correção ou recorrente" onclick="setMarcoTipo('${prodKey}','${colKey}',${i},'op')">● Operacional</button>
+            <button class="ma-btn ma-tp${rdTipo(m)?'':' on'}"              title="Nenhum tipo indicado — a entrega aparece sem selo" onclick="setMarcoTipo('${prodKey}','${colKey}',${i},'')">Sem tipo</button>
           </div>
+          <button class="ma-btn ma-edit" onclick="openGanttMarcoEdit('${prodKey}','${colKey}',${i})">✏️ Editar texto, datas e ordem</button>
         </div>` : '';
-      return `<div class="marco" id="${elId}"
+      // Arrastar só faz sentido no modo edição; data-* carrega a origem para o drop
+      const dragAttrs = rdEditMode
+        ? ` draggable="true" data-pk="${prodKey}" data-per="${colKey}" data-idx="${i}"
+          ondragstart="rdDragStart(event)" ondragend="rdDragEnd(event)"
+          ondragover="rdDragOverItem(event)" ondrop="rdDrop(event)"`
+        : '';
+      return `<div class="marco${rdTipoCls(m)}" id="${elId}"${dragAttrs}
           onclick="rdEditMode?toggleMarcoExpanded(event,'${elId}'):null"
           ondblclick="rdEditMode?startEditMarco(event,'${prodKey}','${colKey}',${i}):null">
         <span class="marco-dot ${m.s}"></span>
@@ -4650,7 +4973,13 @@ function renderRdmap() {
     const inner = (marcos.length || rdEditMode)
       ? `${marcosHtml}${addSection}`
       : `<div class="rd-empty"><div class="rd-dash"></div></div>`;
-    return `<td class="${cls}">${inner}</td>`;
+    // A célula inteira aceita soltura: permite mover a entrega para outro mês,
+    // inclusive para uma coluna que ainda está vazia.
+    const dropAttrs = rdEditMode
+      ? ` data-pk="${prodKey}" data-per="${colKey}"
+        ondragover="rdDragOverCell(event)" ondragleave="rdDragLeaveCell(event)" ondrop="rdDrop(event)"`
+      : '';
+    return `<td class="${cls}"${dropAttrs}>${inner}</td>`;
   }
 
   // ── Build all columns for a product row ──
@@ -4667,7 +4996,7 @@ function renderRdmap() {
       const all = getQMarcos(prodKey, qKey);
       const cls = 'rdmap-qcell';
       const periodId = qKey;
-      const marcosHtml = all.map(m => `<div style="display:flex;align-items:flex-start;gap:4px;margin-bottom:3px">
+      const marcosHtml = all.map(m => `<div class="rd-t${rdTipoCls(m)}" style="display:flex;align-items:flex-start;gap:4px;margin-bottom:3px">
           <span class="marco-dot ${m.s}" style="margin-top:3px;flex-shrink:0"></span>
           <span class="marco-txt ${m.s}">${m.txt}</span>
         </div>`).join('');
@@ -4901,7 +5230,11 @@ function buildRdmapGantt(){
       items.forEach(it=>{
         const tip=it.m.txt.replace(/"/g,'&quot;');
         const oc=rdEditMode?(' onclick="openGanttMarcoEdit(\''+key+'\',\''+it.pk+'\','+it.i+')"'):'';
-        respRows+='<div class="gnt-bar '+it.m.s+(rdEditMode?' clk':'')+'" style="grid-column:'+(it.sc+2)+'/'+(it.ec+3)+';grid-row:'+(it.lane+1)+'" title="'+tip+'"'+oc+'><span class="gnt-ic">'+icon[it.m.s]+'</span><span class="gnt-tx">'+it.m.txt+'</span></div>';
+        const tp=rdTipo(it.m);
+        const tipTxt=tp?(tip+' — '+RD_TIPOS[tp].lbl):tip;
+        // Marcador de tipo dentro da barra: ◆ marco · ■ melhoria · ● operacional (neutro; a cor da barra é o status)
+        const tpIc=tp?'<span class="gnt-tp" title="'+RD_TIPOS[tp].lbl+'">'+RD_TIPOS[tp].ic+'</span>':'';
+        respRows+='<div class="gnt-bar '+it.m.s+rdTipoCls(it.m)+(rdEditMode?' clk':'')+'" style="grid-column:'+(it.sc+2)+'/'+(it.ec+3)+';grid-row:'+(it.lane+1)+'" title="'+tipTxt+'"'+oc+'><span class="gnt-ic">'+icon[it.m.s]+'</span>'+tpIc+'<span class="gnt-tx">'+it.m.txt+'</span></div>';
       });
       respRows+='</div>';
     });
@@ -4931,12 +5264,39 @@ function openGanttMarcoEdit(prodKey,periodKey,idx){
   const kr=RD_PRANGE[periodKey]||[1,1];
   document.getElementById('gnt-e-txt').value=m.txt||'';
   document.getElementById('gnt-e-st').value=m.s||'todo';
+  document.getElementById('gnt-e-tp').value=rdTipo(m);
   rdFillMonthSel(document.getElementById('gnt-e-ini'), (typeof m.ini==='number')?m.ini:kr[0]);
   rdFillMonthSel(document.getElementById('gnt-e-fim'), (typeof m.fim==='number')?m.fim:kr[1]);
   document.getElementById('gnt-edit-bg').classList.add('open');
+  gntUpdateOrdem();
   setTimeout(function(){ const t=document.getElementById('gnt-e-txt'); if(t){t.focus();t.select();} },30);
 }
 function closeGanttEdit(){ const bg=document.getElementById('gnt-edit-bg'); if(bg) bg.classList.remove('open'); gntEdit=null; }
+// ── Ordem da entrega dentro do período (mesma ação que os antigos ↑ ↓ da matriz) ──
+// Aplica direto no RDMAP e mantém o modal aberto, com os campos do formulário intactos.
+function gntUpdateOrdem(){
+  if(!gntEdit) return;
+  const arr=(RDMAP[gntEdit.prodKey]&&RDMAP[gntEdit.prodKey][gntEdit.periodKey])||[];
+  const lbl=document.getElementById('gnt-e-ord');
+  const up=document.getElementById('gnt-e-up'), dn=document.getElementById('gnt-e-dn');
+  if(lbl) lbl.textContent = arr.length>1 ? (gntEdit.idx+1)+'ª de '+arr.length+' em '+rdLbl(gntEdit.periodKey)
+                                         : 'única entrega em '+rdLbl(gntEdit.periodKey);
+  if(up){ up.disabled=(gntEdit.idx<=0); up.style.opacity=up.disabled?'.4':''; up.style.cursor=up.disabled?'default':'pointer'; }
+  if(dn){ dn.disabled=(gntEdit.idx>=arr.length-1); dn.style.opacity=dn.disabled?'.4':''; dn.style.cursor=dn.disabled?'default':'pointer'; }
+}
+function gntMoveOrdem(dir){
+  if(!gntEdit) return;
+  const arr=RDMAP[gntEdit.prodKey]&&RDMAP[gntEdit.prodKey][gntEdit.periodKey];
+  if(!arr) return;
+  const to=gntEdit.idx+dir;
+  if(to<0||to>=arr.length) return;
+  const tmp=arr[gntEdit.idx]; arr[gntEdit.idx]=arr[to]; arr[to]=tmp;
+  gntEdit.idx=to;
+  setEditDetail('reordenou', rdLbl(gntEdit.periodKey));
+  fbSaveRdmap(gntEdit.prodKey);
+  renderRdmap();
+  gntUpdateOrdem();
+}
 // Mês (índice 1–13) → chave de armazenamento da matriz
 function rdMonthKey(idx){
   const K=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
@@ -4952,6 +5312,8 @@ function saveGanttEdit(){
   if(ini>fim) ini=fim;
   if(txt) m.txt=txt;
   m.s=document.getElementById('gnt-e-st').value;
+  const tpSel=document.getElementById('gnt-e-tp').value;
+  if(RD_TIPOS[tpSel]) m.t=tpSel; else delete m.t;
   m.ini=ini; m.fim=fim;
   // A matriz posiciona a entrega pela CHAVE de armazenamento. Como o Gantt
   // define duração (ini→fim), reposicionamos a entrega na chave do mês de
@@ -7148,6 +7510,9 @@ console.log('[JIP] build i6 — sanitização de alavancas + alavancas/ambiçõe
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
+// Recorte do período no Modo Apresentação: null = trimestre inteiro (comportamento original),
+// 0–11 = um mês específico. As seções de ENTREGAS passam a seguir o mês selecionado.
+let cxM = null;
 // Modo "exibir ocultos": quando true, produtos com cx_hide aparecem normalmente em todo o
 // Modo Apresentação (infográfico, faixa do topo e páginas). Variável de runtime, de propósito
 // NUNCA persistida (nem localStorage nem Firebase): a cada refresh — e a cada abertura do
@@ -7190,6 +7555,41 @@ function cxPeriodsFor(q){
 function cxQuarterPeriods(){
   return {q:cxQ+1, keys:cxPeriodsFor(cxQ)};
 }
+// ── Recorte de período: trimestre inteiro (cxM null) ou um mês específico ──
+// Meses (0–11) cobertos pela seleção atual
+function cxSelMonths(){
+  if(cxM==null){ const b=cxQ*3; return [b,b+1,b+2]; }
+  return [cxM];
+}
+// Rótulo do recorte para títulos e textos vazios: "2T26" ou "Maio/26"
+function cxSelLabel(){
+  if(cxM==null) return (cxQ+1)+'T26';
+  const nm=CX_MONTH_FULL[CX_MONTH_BY_NUM[cxM]];
+  return nm.charAt(0).toUpperCase()+nm.slice(1)+'/26';
+}
+// Mês (0–11) de uma entrega a partir da chave em que está guardada no RDMAP.
+// Chave de mês → o próprio mês. Chave de trimestre (1T/3T/4T) → mês de fim/início
+// informado no Gantt; sem essa informação, cai no último mês do trimestre (o prazo).
+function cxItemMonth(period,m){
+  const mi=CX_MONTH_BY_NUM.indexOf(period);
+  if(mi>=0) return mi;
+  const sp=(m&&typeof m.fim==='number')?m.fim:((m&&typeof m.ini==='number')?m.ini:null);
+  if(sp&&sp>=1&&sp<=12) return sp-1;
+  const q={'1T':0,'2T':1,'3T':2,'4T':3}[period];
+  return (q==null)?null:q*3+2;
+}
+// Todas as entregas de um produto já resolvidas em mês — base dos recortes por período
+function cxItemsByMonth(k){
+  const out=[];
+  Object.keys(RDMAP[k]||{}).forEach(function(period){
+    if(period==='BL27') return; // backlog 2027 fica fora dos recortes de 2026
+    (RDMAP[k][period]||[]).forEach(function(m){
+      const mo=cxItemMonth(period,m);
+      if(mo!=null) out.push({txt:m.txt,s:m.s||'todo',t:rdTipo(m),period:period,mo:mo,when:cxPeriodMonthYear(period,m)});
+    });
+  });
+  return out.sort(function(a,b){ return a.mo-b.mo; });
+}
 function cxStPill(s,sm){
   return '<span class="cx-st '+s+(sm?' sm':'')+'"><span class="d"></span>'+(CX_ST_LBL[s]||'—')+'</span>';
 }
@@ -7218,18 +7618,25 @@ function cxProdKeys(){
 }
 function cxProgColor(pct){ return pct>=80?'var(--gm)':pct>=40?'var(--o)':'var(--gy)'; }
 function cxEtColor(et){ return et==='est'?'var(--est)':et==='pre'?'var(--pre)':'var(--obra)'; }
+// Entregas do recorte selecionado (trimestre inteiro ou um mês), precedidas das
+// pendências de períodos anteriores marcadas como ⏳ atrasada.
 function cxRdItems(k, qp){
+  const sel=cxSelMonths(), first=sel[0], last=sel[sel.length-1];
   const raw=[];
-  // Pendências de trimestres anteriores entram primeiro, com marcador ⏳ atrasada (XT)
-  for(let q=0;q<cxQ;q++){
-    cxPeriodsFor(q).forEach(function(per,pi){
-      (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){
-        if(m.s!=='done') raw.push({txt:m.txt,s:m.s,_late:(q+1)+'T',_seq:q*10+pi});
-      });
-    });
-  }
-  qp.keys.forEach(function(per,pi){
-    (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ raw.push({txt:m.txt,s:m.s,_seq:cxQ*10+pi}); });
+  cxItemsByMonth(k).forEach(function(it){
+    if(it.mo<first){
+      // Atrasada: prevista para antes do recorte e ainda não concluída
+      if(it.s!=='done'){
+        const abrev=CX_MONTH_FULL[CX_MONTH_BY_NUM[it.mo]].slice(0,3);
+        const lateLbl=(cxM==null)
+          ? (Math.floor(it.mo/3)+1)+'T'
+          : abrev.charAt(0).toUpperCase()+abrev.slice(1);
+        raw.push({txt:it.txt,s:it.s,t:it.t,when:it.when,_late:lateLbl,_seq:it.mo});
+      }
+      return;
+    }
+    if(it.mo>last) return;
+    raw.push({txt:it.txt,s:it.s,t:it.t,when:it.when,_seq:it.mo});
   });
   // Entrega que inicia num mês e termina no outro aparece só na última
   // ocorrência (o mês de entrega) — evita duplicar como "atrasada" + "em andamento"
@@ -7261,7 +7668,7 @@ function cxRoadmapFull(k){
   const items=[];
   CX_ROADMAP_ORDER.forEach(function(period){
     (RDMAP[k]&&RDMAP[k][period]?RDMAP[k][period]:[]).forEach(function(m){
-      items.push({txt:m.txt,s:m.s||'todo',period:period,when:cxPeriodMonthYear(period,m)});
+      items.push({txt:m.txt,s:m.s||'todo',t:rdTipo(m),period:period,when:cxPeriodMonthYear(period,m)});
     });
   });
   return items;
@@ -7273,6 +7680,30 @@ function cxRoadmapLegendHTML(){
     +'<span style="display:inline-flex;align-items:center;gap:5px"><span style="color:var(--gm);font-weight:800">✓</span> Concluído</span>'
     +'</div>';
 }
+// ── Agrupamento por nível de entrega (Modo Apresentação e resumo do Portfólio) ──
+// Ordem dos blocos: Marcos → Melhorias → Operacional → sem nível indicado.
+// A cronologia é preservada DENTRO de cada bloco (a lista já chega em ordem de período).
+// Se o PO não indicou nível em nenhuma entrega, a lista continua cronológica corrida, como antes.
+const CX_LV_ORDER=['marco','melhoria','op',''];
+const CX_LV_HD={marco:'◆ Marcos',melhoria:'■ Melhorias',op:'● Operacional','':'Demais entregas'};
+function cxLv(m){ return (m&&m.t&&RD_TIPOS[m.t])?m.t:''; }
+function cxHasLevels(items){ return !!(items&&items.some(function(m){ return cxLv(m); })); }
+function cxRoadmapByLevel(items){
+  if(!items||!items.length) return [];
+  if(!cxHasLevels(items)) return items.slice();
+  const out=[];
+  CX_LV_ORDER.forEach(function(lv){
+    items.forEach(function(m){ if(cxLv(m)===lv) out.push(m); });
+  });
+  return out;
+}
+// Mês/ano abreviado para a calha da esquerda: "março/26" → "mar/26" · "1º tri/26" e "2027" inteiros
+function cxWhenShort(w){
+  const s=String(w||''), i=s.indexOf('/');
+  if(i<0) return s;
+  const nm=s.slice(0,i), yr=s.slice(i);
+  return (nm.indexOf('tri')>=0) ? nm+yr : nm.slice(0,3)+yr;
+}
 function cxRoadmapListHTML(items,opts){
   opts=opts||{};
   const compact=!!opts.compact;
@@ -7281,30 +7712,119 @@ function cxRoadmapListHTML(items,opts){
   if(!items||!items.length){
     return '<div style="font-size:'+(compact?'10px':'13px')+';color:var(--t3);padding:4px 0">Sem entregas registradas no roadmap.</div>';
   }
+  const levels=cxHasLevels(items);
+  let prev=null;
   return items.map(function(m){
-    const ic='<span style="color:'+cols[m.s]+';font-weight:800;flex-shrink:0;font-size:'+(compact?'11px':'16px')+'">'+(icons[m.s]||'○')+'</span>';
-    const tag='<span style="display:inline-block;font-size:'+(compact?'8.5px':'10px')+';font-weight:800;color:var(--t3);background:var(--gyb);border-radius:5px;padding:'+(compact?'1px 5px':'2px 7px')+';margin-right:'+(compact?'6px':'8px')+';white-space:nowrap;vertical-align:middle">'+cxEsc(m.when)+'</span>';
-    if(compact){
-      return '<div class="rd-item">'+ic+'<div>'+tag+cxEsc(m.txt)+'</div></div>';
+    const lv=cxLv(m);
+    // Cabeçalho de bloco sempre que o nível muda — substitui o selo repetido em cada linha
+    let hd='';
+    if(levels&&lv!==prev){
+      hd='<div class="rd-lvh lv-'+(lv||'none')+(compact?' cp':'')+'">'+CX_LV_HD[lv]+'</div>';
+      prev=lv;
     }
-    return '<div class="cx-li" style="padding:6px 0">'+ic+'<div>'+tag+cxEsc(m.txt)+'</div></div>';
+    return hd+'<div class="cx-rdrow'+(compact?' cp':'')+' lv-'+(lv||'none')+'">'
+      +'<span class="rd-ic" style="color:'+cols[m.s]+'">'+(icons[m.s]||'○')+'</span>'
+      +'<span class="rd-when">'+cxEsc(cxWhenShort(m.when))+'</span>'
+      +'<span class="rd-txt">'+cxEsc(m.txt)+'</span>'
+      +'</div>';
   }).join('');
 }
-// Roadmap previsto em 3 colunas (Modo Apresentação): Concluído · Em andamento · A iniciar.
-// Mantém exatamente a formatação de cada item (ícone + tag mês/ano), só organiza por status.
+// ── Blocos por nível: calha de rótulo + cartão de linhas ──
+// Usado tanto no Roadmap previsto quanto nos cards de entregas do período.
+const CX_LV_META={
+  marco:   {ic:'◆', lbl:'Marcos',          desc:'Grandes entregas que impulsionam a estratégia.'},
+  melhoria:{ic:'↗', lbl:'Melhorias',       desc:'Evoluções que geram mais valor aos usuários.'},
+  op:      {ic:'⟳', lbl:'Operacional',     desc:'Chamados, ajustes e atividades recorrentes.'},
+  '':      {ic:'☰', lbl:'Demais entregas', desc:'Entregas essenciais para o avanço contínuo do produto.'}
+};
+const CX_CAL_SVG='<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="flex-shrink:0"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>';
+// Destaca o prefixo antes dos dois-pontos ("Estrutural (Aço):"), como no padrão da área
+function cxRowTxt(t){
+  const s=cxEsc(t||''), i=s.indexOf(':');
+  return (i>0&&i<52) ? '<b>'+s.slice(0,i+1)+'</b>'+s.slice(i+1) : s;
+}
+// Legenda de status para as entregas do período: nesses cards a seta é sempre a mesma
+// e só a COR distingue concluído/em andamento/a iniciar — sem legenda a plateia não sabe ler.
+// Mostra apenas os status realmente presentes na lista.
+function cxStatusLegendHTML(items){
+  if(!items||!items.length) return '';
+  // Glifos idênticos aos das linhas: ✓ verde · ▶ laranja · ○ cinza vazado
+  const defs=[
+    {s:'done', lbl:'Concluído',    ic:'✓', c:'var(--gm)'},
+    {s:'doing',lbl:'Em andamento', ic:'▶', c:'var(--o)'},
+    {s:'todo', lbl:'A iniciar',    ic:'○', c:'var(--t3)'}
+  ];
+  const has={};
+  let late=false;
+  items.forEach(function(m){ if(m._late) late=true; else has[m.s||'todo']=true; });
+  let h=defs.filter(function(d){ return has[d.s]; }).map(function(d){
+    return '<span class="rdx-lg"><span class="rdx-lg-ic" style="color:'+d.c+'">'+d.ic+'</span>'+d.lbl+'</span>';
+  }).join('');
+  if(late) h+='<span class="rdx-lg"><span class="rdx-lg-ic" style="color:var(--o)">⏳</span>Atrasada</span>';
+  return h?'<div class="rdx-lgd">'+h+'</div>':'';
+}
+function cxLvBlocksHTML(items, opts){
+  opts = opts || {};
+  const cp = !!opts.compact;   // coluna estreita: mesma anatomia, escala reduzida
+  const prazo = !!opts.prazo;  // entregas do período não têm coluna de prazo
+  if(!items||!items.length) return '<div style="font-size:12px;color:var(--t3);padding:4px 0">—</div>';
+  const icons={done:'✓',doing:'▶',todo:'○'};
+  const scol={done:'var(--gm)',doing:'var(--o)',todo:'var(--t3)'};
+  // Sem nenhum nível indicado pelo PO: cartão único, sem calha de rótulo
+  const rail=cxHasLevels(items);
+  const groups={};
+  CX_LV_ORDER.forEach(function(lv){ groups[lv]=[]; });
+  items.forEach(function(m){ groups[rail?cxLv(m):''].push(m); });
+  let h='';
+  CX_LV_ORDER.forEach(function(lv){
+    const g=groups[lv];
+    if(!g.length) return;
+    const meta=CX_LV_META[lv];
+    const rows=g.map(function(m){
+      const late=!!m._late;
+      const przTxt=(prazo&&m.when)?cxWhenShort(m.when):'';
+      const prz=prazo?(przTxt?'<span class="rdx-prz">'+CX_CAL_SVG+cxEsc(przTxt)+'</span>':'<span></span>'):'';
+      // A seta assume a cor do nível, como na referência
+      return '<div class="rdx-row'+(cp?' cp':'')+(prazo?'':' np')+'">'
+        +'<span class="rdx-ar" style="color:'+(late?'var(--o)':scol[m.s])+'">'+(late?'⏳':(icons[m.s]||'○'))+'</span>'
+        +'<span class="rdx-txt">'+cxRowTxt(m.txt)+(late?'<span class="rdx-late">atrasada</span>':'')+'</span>'
+        +prz+'</div>';
+    }).join('');
+    const railHtml = rail
+      ? '<div class="rdx-rail"><span class="rdx-ric">'+meta.ic+'</span>'
+        +'<div><div class="rdx-rlbl">'+meta.lbl+'</div><div class="rdx-rdesc">'+meta.desc+'</div></div></div>'
+      : '';
+    h+='<div class="rdx-grp rdx-lv-'+(lv||'none')+(cp?' cp':'')+(rail?'':' norail')+'">'
+      +railHtml+'<div class="rdx-card">'+rows+'</div></div>';
+  });
+  return h;
+}
+// Cabeçalho das colunas do cartão (Entrega · Prazo), como na referência
+function cxLvHdrHTML(rail, cp){
+  return '<div class="rdx-hdr'+(cp?' cp':'')+(rail?'':' norail')+'">'
+    +(rail?'<span></span>':'')
+    +'<div class="rdx-hcols'+(cp?' cp':'')+'"><span></span><span>Entrega</span><span>Prazo</span></div></div>';
+}
+// Roadmap previsto (Modo Apresentação): 3 colunas por status, lado a lado.
+// Cada coluna repete a anatomia da referência: título com barra colorida,
+// cabeçalho Entrega/Prazo, calha de nível à esquerda e cartão de linhas à direita.
 function cxRoadmapColsHTML(items){
   const groups={done:[],doing:[],todo:[]};
   (items||[]).forEach(function(m){ (groups[m.s]||groups.todo).push(m); });
   const cols=[
-    {s:'done', lbl:'Concluído',    ic:'✓', c:'var(--gm)'},
-    {s:'doing',lbl:'Em andamento', ic:'▸', c:'var(--o)'},
-    {s:'todo', lbl:'A iniciar',    ic:'○', c:'var(--t3)'}
+    {s:'done', lbl:'Concluído',    c:'var(--gm)'},
+    {s:'doing',lbl:'Em andamento', c:'var(--o)'},
+    {s:'todo', lbl:'A iniciar',    c:'var(--t3)'}
   ];
-  return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start">'
+  return '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start">'
     +cols.map(function(c){
-      const list=groups[c.s].length?cxRoadmapListHTML(groups[c.s])
-        :'<div style="font-size:13px;color:var(--t3);padding:4px 0">—</div>';
-      return '<div><div style="font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:'+c.c+';margin-bottom:6px;padding-bottom:5px;border-bottom:1.5px solid var(--bd)"><span style="font-weight:800">'+c.ic+'</span> '+c.lbl+'</div>'+list+'</div>';
+      const ord=cxRoadmapByLevel(groups[c.s]);
+      const rail=cxHasLevels(ord);
+      const body=ord.length
+        ? cxLvHdrHTML(rail,true)+'<div class="rdx-body'+(rail?' cp':'')+'">'+cxLvBlocksHTML(ord,{compact:true,prazo:true})+'</div>'
+        : '<div style="font-size:12px;color:var(--t3);padding:4px 0">—</div>';
+      // .rdx-col torna a coluna inteira um alvo de destaque no Modo Apresentação
+      return '<div class="rdx-col"><div class="rdx-colh" style="--sc:'+c.c+'">'+c.lbl+'</div>'+body+'</div>';
     }).join('')
     +'</div>';
 }
@@ -7658,18 +8178,8 @@ function cxTipInit(){
 }
 if(document.body){ cxTipInit(); } else { document.addEventListener('DOMContentLoaded',cxTipInit); }
 
-// Clique invisível nas laterais do card: terço esquerdo volta, terço direito avança
-function cxKRZone(ev,k){
-  if(ev.target.closest&&ev.target.closest('.cx-krdot')) return;
-  const car=document.getElementById('cxkr-'+k); if(!car) return;
-  const n=parseInt(car.dataset.n||'1',10); if(n<2) return;
-  const r=car.getBoundingClientRect();
-  const x=(ev.clientX-r.left)/r.width;
-  let dir=0;
-  if(x<0.34) dir=-1; else if(x>0.66) dir=1; else return;
-  const i=parseInt(car.dataset.i||'0',10);
-  cxKRSet(k,(i+dir+n)%n);
-}
+// (O clique nas laterais do card foi removido: a troca de KR agora é só pelas bolinhas
+//  da base, para não competir com o destaque de foco durante a apresentação.)
 
 // ── Indicadores complementares (prints carregados pelo PO no editor do produto) ──
 // Seção opcional da página do produto no Modo Apresentação, exibida após os OKRs.
@@ -7819,41 +8329,56 @@ function cxPageProduto(k){
       });
       dots+='</div>';
     }
-    okrh='<div id="cxkr-'+k+'" data-n="'+slides.length+'" data-i="0" onclick="cxKRZone(event,\''+k+'\')">'
+    // Navegação do carrossel só pelas bolinhas — o clique no corpo do card fica livre
+    // para o destaque de foco durante a apresentação.
+    okrh='<div id="cxkr-'+k+'" data-n="'+slides.length+'" data-i="0">'
       +sh+legend+dots+'</div>';
   }
 
 
+  // Entregas do período nos mesmos blocos por nível do Roadmap previsto
   let rdh='';
   if(rdItems.length){
-    rdItems.forEach(function(m){
-      const lateTag=m._late
-        ?' <span style="display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:#fff7ed;border:1px solid #fdba74;color:#c05f00;font-size:10px;font-weight:800;white-space:nowrap">⏳ atrasada ('+m._late+')</span>'
-        :'';
-      rdh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:'+(m._late?'var(--o)':cols[m.s])+';font-weight:800">'+(m._late?'⏳':(icons[m.s]||'○'))+'</span><div>'+cxEsc(m.txt)+lateTag+'</div></div>';
-    });
+    const rdOrd=cxRoadmapByLevel(rdItems);
+    rdh=cxStatusLegendHTML(rdOrd)+cxLvBlocksHTML(rdOrd,{prazo:false});
   } else {
-    rdh='<div style="font-size:13px;color:var(--t3)">Sem entregas registradas para o '+qp.q+'T26.</div>';
+    rdh='<div style="font-size:13px;color:var(--t3)">Sem entregas registradas para '+cxSelLabel()+'.</div>';
   }
 
-  // Entregas concluídas no trimestre anterior
-  let prevh='', prevLbl='';
-  if(cxQ>0){
+  // ── Card de entregas ──
+  // Trimestre inteiro selecionado: mantém o comportamento original (entregas concluídas
+  // no trimestre ANTERIOR). Com um mês selecionado, o card passa a mostrar as entregas
+  // desse mês — concluídas, em andamento e previstas.
+  let prevh='', prevLbl='', prevTtl='';
+  if(cxM!=null){
+    prevLbl=cxSelLabel();
+    prevTtl='🚩 Entregas · '+prevLbl;
+    const mesItems=cxItemsByMonth(k).filter(function(it){ return it.mo===cxM; });
+    if(mesItems.length){
+      const mesOrd=cxRoadmapByLevel(mesItems);
+      prevh=cxStatusLegendHTML(mesOrd)+cxLvBlocksHTML(mesOrd,{prazo:false});
+    } else {
+      prevh='<div style="font-size:13px;color:var(--t3)">Sem entregas registradas em '+prevLbl+'.</div>';
+    }
+  } else if(cxQ>0){
     const prevKeys=cxPeriodsFor(cxQ-1);
     prevLbl=cxQ+'T26';
+    prevTtl='✓ Entregue no '+prevLbl;
     const prevDone=[];
     prevKeys.forEach(function(per){
       (RDMAP[k]&&RDMAP[k][per]?RDMAP[k][per]:[]).forEach(function(m){ if(m.s==='done') prevDone.push(m); });
     });
     if(prevDone.length){
-      prevDone.forEach(function(m){
-        prevh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--gm);font-weight:800">✓</span><div>'+cxEsc(m.txt)+'</div></div>';
-      });
+      const dOrd=cxRoadmapByLevel(prevDone.map(function(m){
+        return {txt:m.txt,s:'done',t:rdTipo(m),when:''};
+      }));
+      prevh=cxStatusLegendHTML(dOrd)+cxLvBlocksHTML(dOrd,{prazo:false});
     } else {
       prevh='<div style="font-size:13px;color:var(--t3)">Sem entregas concluídas registradas no '+prevLbl+'.</div>';
     }
   } else {
     prevLbl='—';
+    prevTtl='✓ Entregue no trimestre anterior';
     prevh='<div style="font-size:13px;color:var(--t3)">1T26 é o primeiro trimestre do roadmap.</div>';
   }
 
@@ -7887,7 +8412,7 @@ function cxPageProduto(k){
     }
     h+='<div class="cx-cols2-wide" style="margin-top:'+(dsh||rsh?'16px':'0')+'">'
       +'<div class="cx-card"><div class="cx-card-t">📈 OKRs</div>'+okrh+'</div>'
-      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">'+prevTtl+'</div>'+prevh+'</div>'
       +'</div>';
     h+=cxIndicadoresHTML(k);
     h+='<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">🗺️ Roadmap previsto</div>'
@@ -7902,7 +8427,7 @@ function cxPageProduto(k){
       +'</div>';
     h+='<div class="cx-cols2-wide" style="margin-top:16px">'
       +'<div class="cx-card"><div class="cx-card-t">📈 Indicadores</div>'+okrh+'</div>'
-      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">✓ Entregue no '+prevLbl+'</div>'+prevh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t" style="color:var(--g)">'+prevTtl+'</div>'+prevh+'</div>'
       +'</div>';
     h+=cxIndicadoresHTML(k);
     h+='<div class="cx-card" style="margin-top:16px"><div class="cx-card-t">🗺️ Roadmap previsto</div>'
@@ -7928,7 +8453,7 @@ function cxPageProduto(k){
       +'👁 Produto de outra área — a Plataforma acompanha grandes marcos, responsável focal e indicadores mínimos.'
       +'</div>'
       +'<div class="cx-cols2">'
-      +'<div class="cx-card"><div class="cx-card-t">🚩 Grandes marcos · '+qp.q+'T26</div>'+rdh+'</div>'
+      +'<div class="cx-card"><div class="cx-card-t">🚩 Grandes marcos · '+cxSelLabel()+'</div>'+rdh+'</div>'
       +'<div class="cx-card"><div class="cx-card-t">📈 Indicador de referência</div>'+monInd+'</div>'
       +'</div>';
     h+=cxIndicadoresHTML(k);
@@ -7956,6 +8481,7 @@ function buildComexPages(){
 }
 function cxGo(i){
   if(i<0||i>=cxTotal) return;
+  cxClearFoco(); // trocar de página sempre começa sem destaque
   cxPage=i;
   for(let j=0;j<cxTotal;j++){
     const el=document.getElementById('cx-p'+j);
@@ -7968,35 +8494,110 @@ function cxGo(i){
   if(i===0) cxJnFit(); // Visão Geral acabou de ficar visível — ajusta a escala do infográfico
 }
 function cxNav(dir){ cxGo(cxPage+dir); }
+
+// ══════════════════════════════════════════
+//  DESTAQUE DE FOCO (Modo Apresentação)
+// ══════════════════════════════════════════
+// Clique num card destaca o card; clique num item de lista destaca só aquele item.
+// Clique no mesmo alvo (ou no fundo da página, ou Esc) desfaz. Elementos que já têm
+// ação própria — navegação, bolinhas do carrossel, prints, links, campos — passam batido.
+// Alvos de foco: blocos de conteúdo. Cards que já navegam (.cx-tile, .cx-jn-plr-card)
+// ficam de fora — continuam levando para a página do produto.
+const CX_FOCO_ALVOS='.cx-card,.cx-phd,.cx-kpi,.cx-risk';
+const CX_FOCO_IGNORA='a,button,input,select,textarea,img,video,iframe,summary,details,.cx-krdot,.cx-jn-pill,.cx-jn-orphans-toggle,.cx-tile,.cx-jn-plr-card';
+function cxClearFoco(){
+  const pg=document.querySelector('.cx-page.cx-focus');
+  if(!pg) return;
+  pg.classList.remove('cx-focus');
+  pg.querySelectorAll('.cx-foco').forEach(function(el){ el.classList.remove('cx-foco','cx-fi','cx-fc'); });
+  pg.querySelectorAll('.cx-foco-i').forEach(function(el){ el.classList.remove('cx-foco-i'); });
+  pg.querySelectorAll('.cx-foco-c').forEach(function(el){ el.classList.remove('cx-foco-c'); });
+}
+function cxFocoClick(ev){
+  const pg=document.getElementById('cx-p'+cxPage);
+  if(!pg) return;
+  const t=ev.target;
+  if(!t||!t.closest) return;
+  if(t.closest(CX_FOCO_IGNORA)) return; // elemento com ação própria — não vira foco
+  const card=t.closest(CX_FOCO_ALVOS);
+  if(!card||!pg.contains(card)){ cxClearFoco(); return; } // clique no fundo limpa
+  const item=t.closest('.cx-li,.rd-item,.cx-rdrow,.rdx-row');
+  // Coluna de status do Roadmap previsto: nível intermediário entre o card e o item
+  const col=t.closest('.rdx-col');
+  const jaItem=item&&item.classList.contains('cx-foco-i');
+  const jaCol=col&&col.classList.contains('cx-foco-c');
+  const jaCard=card.classList.contains('cx-foco')&&!card.classList.contains('cx-fi')&&!card.classList.contains('cx-fc');
+  // Mesmo alvo clicado de novo → desfaz
+  if((item&&jaItem)||(!item&&col&&jaCol)||(!item&&!col&&jaCard)){ cxClearFoco(); return; }
+  cxClearFoco();
+  pg.classList.add('cx-focus');
+  card.classList.add('cx-foco');
+  if(item&&card.contains(item)){
+    card.classList.add('cx-fi');
+    item.classList.add('cx-foco-i');
+    // dentro de uma coluna, ela permanece acesa junto com o item
+    if(col&&card.contains(col)){ card.classList.add('cx-fc'); col.classList.add('cx-foco-c'); }
+  } else if(col&&card.contains(col)){
+    card.classList.add('cx-fc');
+    col.classList.add('cx-foco-c');
+  }
+}
 function cxSetQ(i){
-  if(i<0||i>3||i===cxQ) return;
+  if(i<0||i>3||(i===cxQ&&cxM==null)) return;
   cxQ=i;
+  cxM=null; // trocar de trimestre sempre volta para a visão do trimestre inteiro
   cxSyncQBtns();
   buildComexPages();
   cxGo(cxPage); // mantém a página atual após rebuild
 }
+// mi: null = trimestre inteiro · 0/1/2 = 1º, 2º ou 3º mês do trimestre selecionado
+function cxSetM(mi){
+  const novo=(mi==null)?null:cxQ*3+mi;
+  if(novo===cxM) return;
+  cxM=novo;
+  cxSyncQBtns();
+  buildComexPages();
+  cxGo(cxPage); // mantém a página atual após rebuild (mesmo padrão do troca-trimestre)
+}
+const CX_MLBL=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 function cxSyncQBtns(){
   document.querySelectorAll('#cx-qgrp .cx-qbtn').forEach(function(b,j){ b.classList.toggle('on',j===cxQ); });
+  const g=document.getElementById('cx-mgrp');
+  if(!g) return;
+  let h='<button class="cx-qbtn'+(cxM==null?' on':'')+'" onclick="cxSetM(null)" title="Trimestre inteiro">Tri</button>';
+  for(let j=0;j<3;j++){
+    const abs=cxQ*3+j;
+    h+='<button class="cx-qbtn'+(cxM===abs?' on':'')+'" onclick="cxSetM('+j+')" title="Só as entregas de '+CX_MLBL[abs]+'">'+CX_MLBL[abs]+'</button>';
+  }
+  g.innerHTML=h;
 }
 function cxKeyHandler(e){
   if(!document.getElementById('comex-ov').classList.contains('open')) return;
   if(e.key==='ArrowRight'||e.key==='PageDown') cxNav(1);
   else if(e.key==='ArrowLeft'||e.key==='PageUp') cxNav(-1);
-  else if(e.key==='Escape') closeComex();
+  // Esc: primeiro desfaz o destaque de foco; só sai da apresentação se não houver destaque
+  else if(e.key==='Escape'){
+    if(document.querySelector('.cx-page.cx-focus')) cxClearFoco();
+    else closeComex();
+  }
 }
 function openComex(){
   const menu=document.getElementById('hd-menu'); if(menu) menu.style.display='none';
   cxPage=0;
   cxQ=Math.floor(CUR_M/3);
+  cxM=null; // toda abertura começa no trimestre inteiro (comportamento original)
   cxShowHidden=false; // segurança: toda abertura do Modo Apresentação começa sem os ocultos
   cxSyncEyeBtn();
   cxSyncQBtns();
   buildComexPages();
   const d=new Date();
-  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()+' · dados ao vivo do dashboard · build i6';
+  document.getElementById('cx-hd-date').textContent='Gerado em '+String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();
   document.getElementById('comex-ov').classList.add('open');
   document.body.classList.add('cx-open');
   document.addEventListener('keydown',cxKeyHandler);
+  // destaque de foco: clique no corpo da apresentação
+  const cxb=document.getElementById('cx-body');
+  if(cxb) cxb.addEventListener('click',cxFocoClick);
   // restaura a preferência de cabeçalho recolhido/expandido
   let collapsed=false;
   try{ collapsed=localStorage.getItem('cxHdCollapsed')==='1'; }catch(e){}
@@ -8007,6 +8608,9 @@ function closeComex(){
   document.getElementById('comex-ov').classList.remove('open');
   document.body.classList.remove('cx-open');
   document.removeEventListener('keydown',cxKeyHandler);
+  const cxb=document.getElementById('cx-body');
+  if(cxb) cxb.removeEventListener('click',cxFocoClick);
+  cxClearFoco(); // não deixa destaque preso para a próxima abertura
 }
 // ── Recolher/expandir o cabeçalho verde no Modo Apresentação ──
 // Com o cabeçalho recolhido, a faixa de produtos passa a ser o topo da tela.
