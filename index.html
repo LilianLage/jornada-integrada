@@ -228,7 +228,7 @@ button,input,select,textarea{font-family:inherit;}
 .rdx-body{position:relative;}
 /* Coluna estreita: mesma anatomia (calha + cartão), em escala reduzida */
 .rdx-grp.cp{grid-template-columns:104px 1fr;gap:11px;margin-bottom:12px;}
-.rdx-grp.cp .rdx-rail{padding-top:9px;gap:7px;}
+.rdx-grp.cp .rdx-rail{padding-top:11px;gap:0;}
 .rdx-grp.cp .rdx-ric{width:26px;height:26px;border-radius:7px;font-size:12px;}
 .rdx-grp.cp .rdx-rlbl{font-size:9.5px;letter-spacing:.4px;}
 .rdx-grp.cp .rdx-rdesc{font-size:8.5px;line-height:1.4;margin-top:3px;}
@@ -7792,8 +7792,11 @@ function cxLvBlocksHTML(items, opts){
     }).join('');
     // No Roadmap previsto (cp) o rótulo vem sem a frase explicativa: ela já aparece
     // na seção de entregas do período, e repeti-la nas 3 colunas só polui.
+    // No Roadmap previsto (cp) o rótulo é só o nome do nível: sem chip de ícone e sem
+    // a frase explicativa — ambos já aparecem na seção de entregas do período.
     const railHtml = rail
-      ? '<div class="rdx-rail"><span class="rdx-ric">'+meta.ic+'</span>'
+      ? '<div class="rdx-rail">'
+        +(cp?'':'<span class="rdx-ric">'+meta.ic+'</span>')
         +'<div><div class="rdx-rlbl">'+meta.lbl+'</div>'
         +(cp?'':'<div class="rdx-rdesc">'+meta.desc+'</div>')+'</div></div>'
       : '';
