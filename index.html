@@ -1043,6 +1043,213 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   .cx-phd-media{margin:14px 0 0;}
   .cx-phd-tags{margin:14px 0 0;max-width:100%!important;}
 }
+
+/* ─── PLANO DO PORTFÓLIO — camada executiva ───
+   Escala tipográfica dimensionada para apresentação em sala/projetor:
+   corpo de tabela a 19px, títulos a 24-30px, números-chave a 44px.
+   Narrativa: o compromisso → onde o valor está → o que cada produto entrega. */
+.pi-top{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:16px;}
+.pi-top-t{font-size:30px;font-weight:800;color:var(--tx);letter-spacing:-.8px;line-height:1.15;}
+.pi-top-s{font-size:18px;color:var(--t3);font-weight:700;margin-top:4px;}
+.pi-hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:34px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--bd);}
+.pi-hd-t{font-size:24px;font-weight:800;color:var(--tx);letter-spacing:-.4px;}
+.pi-hd-s{font-size:16px;color:var(--t3);font-weight:600;}
+.pi-card{background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:0;}
+.pi-scope{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.pi-chip{border:1.5px solid var(--bd);background:var(--wh);border-radius:30px;padding:8px 18px;font-size:16px;font-weight:800;color:var(--t2);cursor:pointer;}
+.pi-chip:hover{border-color:var(--gm);}
+.pi-chip.on{background:var(--g);border-color:var(--g);color:#fff;}
+.pi-tbl{width:100%;border-collapse:collapse;font-size:19px;}
+.pi-tbl th{text-align:left;font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);padding:13px 15px;border-bottom:1.5px solid var(--bd);white-space:nowrap;background:#fbfcfe;}
+.pi-tbl td{padding:15px;border-top:1px solid var(--bd);vertical-align:top;color:var(--t2);line-height:1.45;}
+.pi-tbl tr.pi-r{cursor:pointer;}
+.pi-tbl tr.pi-r:hover td{background:#f8fafc;}
+.pi-pnm{font-weight:800;color:var(--tx);font-size:22px;line-height:1.25;letter-spacing:-.3px;}
+.pi-psub{font-size:16px;font-weight:700;margin-top:3px;}
+.pi-syn{font-size:18px;color:var(--t2);line-height:1.4;}
+.pi-dash{color:var(--t3);font-size:22px;}
+.pi-note{font-size:18px;color:var(--t3);line-height:1.6;padding:14px 18px;border-top:1px solid var(--bd);}
+.pi-mini{width:100%;border-collapse:collapse;font-size:18px;}
+.pi-mini th{text-align:left;font-size:18px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);padding:12px 15px;border-bottom:1.5px solid var(--bd);background:#fbfcfe;}
+.pi-mini td{padding:12px 15px;border-top:1px solid var(--bd);color:var(--t2);line-height:1.4;vertical-align:top;}
+.pi-mk{display:flex;align-items:baseline;gap:9px;padding:2px 0;}
+.pi-mk i{width:9px;height:9px;border-radius:50%;flex-shrink:0;position:relative;top:-2px;}
+.pi-scroll{overflow-x:auto;}
+/* Faixa do compromisso — termômetro da curva de captura */
+.pi-band{background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:22px 26px 20px;margin-bottom:14px;}
+.pi-band-l{display:flex;gap:44px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px;}
+.pi-bn-l{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);}
+.pi-bn-v{font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-1.6px;}
+.pi-bn-uh{font-size:15px;color:var(--t3);font-weight:700;margin-top:2px;letter-spacing:.2px;}
+.pi-bn-s{font-size:16px;color:var(--t2);font-weight:600;margin-top:3px;}
+.pi-therm{display:flex;height:46px;border-radius:8px;overflow:hidden;}
+.pi-therm>div{display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;white-space:nowrap;}
+.pi-tlg{display:flex;margin-top:8px;font-size:15px;font-weight:700;color:var(--t3);}
+.pi-lead{font-size:20px;color:var(--tx);line-height:1.5;margin-top:18px;padding-top:16px;border-top:1px solid var(--bd);}
+/* Agrupamento e totais */
+.pi-grp td{background:#f8fafc!important;padding:11px 15px!important;border-top:2px solid var(--bd)!important;}
+.pi-grp-t{font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
+.pi-grp-s{font-size:17px;font-weight:700;color:var(--t2);}
+.pi-tot td{background:var(--gb)!important;border-top:2px solid var(--g)!important;padding:17px 15px!important;font-weight:800;color:var(--g);font-size:19px;}
+.pi-lev{font-size:18px;font-weight:700;color:var(--t2);background:var(--gyb);border-radius:30px;padding:4px 12px;display:inline-block;margin:2px 5px 2px 0;}
+.pi-etag{font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:5px;}
+.pi-etag.mk{color:var(--g);}
+/* OKRs na tabela */
+.pi-okr{margin-bottom:16px;}
+.pi-okr:last-child{margin-bottom:0;}
+.pi-okr-t{font-size:17px;font-weight:700;color:var(--tx);line-height:1.35;}
+.pi-okr-k{display:flex;align-items:center;gap:9px;margin-top:4px;}
+.pi-okr-b{flex:1;height:9px;border-radius:5px;background:var(--gyb);overflow:hidden;min-width:56px;}
+.pi-okr-b i{display:block;height:100%;border-radius:5px;}
+.pi-okr-p{font-size:16px;font-weight:800;min-width:46px;text-align:right;}
+.pi-okr-l{font-size:16px;color:var(--t3);font-weight:600;line-height:1.35;margin-top:2px;}
+.pi-krl{margin:8px 0 0 12px;padding-left:12px;border-left:2px solid var(--bd);}
+.pi-krl-t{font-size:17px;color:var(--t2);line-height:1.4;}
+/* Painel lateral — resumo do produto */
+.pi-dwbg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:900;}
+.pi-dwbg.open{display:flex;justify-content:flex-end;}
+.pi-dw{width:720px;max-width:96vw;height:100%;background:var(--wh);overflow-y:auto;box-shadow:-8px 0 34px rgba(15,23,42,.2);padding:30px 34px 44px;}
+.pi-dw-x{position:absolute;top:0;right:0;border:none;background:none;font-size:30px;line-height:1;color:var(--t3);cursor:pointer;}
+.pi-dw-t{font-size:32px;font-weight:800;color:var(--tx);letter-spacing:-.8px;line-height:1.15;}
+.pi-dw-d{font-size:18px;color:var(--t2);line-height:1.55;margin-top:8px;}
+.pi-dw-blk{margin-top:22px;padding-top:18px;border-top:1px solid var(--bd);}
+.pi-dw-l{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:7px;}
+.pi-dw-v{font-size:19px;color:var(--tx);font-weight:600;line-height:1.5;}
+.pi-dw-in{width:100%;font-family:inherit;font-size:18px;color:var(--tx);border:1.5px solid var(--bd);border-radius:10px;padding:12px 14px;background:#fbfcfe;line-height:1.5;}
+.pi-dw-in:focus{outline:none;border-color:var(--gm);background:var(--wh);}
+.pi-dw-btn{border:none;background:var(--g);color:#fff;font-weight:800;font-size:18px;border-radius:10px;padding:14px 22px;cursor:pointer;margin-top:24px;width:100%;}
+.pi-dw-btn.sec{background:var(--wh);color:var(--t2);border:1.5px solid var(--bd);margin-top:10px;}
+.pi-kr{display:flex;align-items:center;gap:12px;margin-top:8px;}
+.pi-kr-l{flex:1;font-size:17px;color:var(--t2);line-height:1.4;}
+.pi-kr-b{width:120px;height:11px;border-radius:6px;background:var(--gyb);overflow:hidden;flex-shrink:0;}
+.pi-kr-b i{display:block;height:100%;border-radius:6px;}
+.pi-kr-p{font-size:17px;font-weight:800;min-width:78px;text-align:right;flex-shrink:0;}
+/* ─── Cartão de produto (uma frente por cartão) ─── */
+.frc-grp{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--wh);border:1.5px solid var(--bd);border-radius:40px;padding:8px 8px 8px 8px;margin:26px 0 14px;width:fit-content;max-width:100%;}
+.frc-grp-p{background:var(--g);color:#fff;border-radius:30px;padding:8px 20px;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
+.frc-grp-s{font-size:18px;color:var(--t2);font-weight:600;padding-right:14px;}
+.frc{display:grid;grid-template-columns:290px minmax(0,1.15fr) minmax(0,1fr);gap:0;background:var(--wh);border:1.5px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:16px;}
+.frc-id{background:linear-gradient(150deg,#00301b 0%,var(--g) 58%,#0a5c36 100%);color:#fff;padding:26px 24px 24px;display:flex;flex-direction:column;}
+.frc-nm{font-size:38px;font-weight:800;letter-spacing:-1.4px;line-height:1.05;}
+.frc-mod{font-size:17px;font-weight:700;color:rgba(255,255,255,.72);margin-top:4px;}
+.frc-val{font-size:44px;font-weight:800;letter-spacing:-1.8px;line-height:1.05;margin-top:auto;padding-top:26px;}
+.frc-val small{font-size:26px;letter-spacing:-.6px;}
+.frc-sub{font-size:16px;color:rgba(255,255,255,.72);font-weight:600;margin-top:5px;}
+.frc-role{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:auto;padding-top:26px;line-height:1.2;}
+.frc-btn{margin-top:18px;align-self:flex-start;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);color:#fff;font-family:inherit;font-size:15px;font-weight:800;border-radius:30px;padding:8px 18px;cursor:pointer;}
+.frc-btn:hover{background:rgba(255,255,255,.24);}
+.frc-col{padding:22px 24px;border-left:1.5px solid var(--bd);min-width:0;}
+.frc-sec-t{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--tx);margin-bottom:14px;}
+.frc-sec-t i{width:30px;height:30px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-style:normal;flex-shrink:0;}
+.frc-sec-t s{flex:1;height:1.5px;background:var(--bd);text-decoration:none;}
+.frc-obj{display:flex;align-items:center;gap:18px;background:var(--gb);border-radius:12px;padding:14px 18px;margin-bottom:12px;}
+.frc-obj-t{flex:1;font-size:19px;font-weight:800;color:var(--tx);line-height:1.3;min-width:0;}
+.frc-obj-p{text-align:center;border-left:1.5px solid rgba(7,157,86,.28);padding-left:18px;flex-shrink:0;}
+.frc-obj-p b{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.frc-obj-p span{display:block;font-size:13px;color:var(--t3);font-weight:600;margin-top:3px;}
+.frc-kr{border:1.5px solid var(--bd);border-radius:12px;padding:13px 16px;margin-bottom:10px;}
+.frc-kr-h{display:flex;align-items:flex-start;gap:12px;}
+.frc-kr-n{width:26px;height:26px;border-radius:50%;background:var(--gb);border:1.5px solid var(--gm);color:var(--g);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.frc-kr-l{flex:1;font-size:17px;color:var(--tx);font-weight:600;line-height:1.35;min-width:0;}
+.frc-kr-v{text-align:right;flex-shrink:0;}
+.frc-kr-v span{display:block;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:var(--t3);}
+.frc-kr-v b{font-size:22px;font-weight:800;letter-spacing:-.5px;}
+.frc-kr-b{height:7px;border-radius:4px;background:var(--gyb);overflow:hidden;margin-top:11px;}
+.frc-kr-b i{display:block;height:100%;border-radius:4px;}
+.frc-ent-h{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--g);margin:4px 0 9px;}
+.frc-ent-h.sec{margin-top:16px;padding-top:14px;border-top:1.5px solid var(--bd);}
+.frc-ent-i{display:flex;align-items:flex-start;gap:11px;background:#fbfcfe;border:1px solid var(--bd);border-radius:9px;padding:9px 13px;margin-bottom:7px;}
+.frc-ent-i em{width:22px;height:22px;border-radius:50%;font-style:normal;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.frc-ent-i span{font-size:16px;color:var(--tx);line-height:1.35;}
+.frc-ins{grid-column:1/-1;display:flex;align-items:center;gap:16px;background:var(--gb);border-top:1.5px solid var(--bd);padding:16px 24px;}
+.frc-ins i{width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-style:normal;flex-shrink:0;}
+.frc-ins b{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--g);white-space:nowrap;}
+.frc-ins s{width:1.5px;align-self:stretch;background:rgba(7,157,86,.3);text-decoration:none;}
+.frc-ins p{margin:0;font-size:17px;color:var(--tx);line-height:1.45;}
+.frc-ins p.vazio{color:var(--t3);font-style:italic;}
+/* Botão "ver mais" — toda lista longa fica recolhida por padrão */
+.pi-more{background:none;border:1.5px dashed var(--gm);color:var(--g);font-family:inherit;font-size:15px;font-weight:800;border-radius:30px;padding:6px 16px;cursor:pointer;margin-top:4px;}
+.pi-more:hover{background:var(--gb);}
+.pi-hid{display:none;}
+/* Trilho de seções */
+.pinav{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:250;display:flex;flex-direction:column;gap:6px;
+  background:var(--wh);border:1.5px solid var(--bd);border-radius:34px;padding:9px 8px;box-shadow:0 6px 22px rgba(15,23,42,.1);}
+.pinav-i{display:flex;align-items:center;gap:0;background:none;border:none;padding:0;cursor:pointer;font-family:inherit;
+  border-radius:26px;overflow:hidden;max-width:34px;transition:max-width .22s ease,background .15s;}
+.pinav-i em{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-style:normal;font-size:16px;color:var(--t3);background:var(--gyb);transition:background .15s,color .15s;}
+.pinav-i span{white-space:nowrap;font-size:15px;font-weight:800;color:var(--tx);padding:0 16px 0 10px;opacity:0;transition:opacity .18s;}
+.pinav-i:hover{max-width:330px;background:var(--gyb);}
+.pinav-i:hover span{opacity:1;}
+.pinav-i:hover em{background:var(--gm);color:#fff;}
+.pinav-i.on em{background:var(--g);color:#fff;}
+.pinav-i.on span{color:var(--g);}
+.pinav-top{margin-top:4px;padding-top:6px;border-top:1.5px solid var(--bd);border-radius:0 0 26px 26px;}
+.pinav-top em{background:none;}
+@media(max-width:1240px){.pinav{display:none;}}
+/* O trilho é position:fixed e sairia por cima do conteúdo: a página reserva a
+   faixa da esquerda exatamente na largura em que ele aparece. O rótulo do hover
+   continua sobrepondo — é transitório e disparado pela própria pessoa. */
+@media(min-width:1241px){#pg-govcap{padding-left:96px;}}
+/* âncoras não podem ficar sob o cabeçalho fixo ao rolar */
+#sec-curva,#sec-valor,#sec-frentes,#sec-gov{scroll-margin-top:88px;}
+.frc-ins p.sug{color:var(--t2);}
+.frc-sug{display:inline-block;background:var(--wh);border:1.5px solid var(--gm);color:var(--g);border-radius:20px;padding:2px 11px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-right:10px;vertical-align:1px;}
+.pi-sugbox{margin-top:12px;background:var(--gb);border:1.5px dashed var(--gm);border-radius:10px;padding:13px 15px;}
+.pi-sugbox-h{font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--g);}
+.pi-sugbox-h span{display:block;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600;color:var(--t3);margin-top:2px;}
+.pi-sugbox-t{font-size:17px;color:var(--tx);line-height:1.5;margin:9px 0 11px;}
+/* ─── Onde o valor está ─── */
+.lv{width:100%;border-collapse:separate;border-spacing:0;}
+.lv th{background:var(--g);color:#fff;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;padding:15px 18px;text-align:left;}
+.lv th:first-child{border-top-left-radius:14px;}
+.lv th:last-child{border-top-right-radius:14px;}
+.lv td{padding:16px 18px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.lv tr:nth-child(even) td{background:#fbfcfe;}
+.lv-n{width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.lv-nm{font-size:19px;font-weight:800;color:var(--tx);line-height:1.25;}
+.lv-v{display:flex;align-items:center;gap:20px;}
+.lv-v-l{min-width:170px;}
+.lv-v-l b{font-size:27px;font-weight:800;color:var(--g);letter-spacing:-.8px;line-height:1.1;display:block;}
+.lv-bar{height:9px;border-radius:5px;background:var(--gb);overflow:hidden;margin-top:7px;}
+.lv-bar i{display:block;height:100%;border-radius:5px;background:var(--gm);}
+.lv-pot{font-size:17px;color:var(--t2);font-weight:600;white-space:nowrap;}
+.lv-foot{display:flex;align-items:center;gap:18px;background:var(--wh);border:1.5px solid var(--bd);border-radius:14px;padding:17px 22px;margin-top:14px;}
+.lv-foot i{width:40px;height:40px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal;flex-shrink:0;}
+.lv-foot b{font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--g);line-height:1.25;white-space:nowrap;}
+.lv-foot s{width:1.5px;align-self:stretch;background:var(--bd);text-decoration:none;}
+.lv-foot div{font-size:18px;color:var(--tx);line-height:1.55;}
+@media(max-width:1100px){.frc{grid-template-columns:1fr;}.frc-col{border-left:none;border-top:1.5px solid var(--bd);}}
+
+@media print{.pi-scroll{overflow:visible;}.pi-dwbg{display:none!important;}}
+
+/* ─── EXPORTAR ABA ATUAL EM PDF ───
+   body.pdf-tab só existe durante a impressão disparada por exportTabPDF():
+   some com header, navegação e overlays, imprime apenas a página .pg.on e
+   carimba um cabeçalho identificando a aba, a data e o recorte ativo. */
+#pdf-hd{display:none;}
+@media print{
+  body.pdf-tab #pdf-hd{display:block!important;margin:0 0 16px;padding:0 0 12px;border-bottom:3px solid var(--g);}
+  body.pdf-tab .pdf-hd-t{font-size:27px;font-weight:800;color:var(--tx);letter-spacing:-.6px;line-height:1.15;}
+  body.pdf-tab .pdf-hd-s{font-size:13px;color:var(--t3);font-weight:600;margin-top:4px;}
+  body.pdf-tab .hd,body.pdf-tab .nav,body.pdf-tab #hd-menu,
+  body.pdf-tab #editor-gate,body.pdf-tab .pi-dwbg,body.pdf-tab #comex-ov{display:none!important;}
+  body.pdf-tab .pg{padding:0!important;}
+  body.pdf-tab .pi-scroll,body.pdf-tab .port-scroll{overflow:visible!important;}
+  /* nunca corta uma linha, um card ou um gráfico entre duas páginas */
+  body.pdf-tab tr,body.pdf-tab .pi-card,body.pdf-tab .pi-band,body.pdf-tab .port-card,
+  body.pdf-tab .pi-okr,body.pdf-tab .gc-sec,body.pdf-tab canvas{break-inside:avoid;page-break-inside:avoid;}
+  body.pdf-tab thead{display:table-header-group;}
+  /* elementos de interação não fazem sentido no papel */
+  body.pdf-tab .pi-chip:not(.on),body.pdf-tab .gc-chip[style*="none"]{opacity:.35;}
+  body.pdf-tab select,body.pdf-tab textarea{border-color:var(--bd)!important;background:#fff!important;}
+  body.pdf-tab summary{list-style:none;}
+  /* no papel não há como clicar: toda lista recolhida sai completa */
+  body.pdf-tab .pi-hid{display:block!important;}
+  body.pdf-tab .pi-more{display:none!important;}
+  body.pdf-tab .pinav{display:none!important;}
+  body.pdf-tab .frc{break-inside:avoid;page-break-inside:avoid;}
+}
 </style>
 
   <!-- Firebase -->
@@ -1218,6 +1425,10 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           <span style="font-size:16px">📊</span>
           <div><div>Modo Apresentação</div><div style="font-size:9px;color:var(--t3);font-weight:400">Report executivo · tela cheia · imprimível em PDF</div></div>
         </div>
+        <div onclick="exportTabPDF()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;border-top:1px solid var(--bd);transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
+          <span style="font-size:16px">🖨️</span>
+          <div><div>Exportar aba atual em PDF</div><div style="font-size:9px;color:var(--t3);font-weight:400" id="hd-pdf-sub">Só a aba aberta · paisagem</div></div>
+        </div>
         <div style="border-top:1px solid var(--bd)"></div>
         <div style="padding:8px 14px;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--bd)">Exportar dados</div>
         <div onclick="exportJSON()" style="padding:11px 16px;font-size:11px;font-weight:600;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .12s" onmouseover="this.style.background='var(--gyb)'" onmouseout="this.style.background=''">
@@ -1304,12 +1515,15 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 </div>
 
 <!-- TABS -->
+<!-- Cabeçalho impresso apenas na exportação em PDF da aba ativa -->
+<div id="pdf-hd"></div>
+
 <div class="nav">
   <div class="nt on"  onclick="goTab('port',this)">🗂️ Portfólio da Jornada</div>
   <div class="nt"     onclick="goTab('rdmap',this)">📅 Roadmap Integrado</div>
   <div class="nt"     onclick="goTab('okrev',this)">📈 Evolução de KRs</div>
   <div class="nt"     onclick="goTab('valor',this)">💰 Captura de Valor</div>
-  <div class="nt"     onclick="goTab('govcap',this)">🧭 Governança &amp; Capacidade</div>
+  <div class="nt"     onclick="goTab('govcap',this)">📊 Planejamento Estratégico</div>
 </div>
 
 <!-- ══════ MAPA ══════ -->
@@ -1761,9 +1975,15 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 
 </div>
 
-<!-- ══════ GOVERNANÇA & CAPACIDADE ══════ -->
+<!-- ══════ PLANEJAMENTO DO PORTFÓLIO ══════
+     (id 'govcap' preservado — Governança & Capacidade é a última seção, recolhida) -->
 <div class="pg" id="pg-govcap">
   <div id="govcap-body"></div>
+</div>
+
+<!-- DRAWER · Tese do investimento (aberto ao clicar numa linha da tabela de decisão) -->
+<div class="pi-dwbg" id="pi-dw-bg" onclick="if(event.target.id==='pi-dw-bg')piCloseTese()">
+  <div class="pi-dw" id="pi-dw"></div>
 </div>
 
 
@@ -2256,6 +2476,178 @@ function calcGovAdeq(key, loads){
 function govAdeqOf(key, loads){ return calcGovAdeq(key, loads).ad; }
 
 const GOV_ADEQ={ad:{lbl:'Adequado',col:'var(--gm)'},at:{lbl:'Atenção',col:'var(--o)'},in:{lbl:'Inadequado',col:'#dc2626'}};
+
+// ══════════════════════════════════════════════════════════════════════════
+// MATRIZ DE CAPACIDADE — dedicação-alvo de cada papel por modelo de gestão.
+// FONTE ÚNICA: alimenta tanto o card didático "Como cada modelo deve ser
+// estruturado" (seção Governança) quanto o cálculo de FTE do resumo executivo
+// da aba Portfólio & Investimento. Antes era literal dentro de buildGovCap().
+// ══════════════════════════════════════════════════════════════════════════
+const CAP_MODELO = {
+  dir: {po:0.90, sl:0.50, gs:0.12,
+        poN:'PO dedicado à frente (10% quando em sustentação)',
+        slN:'+25% por frente adicional sob o mesmo SL',
+        ritos:'Planning e review quinzenais, conduzidos pelo SL',
+        res:'Time completo: a frente tem dono, condução técnica e acompanhamento próximo do gestor.'},
+  comp:{po:0.10, sl:0.50, gs:0.08,
+        poN:'PO compartilhado organiza prioridades e backlog',
+        slN:'liderança tecnológica dedicada à frente',
+        ritos:'Planning e review quinzenais; prioridade acordada entre as áreas',
+        res:'A área parceira executa; a gestão garante prioridade, backlog e ritos.'},
+  mon: {po:0.05, sl:0.50, gs:0.02,
+        poN:'ponto focal designado — não é PO dedicado',
+        slN:'condução técnica na área dona da iniciativa',
+        ritos:'Review alimenta a ficha mínima e o report executivo bimestral',
+        res:'Acompanhamento leve: visibilidade e ponto de contato, sem squad próprio.'}
+};
+// FTE demandado por um produto = soma das dedicações-alvo do seu modelo de gestão.
+// É DEMANDA (o que o modelo pede), não oferta: um PO sênior em 2 produtos aparece
+// como 1,8 FTE de demanda contra 1,0 pessoa disponível — e é exatamente esse gap
+// que a seção de Governança classifica como adequação.
+
+// ══════════════════════════════════════════════════════════════════════════
+// PLANEJAMENTO DO PORTFÓLIO — camada executiva de decisão de capacidade.
+// NÃO cria fonte de dados nova. Lê: PRODS · RDMAP (tipo Marco) · OKRs/KRs ·
+// CV_POT/CV_LEVERS (Captura de Valor) · calcGovAdeq · CAP_MODELO.
+// Acrescenta só os campos de JULGAMENTO da gestão, que não podem ser derivados:
+//   portfolio_decision        acelerar | destravar | manter | reavaliar
+//   portfolio_role            cap | hab | mand | estr   (papel estratégico)
+//   portfolio_insights        anotações livres da gestão sobre a frente
+// (capacidade/FTE e direcionamento de investimento saíram desta aba a pedido da
+//  gestão — a discussão de capacidade acontece por outra via)
+// Todos persistidos no doc do produto (coleção 'produtos'), como os demais campos.
+// NENHUM valor financeiro é digitado aqui — valor vem sempre da Captura de Valor.
+// ══════════════════════════════════════════════════════════════════════════
+// DIRECIONAMENTO ≠ PAPEL. Habilitador/Mandatório é papel estratégico; um
+// habilitador também pode precisar ser acelerado, destravado ou reavaliado.
+const PI_DEC = {
+  acelerar: {lbl:'Acelerar',  col:'#079D56', bg:'#e6f9f2', desc:'Ampliar capacidade: há valor e evidência para capturar mais.'},
+  destravar:{lbl:'Destravar', col:'#FF8B22', bg:'#fff3e6', desc:'O resultado está limitado por capacidade, dependência ou governança.'},
+  manter:   {lbl:'Manter',    col:'#0369a1', bg:'#eff6ff', desc:'Estrutura atual é suficiente para o resultado esperado.'},
+  reavaliar:{lbl:'Reavaliar', col:'#793F98', bg:'#f3eef8', desc:'Resultado baixo frente ao esforço e ao investimento requeridos.'}
+};
+const PI_DEC_ORDER = ['acelerar','destravar','manter','reavaliar'];
+const PI_DEC_NONE  = {lbl:'Sem decisão', col:'#94a3b8', bg:'#f8fafc', desc:''};
+// Compatibilidade com a nomenclatura curta da versão anterior desta aba
+const PI_DEC_LEGACY = {acel:'acelerar', dest:'destravar', mant:'manter', reav:'reavaliar'};
+function piDecOf(k){
+  const p=PRODS[k]||{};
+  let d=p.portfolio_decision||'';
+  if(!d && p.pi_dec) d=PI_DEC_LEGACY[p.pi_dec]||'';   // 'hab' antigo não vira decisão: virava papel
+  return PI_DEC[d]?d:'';
+}
+function piDecCfg(k){ return PI_DEC[k] || PI_DEC_NONE; }
+// Índice de ordenação: primeiro o que exige discussão executiva
+function piDecRank(k){ const d=piDecOf(k); const i=PI_DEC_ORDER.indexOf(d); return i<0?99:i; }
+
+const PI_ROLE = {cap:'Captura direta', hab:'Habilitador', mand:'Mandatório', estr:'Estratégico'};
+// Papel: usa o campo salvo; na ausência, sugere a partir do potencial já cadastrado
+// no produto (não é dado novo, e vira valor persistido quando o gestor confirma).
+function piRoleOf(key){
+  const p=PRODS[key]||{};
+  if(PI_ROLE[p.portfolio_role]) return p.portfolio_role;
+  if(PI_ROLE[p.pi_papel]) return p.pi_papel;
+  const pot=String(p.pot||'');
+  if(/habilitad/i.test(pot)) return 'hab';
+  if(/^R\$/.test(pot.trim())) return 'cap';
+  return 'estr';
+}
+
+// Valor financeiro: SEMPRE da Captura de Valor (CV_POT = ALAV_PCT × CV_LEVERS).
+// Nunca do campo pot hardcoded do produto, nunca digitado nesta aba.
+// Produtos que dividem uma mesma coluna da planilha oficial são marcados como
+// compartilhados e contam UMA vez nos totais.
+const PI_CV_KEY = {
+  sincroniza:'sincroniza', compilador:'compilador', eco:'eco', pam:'pam',
+  obra360:'obra360', prateleira:'prateleira', catracas:'prateleira',
+  lego:'lego', smp:'smp', ze:'ia', daeans:'ia'
+};
+const PI_CV_SHARED = {
+  ze:'Zé da Obra · Daeane', daeans:'Zé da Obra · Daeane',
+  prateleira:'Prateleira MO · Catracas', catracas:'Prateleira MO · Catracas'
+};
+function piValor(key){
+  const ck = PI_CV_KEY[key];
+  const mm = (ck && CV_POT[ck]!=null) ? CV_POT[ck] : null;
+  return {ck:ck||null, mm:mm, shared:PI_CV_SHARED[key]||''};
+}
+function piFmtM(mm){ return 'R$ ' + (Math.round(mm*10)/10).toLocaleString('pt-BR',{maximumFractionDigits:1}) + 'M'; }
+// Exibição de FTE: sempre 1 casa decimal — a leitura executiva é o delta, não a precisão.
+function piFmtF(f){ return (Math.round(f*10)/10).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+
+// ── ENTREGAS PREVISTAS POR PERÍODO ─────────────────────────────────────
+// Regra: se o produto tem Marco indicado no período, mostra SÓ os Marcos.
+// Se não tem nenhum, mostra as demais entregas previstas (exclui operacionais —
+// chamados, ajustes e correções não entram numa discussão de orçamento).
+// Avaliado a cada render: no dia em que o PO classificar um Marco no Roadmap
+// Integrado, a coluna passa sozinha a exibir apenas ele. Sem cadastro paralelo.
+function piEntregas(key, pers){
+  const rd=RDMAP[key]||{}, marcos=[], outras=[];
+  pers.forEach(function(per){
+    (rd[per]||[]).forEach(function(m){
+      const t=rdTipo(m);
+      if(t==='marco') marcos.push({txt:m.txt, s:m.s||'todo'});
+      else if(t!=='op') outras.push({txt:m.txt, s:m.s||'todo'});
+    });
+  });
+  return marcos.length ? {itens:marcos, marco:true} : {itens:outras, marco:false};
+}
+
+// ── A CURVA DE COMPROMISSO ─────────────────────────────────────────────
+// Cada alavanca da Captura de Valor já tem meta ano a ano (meta2026_uh …
+// meta2030_uh, em R$/UH sobre a base de 40.000 UH). Tudo abaixo é derivado
+// dessas metas oficiais — nenhuma projeção nova, nenhuma premissa inventada.
+function piMetaAno(ano){
+  let uh=0;
+  Object.keys(CV_LEVERS).forEach(function(lk){ uh += (CV_LEVERS[lk]['meta'+ano+'_uh']||0); });
+  return uh*CV_UH_BASE/1e6;
+}
+// Parcela que cabe a um produto numa métrica por alavanca (meta do ano ou
+// captura 2025), segundo a alocação oficial da Captura de Valor.
+function piShare(key, campo){
+  const ck=PI_CV_KEY[key]; if(!ck) return null;
+  let uh=0;
+  Object.keys(CV_LEVERS).forEach(function(lk){
+    const pct=(ALAV_PCT[lk]&&ALAV_PCT[lk][ck])||0;
+    uh += pct/100*(CV_LEVERS[lk][campo]||0);
+  });
+  return uh*CV_UH_BASE/1e6;
+}
+// VALOR EM JOGO: quanto de captura este produto precisa acrescentar entre hoje
+// e o fim de 2027 para o portfólio cumprir a meta acumulada de 65%.
+// É este número — não o potencial de 2030 — que justifica capacidade agora.
+function piEmJogo(key){
+  const alvo=piShare(key,'meta2027_uh'), feito=piShare(key,'cap2025_uh');
+  if(alvo==null) return null;
+  return Math.max(0, alvo-(feito||0));
+}
+// Alavancas que o produto carrega, da maior para a menor participação
+function piLeversOf(key, minPct){
+  const ck=PI_CV_KEY[key]; if(!ck) return [];
+  return Object.keys(CV_LEVERS)
+    .map(function(lk){ return {k:lk, pct:(ALAV_PCT[lk]&&ALAV_PCT[lk][ck])||0}; })
+    .filter(function(x){ return x.pct>=(minPct||10); })
+    .sort(function(a,b){ return b.pct-a.pct; });
+}
+
+// Períodos do Roadmap Integrado que compõem cada recorte executivo.
+// 2S26 cobre o 3º e o 4º trimestres, expandidos ou não em meses.
+// 2027 usa a chave 'BL27' (Backlog 2027), que já é a convenção do roadmap e do
+// contrato de sincronização do MDM — não é uma segunda fonte.
+const PI_PER_2S26 = ['3T','JUL','AGO','SET','4T','OUT','NOV','DEZ'];
+const PI_PER_2027 = ['BL27'];
+// Entregas do produto no recorte. Por padrão, SÓ as classificadas como Marco.
+function piMarcos(key, pers, incSemTipo){
+  const rd = RDMAP[key] || {}, out = [];
+  pers.forEach(function(per){
+    (rd[per]||[]).forEach(function(m,i){
+      const t = rdTipo(m);
+      if(t==='marco') out.push({txt:m.txt, s:m.s||'todo', per:per, idx:i, marco:true});
+      else if(incSemTipo && !t) out.push({txt:m.txt, s:m.s||'todo', per:per, idx:i, marco:false});
+    });
+  });
+  return out;
+}
 
 const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
@@ -3303,14 +3695,22 @@ function delNota(key,i){
 // Multi-dimensional filter state
 // Filtros do Portfólio agora usam dropdowns multisseleção (msdd):
 //   port-etapa | port-gestor | port-status
-// ══════ ABA GOVERNANÇA & CAPACIDADE ══════
+// ══════ SEÇÃO GOVERNANÇA & CAPACIDADE ══════
 // Resumo da estratégia de sustentação do portfólio: como os produtos estão
 // estruturadas, onde estão os gaps e quais ações estão propostas.
 // Alimentada pelos campos gov_* de cada produto (editáveis no editor do produto).
-function buildGovCap(){
-  const box=document.getElementById('govcap-body');
-  if(!box) return;
-
+// Passou a ser a ÚLTIMA seção da aba Portfólio & Investimento (dentro do
+// recolhível "Detalhar Governança & Capacidade"): a função só monta o HTML;
+// quem injeta no DOM é buildGovCap(). Nenhuma regra foi alterada.
+// Nesta seção o portfólio é lido como "frentes". calcGovAdeq é compartilhado
+// com a aba Portfólio, então a troca de vocabulário acontece na renderização —
+// a regra e as mensagens originais permanecem intactas na fonte.
+function gcFrente(t){
+  return String(t==null?'':t)
+    .replace(/\bProdutos\b/g,'Frentes').replace(/\bProduto\b/g,'Frente')
+    .replace(/\bprodutos\b/g,'frentes').replace(/\bproduto\b/g,'frente');
+}
+function govCapHtml(){
   const ORD={in:0, at:1, '':2, ad:3};
   const _loads=govLoads();
   const rows=Object.keys(PRODS).map(k=>{
@@ -3326,63 +3726,56 @@ function buildGovCap(){
 
   // ── Cabeçalho executivo: a leitura da situação em uma frase
   let h='<div style="background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:14px 18px;margin-bottom:12px">'
-    +'<div style="font-size:13px;font-weight:800;color:var(--tx)">Governança &amp; Capacidade do Portfólio</div>'
-    +'<div style="font-size:10.5px;color:var(--t2);line-height:1.6;margin-top:6px">'
-    +'Cada produto é sustentado por um <b>PO</b> — cuja senioridade define quanto ele pode se dividir entre produtos '
+    +'<div style="font-size:24px;font-weight:800;color:var(--tx)">Governança &amp; Capacidade do Portfólio</div>'
+    +'<div style="font-size:18px;color:var(--t2);line-height:1.6;margin-top:8px">'
+    +'Cada frente é sustentada por um <b>PO</b> — cuja senioridade define quanto ele pode se dividir entre frentes '
     +'(júnior e pleno não dividem; sênior até 2; especialista até 3) — e por um <b>Squad Leader</b>, que conduz os ritos '
-    +'(máximo de 2 produtos por SL). A <b>adequação</b> é calculada automaticamente a partir desses limites — não é preenchida à mão. '
-    +'<b>'+pend+' de '+rows.length+' produtos exigem ação.</b> Os dados são editáveis no editor de cada produto.'
+    +'(máximo de 2 frentes por SL). A <b>adequação</b> é calculada automaticamente a partir desses limites — não é preenchida à mão. '
+    +'<b>'+pend+' de '+rows.length+' frentes exigem ação.</b> Os dados são editáveis no editor de cada frente.'
     +'</div></div>';
 
   // ── Referência didática: como cada modelo de gestão deve ser estruturado.
   // Valores vindos da Matriz de Capacidade (dedicações-alvo por modelo).
-  const MOD_REF=[
-    {k:'dir', po:'90%', poN:'PO dedicado ao produto (10% quando em sustentação)',
-     sl:'50%', slN:'+25% por produto adicional sob o mesmo SL',
-     gs:'12%', ritos:'Planning e review quinzenais, conduzidos pelo SL',
-     res:'Time completo: o produto tem dono, condução técnica e acompanhamento próximo do gestor.'},
-    {k:'comp', po:'10%', poN:'PO compartilhado organiza prioridades e backlog',
-     sl:'50%', slN:'liderança tecnológica dedicada ao produto',
-     gs:'8%', ritos:'Planning e review quinzenais; prioridade acordada entre as áreas',
-     res:'A área parceira executa; a gestão garante prioridade, backlog e ritos.'},
-    {k:'mon', po:'5%', poN:'ponto focal designado — não é PO dedicado',
-     sl:'50%', slN:'condução técnica na área dona da iniciativa',
-     gs:'2%', ritos:'Review alimenta a ficha mínima e o report executivo bimestral',
-     res:'Acompanhamento leve: visibilidade e ponto de contato, sem squad próprio.'}
-  ];
+  // Derivado de CAP_MODELO (fonte única, compartilhada com o resumo executivo)
+  const _pct = v => Math.round(v*100)+'%';
+  const MOD_REF = RESP_ORDER.map(function(rk){
+    const m = CAP_MODELO[rk];
+    return {k:rk, po:_pct(m.po), poN:m.poN, sl:_pct(m.sl), slN:m.slN,
+            gs:_pct(m.gs), ritos:m.ritos, res:m.res};
+  });
   const linha=(lbl,v,nota,col)=>'<div style="display:flex;align-items:baseline;gap:8px;padding:5px 0;border-top:1px dashed var(--bd)">'
-    +'<span style="font-size:13px;font-weight:800;color:'+col+';min-width:42px">'+v+'</span>'
-    +'<div><div style="font-size:9.5px;font-weight:800;color:var(--tx)">'+lbl+'</div>'
-    +'<div style="font-size:9px;color:var(--t3);line-height:1.4">'+nota+'</div></div></div>';
+    +'<span style="font-size:22px;font-weight:800;color:'+col+';min-width:64px">'+v+'</span>'
+    +'<div><div style="font-size:17px;font-weight:800;color:var(--tx)">'+lbl+'</div>'
+    +'<div style="font-size:16px;color:var(--t3);line-height:1.4">'+nota+'</div></div></div>';
   h+='<details style="margin-bottom:12px;background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:11px 16px">'
-    +'<summary style="cursor:pointer;font-size:11px;font-weight:800;color:var(--tx);outline:none">Como cada modelo deve ser estruturado</summary>'
-    +'<div style="font-size:9.5px;color:var(--t3);margin:7px 0 10px">Dedicação-alvo de cada papel por modelo de gestão. É esta referência que a classificação de adequação compara com a estrutura real de cada produto.</div>'
+    +'<summary style="cursor:pointer;font-size:19px;font-weight:800;color:var(--tx);outline:none">Como cada modelo deve ser estruturado</summary>'
+    +'<div style="font-size:16px;color:var(--t3);margin:9px 0 12px">Dedicação-alvo de cada papel por modelo de gestão. É esta referência que a classificação de adequação compara com a estrutura real de cada frente.</div>'
     +'<div style="display:flex;gap:10px;flex-wrap:wrap">';
   MOD_REF.forEach(m=>{
     const col=RESP_COL[m.k];
     h+='<div style="flex:1;min-width:240px;border:1.5px solid var(--bd);border-top:4px solid '+col+';border-radius:9px;padding:11px 13px;background:#fcfcfd">'
-      +'<div style="font-size:11px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px">'+RESP_LABEL[m.k]+'</div>'
-      +'<div style="font-size:9.5px;color:var(--t2);line-height:1.45;margin:5px 0 7px">'+m.res+'</div>'
+      +'<div style="font-size:19px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.4px">'+RESP_LABEL[m.k]+'</div>'
+      +'<div style="font-size:17px;color:var(--t2);line-height:1.45;margin:7px 0 9px">'+m.res+'</div>'
       +linha('Product Owner',m.po,m.poN,col)
       +linha('Squad Leader',m.sl,m.slN,col)
-      +linha('Gestor',m.gs,'dedicação do gestor de portfólio por produto',col)
+      +linha('Gestor',m.gs,'dedicação do gestor de portfólio por frente',col)
       +'<div style="padding:6px 0 0;border-top:1px dashed var(--bd);margin-top:4px">'
-      +'<div style="font-size:9.5px;font-weight:800;color:var(--tx)">Ritos</div>'
-      +'<div style="font-size:9px;color:var(--t3);line-height:1.4">'+m.ritos+'</div></div>'
+      +'<div style="font-size:17px;font-weight:800;color:var(--tx)">Ritos</div>'
+      +'<div style="font-size:16px;color:var(--t3);line-height:1.4">'+m.ritos+'</div></div>'
       +'</div>';
   });
   h+='</div>'
-    +'<div style="font-size:9px;color:var(--t3);line-height:1.5;margin-top:9px;border-top:1px solid var(--bd);padding-top:8px">'
-    +'<b>Limites que valem para todos os modelos:</b> um Squad Leader conduz no máximo 2 produtos. '
-    +'A senioridade do PO define quantos produtos ele acumula — júnior e pleno não dividem (1); sênior até 2; especialista até 3. '
-    +'Estes limites são o que determina a classificação de adequação de cada produto.</div>'
+    +'<div style="font-size:16px;color:var(--t3);line-height:1.5;margin-top:11px;border-top:1px solid var(--bd);padding-top:10px">'
+    +'<b>Limites que valem para todos os modelos:</b> um Squad Leader conduz no máximo 2 frentes. '
+    +'A senioridade do PO define quantas frentes ele acumula — júnior e pleno não dividem (1); sênior até 2; especialista até 3. '
+    +'Estes limites são o que determina a classificação de adequação de cada frente.</div>'
     +'</details>';
 
   // ── Faixa-resumo clicável: cada card filtra a lista abaixo (clique de novo p/ limpar)
   const chip=(key,lbl,v,col,bg)=>'<div class="gc-chip" data-adeq="'+key+'" onclick="govCapFilter(\''+key+'\')"'
     +' style="background:'+bg+';border:1.5px solid '+col+';border-radius:8px;padding:8px 14px;flex:1;min-width:120px;cursor:pointer;transition:box-shadow .15s,transform .1s">'
-    +'<div style="font-size:20px;font-weight:800;color:'+col+';line-height:1.1">'+v+'</div>'
-    +'<div style="font-size:9.5px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.3px;margin-top:2px">'+lbl+'</div></div>';
+    +'<div style="font-size:34px;font-weight:800;color:'+col+';line-height:1.1">'+v+'</div>'
+    +'<div style="font-size:16px;font-weight:800;color:'+col+';text-transform:uppercase;letter-spacing:.3px;margin-top:3px">'+lbl+'</div></div>';
   h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">'
     +chip('in','Inadequado',c.in,'#dc2626','#fef2f2')
     +chip('at','Atenção',c.at,'var(--o)','var(--ob)')
@@ -3400,36 +3793,35 @@ function buildGovCap(){
     h+='<div class="gc-sec" data-resp="'+respKey+'">'
       +'<div class="port-resp-hd" style="border-color:'+col+'">'
       +'<span class="port-resp-t" style="color:'+col+'">'+RESP_LABEL[respKey]+'</span>'
-      +'<span class="port-resp-sub">'+grupo.length+' produto'+(grupo.length>1?'s':'')
+      +'<span class="port-resp-sub">'+grupo.length+' frente'+(grupo.length>1?'s':'')
       +(pendG?' · '+pendG+' exige'+(pendG>1?'m':'')+' ação':'')+'</span></div>'
       +'<div style="background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:10px 16px">'
-      +'<table style="width:100%;border-collapse:collapse;font-size:10px">'
-      +'<tr style="text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;letter-spacing:.3px">'
-      +'<th style="padding:6px">Produto</th><th style="padding:6px">PO</th>'
-      +'<th style="padding:6px">Senioridade</th><th style="padding:6px">Squad Leader</th>'
-      +'<th style="padding:6px">Adequação</th><th style="padding:6px">Motivo e ação proposta</th></tr>';
+      +'<table style="width:100%;border-collapse:collapse;font-size:18px">'
+      +'<tr style="text-align:left;color:var(--t3);font-size:16px;text-transform:uppercase;letter-spacing:.3px">'
+      +'<th style="padding:11px 9px">Frente</th><th style="padding:11px 9px">PO</th>'
+      +'<th style="padding:11px 9px">Senioridade</th><th style="padding:11px 9px">Squad Leader</th>'
+      +'<th style="padding:11px 9px">Adequação</th><th style="padding:11px 9px">Motivo e ação proposta</th></tr>';
     grupo.forEach(r=>{
       const cfg=GOV_ADEQ[r.ad];
       const lbl=cfg?cfg.lbl:'Sem classificação';
       const cor=cfg?cfg.col:'var(--gy)';
       const bg=r.ad==='in'?'#fef2f2':r.ad==='at'?'var(--ob)':r.ad==='ad'?'var(--gb)':'var(--gyb)';
       h+='<tr class="gc-row" data-adeq="'+r.ad+'" style="border-top:1px solid var(--bd)">'
-        +'<td style="padding:6px;font-weight:700;color:var(--tx)">'+r.nm+'</td>'
-        +'<td style="padding:6px;color:var(--t2)">'+r.po+'</td>'
-        +'<td style="padding:6px;color:var(--t2)">'+r.sr+'</td>'
-        +'<td style="padding:6px;color:var(--t2)">'+r.sl+'</td>'
-        +'<td style="padding:6px"><span style="display:inline-block;background:'+bg+';border:1px solid '+cor
-        +';color:'+cor+';border-radius:5px;padding:2px 7px;font-size:9.5px;font-weight:800;white-space:nowrap">'+lbl+'</span></td>'
-        +'<td style="padding:6px;line-height:1.45;min-width:230px">'
-        +(r.ad&&r.ad!=='ad'&&r.mot&&r.mot.length?'<div style="color:'+cor+';font-weight:700;font-size:9.5px;margin-bottom:2px">'+r.mot.join(' ')+'</div>':'')
+        +'<td style="padding:11px 9px;font-weight:700;color:var(--tx)">'+r.nm+'</td>'
+        +'<td style="padding:11px 9px;color:var(--t2)">'+r.po+'</td>'
+        +'<td style="padding:11px 9px;color:var(--t2)">'+r.sr+'</td>'
+        +'<td style="padding:11px 9px;color:var(--t2)">'+r.sl+'</td>'
+        +'<td style="padding:11px 9px"><span style="display:inline-block;background:'+bg+';border:1px solid '+cor
+        +';color:'+cor+';border-radius:6px;padding:4px 11px;font-size:16px;font-weight:800;white-space:nowrap">'+lbl+'</span></td>'
+        +'<td style="padding:11px 9px;line-height:1.45;min-width:280px">'
+        +(r.ad&&r.ad!=='ad'&&r.mot&&r.mot.length?'<div style="color:'+cor+';font-weight:700;font-size:17px;margin-bottom:3px">'+gcFrente(r.mot.join(' '))+'</div>':'')
         +'<div style="color:var(--t2)">'+(r.acao||'<span style="color:var(--t3)">—</span>')+'</div></td>'
         +'</tr>';
     });
     h+='</table></div></div>';
   });
-  h+='<div id="gc-empty" style="display:none;font-size:10px;color:var(--t3);padding:10px 16px">Nenhum produto nesta classificação.</div>';
-  box.innerHTML=h;
-  govCapApply();
+  h+='<div id="gc-empty" style="display:none;font-size:18px;color:var(--t3);padding:12px 16px">Nenhuma frente nesta classificação.</div>';
+  return h;
 }
 
 // Filtro da aba: clicar num card do topo mostra só os produtos daquela adequação.
@@ -3458,6 +3850,566 @@ function govCapApply(){
   });
   const e=document.getElementById('gc-empty');
   if(e) e.style.display = n===0 ? 'block' : 'none';
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════
+//  ABA PLANEJAMENTO ESTRATÉGICO
+//  Feita para uma reunião em que a área DEFENDE UM AUMENTO e a meta de captura
+//  ainda não é tratada como compromisso pela audiência. A ordem é: provar, depois pedir.
+//    1. A curva de compromisso   entregamos 2025 · falta 2026 · exige 2027
+//    2. Onde o valor está        alavanca → produtos que a carregam
+//    3. Retorno por produto      captura até 2027 · OKRs · entregas 2S26 e 2027
+//    4. Governança               diagnóstico de suporte, recolhido
+//  O valor em jogo por produto sai das metas ano a ano de cada alavanca
+//  (meta2027_uh) cruzadas com a alocação oficial — nada é estimado aqui.
+// ══════════════════════════════════════════════════════════════════════════
+let piScope   = 'ger';
+let piGovOpen = false;
+let piTeseKey = null;
+
+const PI_SCOPES = [
+  {k:'ger', lbl:'Sob gestão da área', hint:'gestão direta + compartilhada'},
+  {k:'mon', lbl:'Monitoramento estratégico', hint:'iniciativas de outras áreas'},
+  {k:'all', lbl:'Portfólio completo', hint:'todos os produtos'}
+];
+function piKeys(){
+  return Object.keys(PRODS).filter(function(k){
+    const r = prodResp(k);
+    if(piScope==='ger') return r==='dir' || r==='comp';
+    if(piScope==='mon') return r==='mon';
+    return true;
+  });
+}
+// Agrupamento do pedido: o debate orçamentário real é entre quem captura e quem
+// habilita. Separar os dois é o que permite discutir sem comparar coisas incomparáveis.
+const PI_GRUPOS = [
+  {k:'cap',  lbl:'Captura direta',            sub:'produtos com meta financeira atribuída na Captura de Valor'},
+  {k:'hab',  lbl:'Habilitadores e mandatórios', sub:'sustentam a cadeia ou atendem exigência — sem captura direta'},
+  {k:'estr', lbl:'Estratégicos e em definição', sub:'escopo ou valor ainda não atribuídos'}
+];
+function piGrupoOf(k){
+  if(piValor(k).mm!=null) return 'cap';
+  const r=piRoleOf(k);
+  return (r==='hab'||r==='mand') ? 'hab' : 'estr';
+}
+
+// ── NAVEGAÇÃO DE SEÇÕES ───────────────────────────────────────────────────
+// Trilho fixo à esquerda: ícone sempre visível, rótulo revelado no hover (a
+// tela é de apresentação — o trilho não pode roubar espaço nem atenção).
+// A seção em leitura fica destacada via IntersectionObserver, para a pessoa
+// saber onde está sem precisar clicar. Some na impressão e em telas estreitas.
+const PI_SECOES = [
+  {id:'sec-curva',   ic:'◔', lbl:'Curva de compromisso'},
+  {id:'sec-valor',   ic:'◧', lbl:'Onde o valor está'},
+  {id:'sec-frentes', ic:'▣', lbl:'Retorno por frente'},
+  {id:'sec-gov',     ic:'⚙', lbl:'Governança & Capacidade'}
+];
+function piNavHtml(){
+  let h='<nav class="pinav" aria-label="Seções desta aba">';
+  PI_SECOES.forEach(function(x,i){
+    h+='<button class="pinav-i'+(i===0?' on':'')+'" data-alvo="'+x.id+'" onclick="piIrPara(\''+x.id+'\')" title="'+x.lbl+'">'
+      +'<em>'+x.ic+'</em><span>'+x.lbl+'</span></button>';
+  });
+  h+='<button class="pinav-i pinav-top" onclick="piIrPara(\'sec-curva\')" title="Voltar ao topo"><em>↑</em><span>Voltar ao topo</span></button>';
+  return h+'</nav>';
+}
+function piIrPara(id){
+  const el=document.getElementById(id);
+  if(!el) return;
+  // Governança fica recolhida: abre antes de rolar, senão o destino é vazio
+  if(id==='sec-gov'){
+    const det=document.getElementById('pi-gov');
+    if(det && !det.open){ det.open=true; piGovOpen=true; }
+  }
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+let _piObs=null;
+function piNavAtivar(){
+  if(_piObs){ _piObs.disconnect(); _piObs=null; }
+  if(typeof IntersectionObserver!=='function') return;
+  const alvos=PI_SECOES.map(function(x){ return document.getElementById(x.id); }).filter(Boolean);
+  if(!alvos.length) return;
+  const marcar=function(id){
+    document.querySelectorAll('.pinav-i[data-alvo]').forEach(function(b){
+      b.classList.toggle('on', b.getAttribute('data-alvo')===id);
+    });
+  };
+  _piObs=new IntersectionObserver(function(entradas){
+    // a seção visível mais próxima do topo é a que está sendo lida
+    const vis=entradas.filter(function(e){ return e.isIntersecting; })
+      .sort(function(a,b){ return a.boundingClientRect.top-b.boundingClientRect.top; });
+    if(vis.length) marcar(vis[0].target.id);
+  }, {rootMargin:'-88px 0px -60% 0px', threshold:0});
+  alvos.forEach(function(t){ _piObs.observe(t); });
+}
+
+function buildGovCap(){
+  const box=document.getElementById('govcap-body');
+  if(!box) return;
+  const keys=piKeys();
+  // Ordem da narrativa: o compromisso → onde o valor está → quem entrega o quê
+  box.innerHTML = piNavHtml() + piTopHtml() + piBandHtml() + piLeversHtml(keys)
+                + piPedidoHtml(keys) + piGovSectionHtml();
+  govCapApply();
+  piNavAtivar();
+}
+function piSetScope(v){ piScope=v; buildGovCap(); }
+
+function piTopHtml(){
+  let sc='';
+  PI_SCOPES.forEach(function(x){
+    sc+='<div class="pi-chip'+(piScope===x.k?' on':'')+'" onclick="piSetScope(\''+x.k+'\')" title="'+x.hint+'">'+x.lbl+'</div>';
+  });
+  return '<div class="pi-top"><div>'
+    +'<div class="pi-top-t">Planejamento Estratégico</div>'
+    +'<div class="pi-top-s">O que já entregamos, o que falta capturar e a capacidade necessária · 2S26 e 2027</div></div>'
+    +'<div class="pi-scope">'+sc+'</div></div>';
+}
+
+// ── 1. A CURVA DE COMPROMISSO ─────────────────────────────────────────────
+// Abre pela credibilidade (2025 entregue acima da meta) e só então mostra o
+// tamanho do que vem. É a peça que reestabelece a meta como compromisso.
+function piBandHtml(){
+  const total=CV_TOTAL_COM_FIN/1e6;
+  const cap25=CV_CAP2025_COM_FIN/1e6;
+  const meta25=total*0.15;
+  const m26=piMetaAno(2026), m27=piMetaAno(2027);
+  const falta26=m26-cap25, inc27=m27-m26, resto=Math.max(0,total-m27);
+  const pctEnt=Math.round(cap25/meta25*100);
+  const razao=(falta26/cap25);
+
+  const seg=function(v,col,tit,txtCol){
+    const w=(v/total*100);
+    return '<div style="width:'+w.toFixed(2)+'%;background:'+col+';color:'+(txtCol||'#fff')+'" title="'+tit+'">'
+      +(w>9?piFmtM(v):'')+'</div>';
+  };
+  const lg=function(v,col,l1,l2){
+    return '<div style="width:'+(v/total*100).toFixed(2)+'%;padding-right:8px">'
+      +'<div style="color:'+col+';font-size:15px;font-weight:800">'+l1+'</div>'
+      +'<div style="font-size:14px;color:var(--t3)">'+l2+' · '+cvFmtUH(v*1e6/CV_UH_BASE)+' R$/UH</div></div>';
+  };
+  // R$/UH é a unidade em que as metas são apuradas na planilha oficial —
+  // aparece discreto, sob o valor absoluto, para conectar as duas leituras.
+  const uh=function(mm){ return cvFmtUH(mm*1e6/CV_UH_BASE)+' R$/UH'; };
+  const bn=function(l,v,mm,col,s){
+    return '<div><div class="pi-bn-l">'+l+'</div>'
+      +'<div class="pi-bn-v" style="color:'+col+'">'+v+'</div>'
+      +'<div class="pi-bn-uh">'+uh(mm)+'</div>'
+      +'<div class="pi-bn-s">'+s+'</div></div>';
+  };
+
+  return '<div class="pi-band" id="sec-curva">'
+    +'<div class="pi-band-l">'
+    + bn('2025 · entregamos', piFmtM(cap25), cap25, 'var(--g)', 'meta era '+piFmtM(meta25)+' · <b style="color:var(--g)">'+pctEnt+'% da meta</b>')
+    + bn('2026 · falta capturar', piFmtM(falta26), falta26, 'var(--o)', 'meta acumulada '+piFmtM(m26)+' (40%)')
+    + bn('2027 · incremento exigido', piFmtM(inc27), inc27, 'var(--o)', 'meta acumulada '+piFmtM(m27)+' (65%)')
+    +'</div>'
+    +'<div class="pi-therm">'
+    + seg(cap25,'var(--g)','Capturado em 2025')
+    + seg(falta26,'var(--o)','A capturar ainda em 2026')
+    + seg(inc27,'#ffb570','Incremento exigido em 2027')
+    + seg(resto,'#e2e8f0','Captura mapeada para 2028 a 2030','#64748b')
+    +'</div>'
+    +'<div class="pi-tlg">'
+    + lg(cap25,'var(--g)','Capturado','2025')
+    + lg(falta26,'var(--o)','A capturar','2026')
+    + lg(inc27,'#c26a10','Incremento','2027')
+    + lg(resto,'#64748b','Mapeado','2028–2030')
+    +'</div>'
+    +'<div class="pi-lead">A curva muda de patamar: <b>2026 exige '+razao.toFixed(1).replace('.',',')+'× o que capturamos em 2025</b>, e 2027 pede outro tanto — '
+    +'com uma estrutura dimensionada para a curva de 2025. É esse degrau que o planejamento abaixo endereça. '
+    +'<span style="color:var(--t3);font-size:16px">Base de apuração: '+(CV_UH_BASE/1000)+' mil UH.</span></div>'
+    +'</div>';
+}
+
+// ── Listas longas: excedente recolhido atrás de "ver mais" ────────────────
+// Usado em entregas, KRs e produtos por alavanca. No PDF tudo sai expandido.
+let _piMoreN = 0;
+function piMore(id, btn){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const aberto = !el.classList.contains('pi-hid');
+  el.classList.toggle('pi-hid', aberto);
+  btn.textContent = aberto ? ('Ver mais ('+btn.getAttribute('data-n')+')') : 'Ver menos';
+}
+// itens: array de strings de HTML já prontas
+function piLista(itens, cap){
+  if(!itens.length) return '';
+  if(itens.length<=cap) return itens.join('');
+  const id='pimore'+(++_piMoreN), n=itens.length-cap;
+  return itens.slice(0,cap).join('')
+    +'<div id="'+id+'" class="pi-hid">'+itens.slice(cap).join('')+'</div>'
+    +'<button class="pi-more" data-n="'+n+'" onclick="event.stopPropagation();piMore(\''+id+'\',this)">Ver mais ('+n+')</button>';
+}
+
+// ── 2. RETORNO POR PRODUTO — um cartão por frente ─────────────────────────
+function piOkrPct(o){
+  if(!o.krs || !o.krs.length) return 0;
+  return Math.round(o.krs.reduce(function(a,k){ return a+krPct(k); },0)/o.krs.length);
+}
+function piBarCol(pct){ return pct>=80?'var(--gm)':(pct>=40?'var(--o)':'#cbd5e1'); }
+
+// Entregas do período no formato de item de cartão
+function piEntItens(k, pers){
+  const e=piEntregas(k,pers);
+  return e.itens.map(function(m){
+    const cfg = m.s==='done' ? {bg:'var(--gb)', col:'var(--gm)', ic:'✓'}
+              : m.s==='doing' ? {bg:'var(--ob)', col:'var(--o)', ic:'◐'}
+              : {bg:'var(--gyb)', col:'var(--t3)', ic:'○'};
+    return '<div class="frc-ent-i"><em style="background:'+cfg.bg+';color:'+cfg.col+'">'+cfg.ic+'</em>'
+      +'<span>'+cxEsc(m.txt)+'</span></div>';
+  });
+}
+
+// ── INSIGHT SUGERIDO POR FRENTE ───────────────────────────────────────────
+// Rascunho gerado a partir do que já está no dashboard: valor em jogo, KR mais
+// atrasado, KRs concluídos, entregas cadastradas e adequação de governança.
+// NÃO é salvo e NÃO substitui o campo Insight — aparece marcado como sugestão
+// até que alguém do time escreva o texto oficial no resumo da frente.
+function piInsightSugerido(k){
+  const p=PRODS[k]||{}, jogo=piEmJogo(k), v=piValor(k);
+  const partes=[];
+
+  // 1. O que está em jogo neste ciclo
+  if(jogo!=null && jogo>0.05){
+    const pctCiclo=v.mm?Math.round(jogo/v.mm*100):0;
+    partes.push(piFmtM(jogo)+' precisam ser capturados até 2027 — '+pctCiclo+'% de todo o potencial da frente');
+  } else {
+    partes.push('Sem captura financeira direta atribuída — papel de '+PI_ROLE[piRoleOf(k)].toLowerCase()
+      +': o retorno aparece nas alavancas que esta frente sustenta');
+  }
+
+  // 2. Onde está o gargalo entre os KRs
+  let pior=null, concl=0, total=0;
+  (p.okrs||[]).forEach(function(o){
+    (o.krs||[]).forEach(function(kr){
+      const pct=krPct(kr); total++;
+      if(pct>=100) concl++;
+      if(!pior || pct<pior.pct) pior={pct:pct, kr:kr};
+    });
+  });
+  if(total && pior){
+    const nome=String(pior.kr.lbl||'').replace(/^KR\d+:\s*/,'');
+    if(concl===total){
+      partes.push('todos os '+total+' KRs concluídos — o próximo passo é converter a entrega em captura apurada');
+    } else if(pior.pct<40){
+      const real=(pior.kr.real&&pior.kr.real!=='—')?pior.kr.real:(pior.pct+'%');
+      const meta=(pior.kr.meta&&pior.kr.meta!=='—')?(' de '+pior.kr.meta):'';
+      partes.push('o gargalo é "'+nome+'", em '+real+meta
+        +(concl?' — apesar de '+concl+' de '+total+' KRs já concluídos':''));
+    } else if(concl){
+      partes.push(concl+' de '+total+' KRs concluídos; o menor avanço está em "'+nome+'"');
+    } else {
+      partes.push('nenhum KR concluído ainda; o menor avanço está em "'+nome+'"');
+    }
+  } else {
+    partes.push('sem OKR cadastrado — falta o resultado que sustenta a captura');
+  }
+
+  // 3. Lacunas de planejamento e de estrutura
+  const alertas=[];
+  const e26=piEntregas(k,PI_PER_2S26), e27=piEntregas(k,PI_PER_2027);
+  if(!e26.itens.length && !e27.itens.length) alertas.push('não há entrega prevista no roadmap');
+  else if(!e27.itens.length) alertas.push('2027 ainda sem entrega prevista');
+  else if(!e26.marco && !e27.marco) alertas.push('nenhuma entrega classificada como Marco');
+  const adeq=calcGovAdeq(k);
+  if(adeq.ad==='in') alertas.push('estrutura classificada como Inadequada na governança');
+  else if(adeq.ad==='at') alertas.push('estrutura em atenção na governança');
+
+  let txt=partes[0]+'. '+partes[1].charAt(0).toUpperCase()+partes[1].slice(1)+'.';
+  if(alertas.length) txt+=' Atenção: '+alertas.join(' e ')+'.';
+  return txt;
+}
+
+function piProdCard(k){
+  const p=PRODS[k], v=piValor(k), jogo=piEmJogo(k);
+  const temValor = (jogo!=null && jogo>0.05);
+
+  // Coluna 1 — identidade e o que está em jogo
+  let id='<div class="frc-id"><div class="frc-nm">'+cxEsc(p.nm)+'</div>'
+    +'<div class="frc-mod">'+RESP_LABEL[prodResp(k)]+'</div>';
+  if(temValor){
+    const t=piFmtM(jogo).replace(/^R\$ /,'');
+    id+='<div class="frc-val"><small>R$ </small>'+t+'</div>'
+      +'<div class="frc-sub">de '+piFmtM(v.mm)+' até 2030'+(v.shared?' · compartilhado':'')+'</div>';
+  } else {
+    id+='<div class="frc-role">'+PI_ROLE[piRoleOf(k)]+'</div>'
+      +'<div class="frc-sub">sem captura financeira direta atribuída</div>';
+  }
+  id+='<button class="frc-btn" onclick="piOpenTese(\''+k+'\')">Resumo da frente</button></div>';
+
+  // Coluna 2 — objetivo e cada KR descrito
+  let okr='<div class="frc-col"><div class="frc-sec-t"><i>◎</i>Objetivo / OKR<s></s></div>';
+  const okrs=p.okrs||[];
+  if(!okrs.length){
+    okr+='<div style="font-size:17px;color:var(--t3)">Nenhum OKR cadastrado.</div>';
+  } else {
+    okrs.forEach(function(o){
+      const pct=piOkrPct(o), col=piBarCol(pct);
+      okr+='<div class="frc-obj"><div class="frc-obj-t">'+cxEsc(o.ttl)+'</div>'
+        +'<div class="frc-obj-p"><b style="color:'+col+'">'+pct+'<span style="display:inline;font-size:17px">%</span></b>'
+        +'<span>progresso geral</span></div></div>';
+      const krs=(o.krs||[]).map(function(kr,i){
+        const kp=krPct(kr), kc=piBarCol(kp);
+        const real=(kr.real&&kr.real!=='—')?String(kr.real):(kp+'%');
+        const meta=(kr.meta&&kr.meta!=='—')?String(kr.meta):'—';
+        return '<div class="frc-kr"><div class="frc-kr-h">'
+          +'<div class="frc-kr-n">'+(i+1)+'</div>'
+          +'<div class="frc-kr-l">'+cxEsc(kr.lbl)+'</div>'
+          +'<div class="frc-kr-v"><span>Valor atual</span><b style="color:'+kc+'">'+cxEsc(real)+'</b></div>'
+          +'<div class="frc-kr-v" style="margin-left:20px"><span>Meta</span><b style="color:var(--t3)">'+cxEsc(meta)+'</b></div>'
+          +'</div><div class="frc-kr-b"><i style="width:'+Math.min(100,kp)+'%;background:'+kc+'"></i></div></div>';
+      });
+      okr+=piLista(krs,3);
+    });
+  }
+  okr+='</div>';
+
+  // Coluna 3 — entregas planejadas
+  const e26=piEntItens(k,PI_PER_2S26), e27=piEntItens(k,PI_PER_2027);
+  const vazio='<div style="font-size:22px;color:var(--t3);padding:4px 0 8px">—</div>';
+  let ent='<div class="frc-col"><div class="frc-sec-t"><i>▲</i>Entregas planejadas<s></s></div>'
+    +'<div class="frc-ent-h">Entregas 2S26</div>'
+    +(e26.length?piLista(e26,5):vazio)
+    +'<div class="frc-ent-h sec">Entregas 2027</div>'
+    +(e27.length?piLista(e27,5):vazio)
+    +'</div>';
+
+  // Faixa de insight
+  const ins=(p.portfolio_insights||'').trim();
+  const insHtml='<div class="frc-ins"><i>✦</i><b>Insight<br>executivo</b><s></s>'
+    +(ins
+      ? '<p>'+cxEsc(ins)+'</p>'
+      : '<p class="sug"><span class="frc-sug">sugestão · revisar</span>'+cxEsc(piInsightSugerido(k))+'</p>')
+    +'</div>';
+
+  return '<div class="frc">'+id+okr+ent+insHtml+'</div>';
+}
+
+function piPedidoHtml(keys){
+  const ord=function(a,b){
+    const ja=piEmJogo(a), jb=piEmJogo(b);
+    if(ja==null&&jb==null) return PRODS[a].nm.localeCompare(PRODS[b].nm);
+    if(ja==null) return 1; if(jb==null) return -1;
+    return (jb-ja)||PRODS[a].nm.localeCompare(PRODS[b].nm);
+  };
+  let h='<div class="pi-hd" id="sec-frentes"><div class="pi-hd-t">Retorno por frente</div>'
+    +'<div class="pi-hd-s">quanto capturar até 2027 · resultado perseguido · o que está previsto entregar</div></div>';
+
+  const cksTot={};
+  PI_GRUPOS.forEach(function(g){
+    const grupo=keys.filter(function(k){ return piGrupoOf(k)===g.k; }).sort(ord);
+    if(!grupo.length) return;
+    const cksG={};
+    grupo.forEach(function(k){
+      const v=piValor(k), j=piEmJogo(k);
+      if(v.ck && j!=null && cksG[v.ck]===undefined){ cksG[v.ck]=j; if(cksTot[v.ck]===undefined) cksTot[v.ck]=j; }
+    });
+    const gJogo=Object.keys(cksG).reduce(function(a,c){ return a+cksG[c]; },0);
+    h+='<div class="frc-grp"><div class="frc-grp-p">'+g.lbl+'</div>'
+      +'<div class="frc-grp-s">'+grupo.length+' frente'+(grupo.length>1?'s':'')
+      +(gJogo>0.05?' · <b style="color:var(--g)">'+piFmtM(gJogo)+'</b> a capturar até 2027':'')+'</div></div>';
+    grupo.forEach(function(k){ h+=piProdCard(k); });
+  });
+
+  const totJogo=Object.keys(cksTot).reduce(function(a,c){ return a+cksTot[c]; },0);
+  h+='<div class="lv-foot" style="border-color:var(--g);background:var(--gb)"><i>Σ</i>'
+    +'<b>Total do<br>recorte</b><s style="background:rgba(7,157,86,.3)"></s>'
+    +'<div><b style="font-size:26px;letter-spacing:-.8px;text-transform:none;white-space:normal">'+piFmtM(totJogo)+'</b> '
+    +'de captura que estas entregas precisam destravar até o fim de 2027.<br>'
+    +'<span style="font-size:15px;color:var(--t2)">Valor derivado das metas oficiais por alavanca × alocação da Captura de Valor, descontado o já capturado em 2025.</span></div></div>';
+  return h;
+}
+
+// ── 3. ONDE O VALOR ESTÁ — alavanca → produtos ────────────────────────────
+// Prova que a meta não é abstrata: cada real tem uma alavanca e um dono.
+// Ordenada pelo que ainda falta capturar até 2027 — é essa a fila da meta.
+function piLeversHtml(keys){
+  const inScope={}; keys.forEach(function(k){ const c=PI_CV_KEY[k]; if(c) inScope[c]=true; });
+  const rows=Object.keys(CV_LEVERS).map(function(lk){
+    const L=CV_LEVERS[lk];
+    const alvo27=(L.meta2027_uh||0)*CV_UH_BASE/1e6;
+    const feito=(L.cap2025_uh||0)*CV_UH_BASE/1e6;
+    const donos=Object.keys(ALAV_PCT[lk]||{})
+      .map(function(ck){ return {ck:ck, pct:ALAV_PCT[lk][ck]||0}; })
+      .filter(function(x){ return x.pct>0 && inScope[x.ck]; })
+      .sort(function(a,b){ return b.pct-a.pct; });
+    return {k:lk, nm:ALAVANCAS[lk], pot:L.fin/1e6, falta:Math.max(0,alvo27-feito), donos:donos};
+  }).sort(function(a,b){ return b.falta-a.falta; });
+
+  const totFalta=rows.reduce(function(a,r){ return a+r.falta; },0);
+
+  let h='<div class="pi-hd" id="sec-valor"><div class="pi-hd-t">Onde o valor está</div>'
+    +'<div class="pi-hd-s">alavancas priorizadas pelo valor que ainda falta capturar até 2027</div></div>'
+    +'<div class="pi-card pi-scroll" style="border:none;background:none"><table class="lv">'
+    +'<tr><th style="width:34%">Alavanca</th><th style="width:34%">Falta até 2027 · potencial</th>'
+    +'<th>Produtos que a carregam</th></tr>';
+
+  rows.forEach(function(r,i){
+    const chips=r.donos.map(function(x){
+      return '<span class="pi-lev">'+cxEsc(CV_SHORT[x.ck]||x.ck)+' <b>'+x.pct+'%</b></span>';
+    });
+    const w = r.pot>0 ? Math.min(100, r.falta/r.pot*100) : 0;
+    h+='<tr><td><div style="display:flex;align-items:center;gap:14px">'
+      +'<div class="lv-n">'+(i+1)+'</div><div class="lv-nm">'+cxEsc(r.nm)+'</div></div></td>'
+      +'<td><div class="lv-v"><div class="lv-v-l"><b>'+piFmtM(r.falta)+'</b>'
+      +'<div class="lv-bar"><i style="width:'+w.toFixed(1)+'%"></i></div></div>'
+      +'<div class="lv-pot">Potencial '+piFmtM(r.pot)+'</div></div></td>'
+      +'<td>'+(chips.length?piLista(chips,4):'<span class="pi-dash">—</span>')+'</td></tr>';
+  });
+  h+='</table></div>';
+
+  // Leitura executiva: concentração do valor remanescente e recorrência dos produtos
+  const top3=rows.slice(0,3);
+  const pctTop3=totFalta?Math.round(top3.reduce(function(a,r){ return a+r.falta; },0)/totFalta*100):0;
+  // Recorrência entre as 5 alavancas prioritárias; empate desfeito pelo volume
+  // remanescente que o produto carrega, para o mais relevante vir primeiro.
+  const freq={}, peso={};
+  rows.slice(0,5).forEach(function(r){
+    r.donos.slice(0,4).forEach(function(x){
+      freq[x.ck]=(freq[x.ck]||0)+1;
+      peso[x.ck]=(peso[x.ck]||0)+x.pct/100*r.falta;
+    });
+  });
+  const recorrentes=Object.keys(freq).filter(function(c){ return freq[c]>=2; })
+    .sort(function(a,b){ return (freq[b]-freq[a]) || (peso[b]-peso[a]); }).slice(0,4)
+    .map(function(c){ return CV_SHORT[c]||c; });
+  const listar=function(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')+' e '+a[a.length-1]; };
+
+  h+='<div class="lv-foot"><i>◧</i><b>Leitura<br>executiva</b><s></s><div>'
+    +cxEsc(listar(top3.map(function(r){ return r.nm; })))+' concentram <b>'+pctTop3+'%</b> do valor que ainda falta capturar.'
+    +(recorrentes.length?'<br>'+cxEsc(listar(recorrentes))+' aparece'+(recorrentes.length>1?'m':'')+' de forma recorrente entre as alavancas prioritárias.':'')
+    +'</div></div>';
+  return h;
+}
+
+// ── 4. GOVERNANÇA (lógica atual preservada, recolhida) ────────────────────
+function piGovSectionHtml(){
+  return '<div class="pi-hd" id="sec-gov"><div class="pi-hd-t">Diagnóstico de Governança &amp; Capacidade</div>'
+    +'<div class="pi-hd-s">suporte à decisão — modelos de gestão, senioridade de PO, Squad Leaders e adequação</div></div>'
+    +'<details id="pi-gov"'+(piGovOpen?' open':'')+' ontoggle="piGovOpen=this.open" style="background:var(--wh);border:1.5px solid var(--bd);border-radius:var(--r);padding:12px 16px">'
+    +'<summary style="cursor:pointer;font-size:11.5px;font-weight:800;color:var(--g);outline:none">Ver diagnóstico detalhado</summary>'
+    +'<div style="margin-top:12px">'+govCapHtml()+'</div></details>';
+}
+
+const PI_ETAPA = {est:'Estratégia', pre:'Pré-Obra', obra:'Obra', pos:'Pós-Obra'};
+
+// ── PAINEL LATERAL · RESUMO DO PRODUTO ────────────────────────────────────
+// Só leitura do que já existe no dashboard, mais dois campos de julgamento da
+// gestão. Sem capacidade/FTE e sem direcionamento de investimento: essas duas
+// discussões saíram desta aba.
+function piOpenTese(k){
+  if(!PRODS[k]) return;
+  piTeseKey=k;
+  piRenderTese();
+  const bg=document.getElementById('pi-dw-bg');
+  if(bg){ bg.classList.add('open'); const dw=document.getElementById('pi-dw'); if(dw) dw.scrollTop=0; }
+  document.addEventListener('keydown', piTeseKey0);
+}
+function piTeseKey0(e){ if(e.key==='Escape') piCloseTese(); }
+function piCloseTese(){
+  const bg=document.getElementById('pi-dw-bg');
+  if(bg) bg.classList.remove('open');
+  document.removeEventListener('keydown', piTeseKey0);
+  piTeseKey=null;
+}
+function piRenderTese(){
+  const box=document.getElementById('pi-dw');
+  if(!box || !piTeseKey) return;
+  const k=piTeseKey, p=PRODS[k], v=piValor(k), jogo=piEmJogo(k);
+  const blk=function(lbl,val){ return '<div class="pi-dw-blk"><div class="pi-dw-l">'+lbl+'</div><div class="pi-dw-v">'+val+'</div></div>'; };
+
+  // Cabeçalho: identidade do produto
+  let h='<div style="position:relative"><button class="pi-dw-x" onclick="piCloseTese()">✕</button>'
+    +'<div style="font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:'+RESP_COL[prodResp(k)]+'">'
+      +RESP_LABEL[prodResp(k)]+' · '+(PI_ETAPA[p.etapa]||'')+'</div>'
+    +'<div class="pi-dw-t" style="margin-top:5px">'+cxEsc(p.nm)+'</div>'
+    +(p.desc?'<div class="pi-dw-d">'+cxEsc(p.desc)+'</div>':'')
+    +'</div>';
+
+  // Quem toca
+  h+=blk('Quem conduz',
+     '<b>PO</b> '+cxEsc(p.po||'—')+' &nbsp;·&nbsp; <b>SL</b> '+cxEsc(p.gov_sl||'—')
+     +' &nbsp;·&nbsp; <b>Gestão</b> '+(p.gestor==='lm'?'Lílian e Marcos':(p.gestor==='l'?'Lílian':'Marcos')));
+
+  // Valor em jogo neste ciclo, com as alavancas que o produto carrega
+  let valHtml;
+  if(jogo!=null && jogo>0.05){
+    const chipsArr=piLeversOf(k,1).map(function(x){ return '<span class="pi-lev">'+cxEsc(ALAVANCAS[x.k])+' <b>'+x.pct+'%</b></span>'; });
+    const chips=piLista(chipsArr,4);
+    valHtml='<b style="color:var(--g);font-size:34px;letter-spacing:-1px">'+piFmtM(jogo)+'</b>'
+      +'<div style="font-size:16px;color:var(--t3);font-weight:600;margin-top:2px">a capturar até o fim de 2027 · de '+piFmtM(v.mm)+' de potencial total'
+      +(v.shared?' · compartilhado com '+cxEsc(v.shared):'')+'</div>'
+      +(chips?'<div style="margin-top:10px">'+chips+'</div>':'');
+  } else {
+    valHtml='<b>'+PI_ROLE[piRoleOf(k)]+'</b>'
+      +'<div style="font-size:16px;color:var(--t3);font-weight:600;margin-top:2px">sem captura financeira direta atribuída — o valor está no que habilita</div>';
+  }
+  h+=blk('Valor em jogo até 2027', valHtml);
+
+  // OKRs completos — aqui cabem, porque é o detalhe sob demanda
+  let okrHtml='';
+  (p.okrs||[]).forEach(function(o){
+    const pct=piOkrPct(o), col=piBarCol(pct);
+    okrHtml+='<div style="margin-bottom:16px"><div style="font-size:19px;font-weight:700;color:var(--tx);line-height:1.35">'+cxEsc(o.ttl)
+      +' <span style="color:'+col+'">'+pct+'%</span></div>';
+    const krs=(o.krs||[]).map(function(kr){
+      const kp=krPct(kr), kc=piBarCol(kp);
+      return '<div class="pi-kr"><div class="pi-kr-l">'+cxEsc(kr.lbl)+'</div>'
+        +'<div class="pi-kr-b"><i style="width:'+Math.min(100,kp)+'%;background:'+kc+'"></i></div>'
+        +'<div class="pi-kr-p" style="color:'+kc+'">'+(kr.real&&kr.real!=='—'?cxEsc(String(kr.real)):kp+'%')+'</div></div>';
+    });
+    okrHtml+=piLista(krs,3)+'</div>';
+  });
+  h+=blk('OKRs e resultados-chave', okrHtml||'<span style="color:var(--t3)">nenhum OKR cadastrado</span>');
+
+  // Entregas — mesma regra da tabela
+  const ent=function(lbl,pers){
+    const e=piEntregas(k,pers);
+    let c='<div style="flex:1;min-width:240px"><div class="pi-dw-l" style="margin-bottom:5px">'+lbl
+      +(e.itens.length?' <span style="color:'+(e.marco?'var(--g)':'var(--t3)')+'">· '+(e.marco?'Marcos':'entregas previstas')+'</span>':'')+'</div>';
+    if(!e.itens.length) return c+'<span class="pi-dash">—</span></div>';
+    return c+piLista(piEntItens(k,pers),5)+'</div>';
+  };
+  h+='<div class="pi-dw-blk"><div style="display:flex;gap:26px;flex-wrap:wrap">'
+    + ent('Entregas 2S26', PI_PER_2S26) + ent('Entregas 2027', PI_PER_2027) + '</div></div>';
+
+  // Papel estratégico — julgamento da gestão, editável
+  h+='<div class="pi-dw-blk"><div class="pi-dw-l">Papel estratégico</div>'
+    +'<select class="pi-dw-in" id="pi-role" style="font-weight:700">';
+  Object.keys(PI_ROLE).forEach(function(rk){ h+='<option value="'+rk+'"'+(piRoleOf(k)===rk?' selected':'')+'>'+PI_ROLE[rk]+'</option>'; });
+  h+='</select></div>';
+
+  h+='<div class="pi-dw-blk"><div class="pi-dw-l">Insights</div>'
+    +'<textarea class="pi-dw-in" id="pi-insights" rows="5" placeholder="Anotações livres sobre a frente — o que sustenta ou ameaça a captura prevista.">'+cxEsc(p.portfolio_insights||'')+'</textarea>'
+    +(p.portfolio_insights?'':'<div class="pi-sugbox"><div class="pi-sugbox-h">Sugestão automática <span>gerada a partir dos dados da frente · não está salva</span></div>'
+        +'<div class="pi-sugbox-t" id="pi-sug-txt">'+cxEsc(piInsightSugerido(k))+'</div>'
+        +'<button class="pi-more" onclick="piUsarSug()">Usar como ponto de partida</button></div>')
+    +'</div>';
+
+  h+='<button class="pi-dw-btn" onclick="piSaveTese()">Salvar</button>'
+    +'<button class="pi-dw-btn sec" onclick="piCloseTese()">Fechar sem salvar</button>';
+
+  box.innerHTML=h;
+}
+// Copia a sugestão para o campo — só vira dado salvo se a pessoa clicar em Salvar
+function piUsarSug(){
+  const t=document.getElementById('pi-sug-txt'), c=document.getElementById('pi-insights');
+  if(t&&c){ c.value=t.textContent; c.focus(); }
+}
+function piSaveTese(){
+  const k=piTeseKey; if(!k || !PRODS[k]) return;
+  if(!requireEditor(function(){ piSaveTese(); })) return;
+  const p=PRODS[k];
+  const txt=function(id){ const el=document.getElementById(id); return el?el.value.trim():''; };
+  const role=txt('pi-role'); if(PI_ROLE[role]) p.portfolio_role=role;
+  const ins=txt('pi-insights'); if(ins) p.portfolio_insights=ins; else delete p.portfolio_insights;
+  delete p.pi_papel;
+  setEditDetail('atualizou o resumo do produto no plano do portfólio', p.nm);
+  fbSaveProd(k);
+  piCloseTese();
+  buildGovCap();
 }
 
 // Contador agregado de adequação de capacidade, exibido na barra de filtros.
@@ -7047,6 +7999,7 @@ function refreshAfterLoad() {
   if (id === 'valor') { buildValor(); buildConn(); }
   else if (id === 'rdmap') buildRdmap();
   else if (id === 'okrev') buildOKRev();
+  else if (id === 'govcap') buildGovCap();
 }
 
 // ═══ Sincronização MDM → JIP (contrato de resumo) ═══
@@ -7293,6 +8246,71 @@ function downloadFile(content, filename, mime) {
 }
 
 // ── Export JSON (full backup)
+// ══════════════════════════════════════════════════════════════════════════
+//  EXPORTAR A ABA ATIVA EM PDF
+//  Imprime só a página aberta (.pg.on), carimbando um cabeçalho que identifica
+//  a aba, a data/hora de geração e o recorte que estava aplicado — para que a
+//  folha impressa nunca fique ambígua sobre o que ela mostra.
+//  É WYSIWYG: o que estiver recolhido na tela sai recolhido no PDF.
+// ══════════════════════════════════════════════════════════════════════════
+const PDF_TAB_LABEL = {
+  port:  'Portfólio da Jornada',
+  rdmap: 'Roadmap Integrado',
+  okrev: 'Evolução de KRs',
+  valor: 'Captura de Valor',
+  govcap:'Planejamento Estratégico'
+};
+function pdfActiveTab(){
+  const pg=document.querySelector('.pg.on');
+  return pg ? pg.id.replace(/^pg-/,'') : '';
+}
+// Contexto relevante da aba, para o cabeçalho não sair genérico
+function pdfTabCtx(id){
+  if(id==='govcap' && typeof piScope!=='undefined' && typeof PI_SCOPES!=='undefined'){
+    const sc=PI_SCOPES.filter(function(x){ return x.k===piScope; })[0];
+    const det=document.getElementById('pi-gov');
+    return (sc?'Recorte: '+sc.lbl:'') + (det&&det.open?' · com diagnóstico de governança':'');
+  }
+  return '';
+}
+function exportTabPDF(){
+  const menu=document.getElementById('hd-menu'); if(menu) menu.style.display='none';
+  const id=pdfActiveTab();
+  const hd=document.getElementById('pdf-hd');
+  if(!id || !hd){ alert('Não foi possível identificar a aba ativa.'); return; }
+
+  // Painéis sobrepostos não devem aparecer no papel
+  if(typeof piCloseTese==='function' && typeof piTeseKey!=='undefined' && piTeseKey) piCloseTese();
+
+  const d=new Date(), z=function(n){ return String(n).padStart(2,'0'); };
+  const ctx=pdfTabCtx(id);
+  hd.innerHTML='<div class="pdf-hd-t">'+cxEsc(PDF_TAB_LABEL[id]||'Jornada Integrada da Produção')+'</div>'
+    +'<div class="pdf-hd-s">Jornada Integrada da Produção · Plataformas e Sistemas · MRV&amp;CO'
+    +' — gerado em '+z(d.getDate())+'/'+z(d.getMonth()+1)+'/'+d.getFullYear()+' às '+z(d.getHours())+':'+z(d.getMinutes())
+    +(ctx?' · '+cxEsc(ctx):'')+'</div>';
+
+  // @page não pode ser condicionado por classe: injeta e remove junto da impressão
+  let st=document.getElementById('pdf-page-style');
+  if(!st){
+    st=document.createElement('style');
+    st.id='pdf-page-style';
+    st.textContent='@page{size:A4 landscape;margin:10mm;}';
+    document.head.appendChild(st);
+  }
+  document.body.classList.add('pdf-tab');
+
+  const cleanup=function(){
+    document.body.classList.remove('pdf-tab');
+    const s2=document.getElementById('pdf-page-style');
+    if(s2 && s2.parentNode) s2.parentNode.removeChild(s2);
+    window.removeEventListener('afterprint', cleanup);
+  };
+  window.addEventListener('afterprint', cleanup);
+  // Safari nem sempre dispara afterprint; window.print() bloqueia até o diálogo
+  // fechar, então o timer só começa a contar depois disso.
+  setTimeout(function(){ window.print(); setTimeout(cleanup, 800); }, 60);
+}
+
 function exportJSON() {
   document.getElementById('hd-menu').style.display = 'none';
   const backup = {
@@ -7506,7 +8524,7 @@ function applyAutoStatus(prodKey) {
 // ══════════════════════════════════════════
 //  MODO COMEX — report executivo derivado dos dados vivos
 // ══════════════════════════════════════════
-console.log('[JIP] build i6 — sanitização de alavancas + alavancas/ambições no header do produto');
+console.log('[JIP] build i17 — trilho de seções deixa de sobrepor o conteúdo');
 const CX_ST_LBL = {sv:'No prazo', so:'Atenção', sg:'Acompanhar'};
 const CX_G_LBL  = {l:'Lilian Lage', m:'Marcos Costa', lm:'Lilian · Marcos'};
 let cxPage = 0, cxTotal = 0, cxQ = Math.floor(CUR_M/3);
