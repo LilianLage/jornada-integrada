@@ -1167,7 +1167,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .frc-grp-p{background:var(--g);color:#fff;border-radius:30px;padding:8px 20px;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;white-space:nowrap;}
 .frc-grp-s{font-size:18px;color:var(--t2);font-weight:600;padding-right:14px;}
 .frc{display:grid;grid-template-columns:290px minmax(0,1.15fr) minmax(0,1fr);gap:0;background:var(--wh);border:1.5px solid var(--bd);border-radius:18px;overflow:hidden;margin-bottom:16px;}
-.frc-id{background:linear-gradient(150deg,#00301b 0%,var(--g) 58%,#0a5c36 100%);color:#fff;padding:26px 24px 24px;display:flex;flex-direction:column;}
+.frc-id{grid-column:1;grid-row:1/3;background:linear-gradient(150deg,#00301b 0%,var(--g) 58%,#0a5c36 100%);color:#fff;padding:26px 24px 24px;display:flex;flex-direction:column;}
 .frc-nm{font-size:38px;font-weight:800;letter-spacing:-1.4px;line-height:1.05;}
 .frc-mod{font-size:17px;font-weight:700;color:rgba(255,255,255,.72);margin-top:4px;}
 .frc-val{font-size:44px;font-weight:800;letter-spacing:-1.8px;line-height:1.05;margin-top:auto;padding-top:26px;}
@@ -1199,11 +1199,14 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .frc-ent-i{display:flex;align-items:flex-start;gap:11px;background:#fbfcfe;border:1px solid var(--bd);border-radius:9px;padding:9px 13px;margin-bottom:7px;}
 .frc-ent-i em{width:22px;height:22px;border-radius:50%;font-style:normal;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .frc-ent-i span{font-size:16px;color:var(--tx);line-height:1.35;}
-.frc-ins{grid-column:1/-1;display:flex;align-items:center;gap:16px;background:var(--gb);border-top:1.5px solid var(--bd);padding:16px 24px;}
-.frc-ins i{width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;font-style:normal;flex-shrink:0;}
+/* Faixa de insight — primeira linha do cartão, mas começando onde a lateral escura
+   termina: a coluna de identidade sobe até o topo e a faixa verde ocupa toda a
+   largura restante, alinhada com o conteúdo das colunas de baixo. */
+.frc-ins{grid-column:2/-1;grid-row:1;display:flex;align-items:center;gap:16px;background:var(--gb);border-bottom:1.5px solid var(--bd);border-left:1.5px solid var(--bd);padding:18px 24px;}
+.frc-ins i{width:38px;height:38px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal;flex-shrink:0;}
 .frc-ins b{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--g);white-space:nowrap;}
 .frc-ins s{width:1.5px;align-self:stretch;background:rgba(7,157,86,.3);text-decoration:none;}
-.frc-ins p{margin:0;font-size:17px;color:var(--tx);line-height:1.45;}
+.frc-ins p{margin:0;font-size:22px;font-weight:600;color:var(--tx);line-height:1.4;letter-spacing:-.2px;}
 .frc-ins p.vazio{color:var(--t3);font-style:italic;}
 /* Botão "ver mais" — toda lista longa fica recolhida por padrão */
 .pi-more{background:none;border:1.5px dashed var(--gm);color:var(--g);font-family:inherit;font-size:15px;font-weight:800;border-radius:30px;padding:6px 16px;cursor:pointer;margin-top:4px;}
@@ -4303,7 +4306,7 @@ function piProdCard(k){
       : '<p class="sug"><span class="frc-sug">sugestão · revisar</span>'+cxEsc(piInsightSugerido(k))+'</p>')
     +'</div>';
 
-  return '<div class="frc" id="frc-'+k+'">'+id+okr+ent+insHtml+'</div>';
+  return '<div class="frc" id="frc-'+k+'">'+id+insHtml+okr+ent+'</div>';
 }
 
 function piPedidoHtml(keys){
