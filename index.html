@@ -1063,6 +1063,11 @@ iframe.cx-media{border:1.5px solid var(--bd);}
   .cx-page.cx-focus .cx-rdrow,.cx-page.cx-focus .rdx-row,
   .cx-page.cx-focus .rdx-col{opacity:1!important;filter:none!important;}
   .cx-page.cx-focus .cx-foco{box-shadow:none!important;}
+  /* mesma regra para o destaque da aba Planejamento Estratégico */
+  .pi-focus .frc,.pi-focus .frc-ins,.pi-focus .frc-id,.pi-focus .frc-col,
+  .pi-focus .frc-obj,.pi-focus .frc-kr,.pi-focus .frc-ent-h,
+  .pi-focus .frc-ent-i{opacity:1!important;filter:none!important;}
+  .pi-focus .frc.pi-foco{box-shadow:none!important;}
   .cx-body{overflow:visible;position:static;}
   .cx-page{display:block!important;position:static;overflow:visible;page-break-after:always;padding:16px 10px;}
   .cx-krsl{display:block!important;}
@@ -1246,6 +1251,26 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 @media(max-width:1240px){.pinav{display:none;}.pinav-fly{display:none!important;}}
 /* âncora de cada frente para o submenu do trilho */
 .frc{scroll-margin-top:88px;}
+/* ─── Destaque de foco (Planejamento Estratégico) ───
+   Mesmo recurso do Modo Apresentação, agora nos cartões de frente: clique numa
+   subseção (identidade, insight, OKRs, entregas) destaca a subseção; clique num
+   item (objetivo, KR, entrega) destaca só aquele item. Clique no mesmo alvo,
+   fora dos cartões, ou Esc, limpa o destaque. */
+.pi-focus .frc{opacity:.18;filter:saturate(.3);transition:opacity .2s ease,filter .2s ease;}
+.pi-focus .frc.pi-foco{opacity:1;filter:none;position:relative;z-index:2;
+  box-shadow:0 12px 34px rgba(15,23,42,.18),0 0 0 2px rgba(0,107,63,.35);}
+/* subseção destacada dentro do cartão em foco */
+.pi-focus .frc.pi-fb .frc-ins,
+.pi-focus .frc.pi-fb .frc-id,
+.pi-focus .frc.pi-fb .frc-col{opacity:.2;transition:opacity .2s ease;}
+.pi-focus .frc.pi-fb .pi-foco-b{opacity:1;}
+/* item destacado dentro da subseção em foco */
+.pi-focus .pi-foco-b.pi-fi .frc-obj,
+.pi-focus .pi-foco-b.pi-fi .frc-kr,
+.pi-focus .pi-foco-b.pi-fi .frc-ent-h,
+.pi-focus .pi-foco-b.pi-fi .frc-ent-i{opacity:.22;transition:opacity .2s ease;}
+.pi-focus .pi-foco-b.pi-fi .pi-foco-i{opacity:1;background:#f2fbf6;border-radius:8px;
+  box-shadow:inset 3px 0 0 var(--gm);padding-left:10px;padding-right:8px;}
 /* O trilho é position:fixed e sairia por cima do conteúdo: a página reserva a
    faixa da esquerda exatamente na largura em que ele aparece. O rótulo do hover
    continua sobrepondo — é transitório e disparado pela própria pessoa. */
@@ -4031,14 +4056,68 @@ function piNavFechar(ev){
 function piNavEsc(e){ if(e.key==='Escape') piNavFechar(); }
 function piIrFrente(k){
   piNavFechar();
+  piClearFoco(); // ir para outra frente sempre começa sem destaque
   if(!k){ piIrPara('sec-frentes'); return; }
   const el=document.getElementById('frc-'+k);
   if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
   else piIrPara('sec-frentes');
 }
+
+// ══════════════════════════════════════════
+//  DESTAQUE DE FOCO (Planejamento Estratégico)
+// ══════════════════════════════════════════
+// Mesmo comportamento do Modo Apresentação, aplicado aos cartões de frente:
+// clique numa subseção (identidade, insight, OKRs, entregas) destaca a subseção;
+// clique num item dentro dela (objetivo, KR, entrega) destaca só aquele item.
+// Clique no mesmo alvo, fora dos cartões, ou Esc, desfaz. Elementos com ação
+// própria — "Resumo da frente", "Ver mais", trilho, chips de recorte — passam batido.
+const PI_FOCO_BLOCOS='.frc-ins,.frc-id,.frc-col';
+const PI_FOCO_ITENS='.frc-obj,.frc-kr,.frc-ent-h,.frc-ent-i';
+const PI_FOCO_IGNORA='a,button,input,select,textarea,summary,details,.pi-more,.frc-btn,.pi-chip,.pinav-i,.pinav-f,.pinav-fly';
+function piClearFoco(){
+  const box=document.getElementById('govcap-body');
+  if(!box||!box.classList.contains('pi-focus')) return;
+  box.classList.remove('pi-focus');
+  box.querySelectorAll('.pi-foco,.pi-foco-b,.pi-foco-i,.pi-fb,.pi-fi').forEach(function(el){
+    el.classList.remove('pi-foco','pi-foco-b','pi-foco-i','pi-fb','pi-fi');
+  });
+}
+function piFocoClick(ev){
+  const box=document.getElementById('govcap-body');
+  if(!box) return;
+  const t=ev.target;
+  if(!t||!t.closest) return;
+  if(t.closest(PI_FOCO_IGNORA)) return; // elemento com ação própria — não vira foco
+  const card=t.closest('.frc');
+  if(!card||!box.contains(card)){ piClearFoco(); return; } // clique no fundo limpa
+  const bloco=t.closest(PI_FOCO_BLOCOS);
+  const item=t.closest(PI_FOCO_ITENS);
+  const jaItem =item && item.classList.contains('pi-foco-i');
+  const jaBloco=bloco && bloco.classList.contains('pi-foco-b') && !bloco.classList.contains('pi-fi');
+  const jaCard =card.classList.contains('pi-foco') && !card.classList.contains('pi-fb');
+  // Mesmo alvo clicado de novo → desfaz
+  if((item&&jaItem)||(!item&&bloco&&jaBloco)||(!item&&!bloco&&jaCard)){ piClearFoco(); return; }
+  piClearFoco();
+  box.classList.add('pi-focus');
+  card.classList.add('pi-foco');
+  if(bloco&&card.contains(bloco)){
+    card.classList.add('pi-fb');
+    bloco.classList.add('pi-foco-b');
+    if(item&&bloco.contains(item)){
+      bloco.classList.add('pi-fi');
+      item.classList.add('pi-foco-i');
+    }
+  }
+}
+function piFocoEsc(e){
+  if(e.key!=='Escape') return;
+  const box=document.getElementById('govcap-body');
+  if(box&&box.classList.contains('pi-focus')) piClearFoco();
+}
 function piIrPara(id){
   const el=document.getElementById(id);
   if(!el) return;
+  piClearFoco(); // mudar de seção sempre começa sem destaque
   // Governança fica recolhida: abre antes de rolar, senão o destino é vazio
   if(id==='sec-gov'){
     const det=document.getElementById('pi-gov');
@@ -4075,6 +4154,12 @@ function buildGovCap(){
                 + piPedidoHtml(keys) + piGovSectionHtml();
   govCapApply();
   piNavAtivar();
+  // Listeners no container (não nos filhos) — sobrevivem aos rebuilds da aba
+  if(!box._piFoco){
+    box.addEventListener('click', piFocoClick);
+    document.addEventListener('keydown', piFocoEsc);
+    box._piFoco=true;
+  }
 }
 function piSetScope(v){ piScope=v; buildGovCap(); }
 
