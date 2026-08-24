@@ -870,6 +870,39 @@ td.rd-drop-cell{background:var(--gb)!important;outline:2px dashed var(--gm);outl
 .cx-li:last-child{border-bottom:none;}
 .cx-li b{font-weight:800;}
 .cx-li-ic{font-size:16px;flex-shrink:0;line-height:1.4;}
+/* ─── Visão Geral · resumo da captura de valor + Onde o valor está ─── */
+.cx-kpis.cxv3{grid-template-columns:repeat(3,1fr);}
+.cxv-u{font-size:20px;font-weight:800;letter-spacing:-.4px;color:var(--t3);margin-left:5px;}
+.cxv-tot{font-size:19px;font-weight:800;color:var(--tx);margin-top:11px;padding-top:10px;border-top:1px solid var(--bd);}
+.cxv-tot span{font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-left:6px;}
+.cxv-tbl{width:100%;border-collapse:separate;border-spacing:0;}
+.cxv-tbl th{background:var(--g);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;padding:10px 14px;text-align:left;}
+.cxv-tbl th:first-child{border-top-left-radius:10px;}
+.cxv-tbl th:last-child{border-top-right-radius:10px;}
+.cxv-tbl td{padding:11px 14px;border-bottom:1px solid var(--bd);vertical-align:middle;}
+.cxv-tbl tr:nth-child(even) td{background:#fbfcfe;}
+.cxv-n{width:24px;height:24px;border-radius:50%;background:var(--g);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cxv-nm{font-size:14px;font-weight:800;color:var(--tx);line-height:1.25;}
+.cxv-tag{font-size:10px;font-weight:700;color:var(--t3);margin-top:2px;}
+/* Coluna "Capturado · potencial" — mesmo desenho da aba Planejamento Estratégico:
+   valor em destaque + barra de progresso à esquerda, potencial como referência à direita */
+.cxv-v{display:flex;align-items:center;gap:14px;}
+.cxv-v-l{flex:1;min-width:110px;}
+.cxv-v-l b{display:block;font-size:20px;font-weight:800;color:var(--g);letter-spacing:-.6px;line-height:1.1;}
+.cxv-v-l b i{font-size:11px;font-weight:700;font-style:normal;color:var(--t3);}
+.cxv-v-l b.nil{color:var(--t3);font-size:18px;letter-spacing:0;}
+.cxv-v-l s{display:block;font-size:11px;font-weight:700;color:var(--t3);text-decoration:none;margin-top:2px;}
+.cxv-bar{height:7px;border-radius:4px;background:var(--gb);overflow:hidden;margin-top:7px;}
+.cxv-bar i{display:block;height:100%;border-radius:4px;background:var(--gm);}
+.cxv-pot{font-size:11px;font-weight:700;color:var(--t3);line-height:1.45;white-space:nowrap;text-align:right;flex-shrink:0;}
+.cxv-pot b{display:block;font-size:14px;font-weight:800;color:var(--t2);letter-spacing:-.3px;}
+.cxv-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.cxv-chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--bd);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--t2);background:#fff;white-space:nowrap;}
+.cxv-chip.on{cursor:pointer;transition:border-color .15s,color .15s;}
+.cxv-chip.on:hover{border-color:var(--gm);color:var(--g);}
+.cxv-chip b{font-weight:800;color:var(--g);}
+.cxv-tbl tr.cxv-sum td{background:var(--gb);border-bottom:none;border-top:2px solid var(--g);}
+.cxv-sum-l{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--g);}
 .cx-et{font-size:13px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#fff;padding:7px 16px;border-radius:8px;display:inline-block;margin:22px 0 10px;}
 .cx-st{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:800;padding:6px 13px;border-radius:20px;}
 .cx-st.sv{background:var(--gb);color:var(--g);} .cx-st.so{background:var(--ob);color:#c05f00;} .cx-st.sg{background:var(--gyb);color:var(--gy);}
@@ -983,6 +1016,11 @@ td.rd-drop-cell{background:var(--gb)!important;outline:2px dashed var(--gm);outl
 .cx-page.cx-focus .cx-tile{opacity:.2;filter:saturate(.3);transition:opacity .2s ease,filter .2s ease;}
 .cx-page.cx-focus .cx-foco{opacity:1;filter:none;position:relative;z-index:2;
   box-shadow:0 12px 34px rgba(15,23,42,.18),0 0 0 2px rgba(0,107,63,.35);}
+/* Cards que já navegam (metas PLR, tiles) não podem ser destacados individualmente —
+   se estão dentro do card em foco, ficam acesos junto com ele, senão a seção
+   destacada apareceria vazia. */
+.cx-page.cx-focus .cx-foco .cx-jn-plr-card,
+.cx-page.cx-focus .cx-foco .cx-tile{opacity:1;filter:none;}
 /* Legenda de status das entregas do período */
 .rdx-lgd{display:flex;flex-wrap:wrap;gap:16px;align-items:center;padding-bottom:11px;margin-bottom:14px;border-bottom:1px solid var(--bd);}
 .rdx-lg{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--t2);}
@@ -1186,7 +1224,25 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .pinav-i.on span{color:var(--g);}
 .pinav-top{margin-top:4px;padding-top:6px;border-top:1.5px solid var(--bd);border-radius:0 0 26px 26px;}
 .pinav-top em{background:none;}
-@media(max-width:1240px){.pinav{display:none;}}
+/* Submenu de frentes: painel que abre ao lado do trilho, com uma entrada por frente.
+   position:fixed (e não absolute) para o painel não se deslocar quando um item do
+   trilho expande o rótulo no hover e muda a largura do trilho. */
+.pinav-grp{position:relative;}
+.pinav-fly{display:none;position:fixed;left:78px;top:50%;transform:translateY(-50%);z-index:260;
+  width:340px;max-height:74vh;background:var(--wh);border:1.5px solid var(--bd);border-radius:16px;box-shadow:0 10px 32px rgba(15,23,42,.16);overflow:hidden;}
+.pinav-fly.on{display:flex;flex-direction:column;}
+.pinav-fly-h{padding:13px 16px 11px;border-bottom:1.5px solid var(--bd);font-size:15px;font-weight:800;color:var(--tx);flex-shrink:0;}
+.pinav-fly-h span{display:block;font-size:13px;font-weight:600;color:var(--t3);margin-top:2px;}
+.pinav-fly-b{overflow-y:auto;padding:8px;min-height:0;}
+.pinav-fly-g{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);padding:11px 10px 5px;}
+.pinav-f{display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;font-family:inherit;text-align:left;cursor:pointer;border-radius:10px;padding:8px 10px;font-size:15px;font-weight:700;color:var(--tx);}
+.pinav-f:hover{background:var(--gb);color:var(--g);}
+.pinav-f span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pinav-f b{font-size:14px;font-weight:800;color:var(--g);white-space:nowrap;}
+.pinav-f.all{border:1.5px dashed var(--gm);color:var(--g);justify-content:center;margin-bottom:2px;}
+@media(max-width:1240px){.pinav{display:none;}.pinav-fly{display:none!important;}}
+/* âncora de cada frente para o submenu do trilho */
+.frc{scroll-margin-top:88px;}
 /* O trilho é position:fixed e sairia por cima do conteúdo: a página reserva a
    faixa da esquerda exatamente na largura em que ele aparece. O rótulo do hover
    continua sobrepondo — é transitório e disparado pela própria pessoa. */
@@ -3905,14 +3961,77 @@ const PI_SECOES = [
   {id:'sec-frentes', ic:'▣', lbl:'Retorno por frente'},
   {id:'sec-gov',     ic:'⚙', lbl:'Governança & Capacidade'}
 ];
+// Ordem das frentes: pelo valor em jogo até 2027 (as sem valor no fim, em ordem
+// alfabética). Usada tanto nos cartões da seção quanto no submenu do trilho —
+// função única para as duas listas nunca divergirem.
+function piOrdFrente(a,b){
+  const ja=piEmJogo(a), jb=piEmJogo(b);
+  if(ja==null&&jb==null) return PRODS[a].nm.localeCompare(PRODS[b].nm);
+  if(ja==null) return 1; if(jb==null) return -1;
+  return (jb-ja)||PRODS[a].nm.localeCompare(PRODS[b].nm);
+}
 function piNavHtml(){
   let h='<nav class="pinav" aria-label="Seções desta aba">';
   PI_SECOES.forEach(function(x,i){
+    // "Retorno por frente" abre um submenu com uma entrada por frente, no
+    // recorte selecionado — o clique no ícone escolhe a frente, não só a seção.
+    if(x.id==='sec-frentes'){
+      h+='<div class="pinav-grp">'
+        +'<button class="pinav-i'+(i===0?' on':'')+'" data-alvo="'+x.id+'" onclick="piNavFrentes(event)" title="'+x.lbl+' — escolher frente">'
+        +'<em>'+x.ic+'</em><span>'+x.lbl+' ▸</span></button>'
+        +piNavFrentesHtml()
+        +'</div>';
+      return;
+    }
     h+='<button class="pinav-i'+(i===0?' on':'')+'" data-alvo="'+x.id+'" onclick="piIrPara(\''+x.id+'\')" title="'+x.lbl+'">'
       +'<em>'+x.ic+'</em><span>'+x.lbl+'</span></button>';
   });
   h+='<button class="pinav-i pinav-top" onclick="piIrPara(\'sec-curva\')" title="Voltar ao topo"><em>↑</em><span>Voltar ao topo</span></button>';
   return h+'</nav>';
+}
+// Submenu: mesmas frentes, mesmos grupos e mesma ordem da seção "Retorno por frente".
+function piNavFrentesHtml(){
+  const keys=piKeys().slice().sort(piOrdFrente);
+  let h='<div class="pinav-fly" id="pinav-fly">'
+    +'<div class="pinav-fly-h">Retorno por frente<span>ir direto para uma frente</span></div>'
+    +'<div class="pinav-fly-b">'
+    +'<button class="pinav-f all" onclick="piIrFrente(\'\')">Ver a seção completa</button>';
+  PI_GRUPOS.forEach(function(g){
+    const grupo=keys.filter(function(k){ return piGrupoOf(k)===g.k; });
+    if(!grupo.length) return;
+    h+='<div class="pinav-fly-g">'+cxEsc(g.lbl)+'</div>';
+    grupo.forEach(function(k){
+      const j=piEmJogo(k);
+      h+='<button class="pinav-f" onclick="piIrFrente(\''+k+'\')" title="'+cxEsc(PRODS[k].nm)+'">'
+        +'<span>'+cxEsc(PRODS[k].nm)+'</span>'
+        +((j!=null&&j>0.05)?'<b>'+piFmtM(j)+'</b>':'')
+        +'</button>';
+    });
+  });
+  return h+'</div></div>';
+}
+function piNavFrentes(ev){
+  if(ev) ev.stopPropagation();
+  const fly=document.getElementById('pinav-fly'); if(!fly) return;
+  if(fly.classList.contains('on')){ piNavFechar(); return; }
+  fly.classList.add('on');
+  document.addEventListener('click', piNavFechar);
+  document.addEventListener('keydown', piNavEsc);
+}
+function piNavFechar(ev){
+  const fly=document.getElementById('pinav-fly');
+  if(ev && fly && fly.contains(ev.target)) return; // clique dentro do painel não fecha
+  if(fly) fly.classList.remove('on');
+  document.removeEventListener('click', piNavFechar);
+  document.removeEventListener('keydown', piNavEsc);
+}
+function piNavEsc(e){ if(e.key==='Escape') piNavFechar(); }
+function piIrFrente(k){
+  piNavFechar();
+  if(!k){ piIrPara('sec-frentes'); return; }
+  const el=document.getElementById('frc-'+k);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  else piIrPara('sec-frentes');
 }
 function piIrPara(id){
   const el=document.getElementById(id);
@@ -4184,16 +4303,11 @@ function piProdCard(k){
       : '<p class="sug"><span class="frc-sug">sugestão · revisar</span>'+cxEsc(piInsightSugerido(k))+'</p>')
     +'</div>';
 
-  return '<div class="frc">'+id+okr+ent+insHtml+'</div>';
+  return '<div class="frc" id="frc-'+k+'">'+id+okr+ent+insHtml+'</div>';
 }
 
 function piPedidoHtml(keys){
-  const ord=function(a,b){
-    const ja=piEmJogo(a), jb=piEmJogo(b);
-    if(ja==null&&jb==null) return PRODS[a].nm.localeCompare(PRODS[b].nm);
-    if(ja==null) return 1; if(jb==null) return -1;
-    return (jb-ja)||PRODS[a].nm.localeCompare(PRODS[b].nm);
-  };
+  const ord=piOrdFrente;
   let h='<div class="pi-hd" id="sec-frentes"><div class="pi-hd-t">Retorno por frente</div>'
     +'<div class="pi-hd-s">quanto capturar até 2027 · resultado perseguido · o que está previsto entregar</div></div>';
 
@@ -4236,7 +4350,12 @@ function piLeversHtml(keys){
       .filter(function(x){ return x.pct>0 && inScope[x.ck]; })
       .sort(function(a,b){ return b.pct-a.pct; });
     return {k:lk, nm:ALAVANCAS[lk], pot:L.fin/1e6, falta:Math.max(0,alvo27-feito), donos:donos};
-  }).sort(function(a,b){ return b.falta-a.falta; });
+  }).sort(function(a,b){
+    // Capturas financeiras derivadas têm critério distinto das operacionais —
+    // ficam sempre no fim, mesmo que o valor remanescente seja alto.
+    const fa=CV_FIN_KEYS.indexOf(a.k)>=0?1:0, fb=CV_FIN_KEYS.indexOf(b.k)>=0?1:0;
+    return (fa-fb)||(b.falta-a.falta);
+  });
 
   const totFalta=rows.reduce(function(a,r){ return a+r.falta; },0);
 
@@ -4244,11 +4363,11 @@ function piLeversHtml(keys){
     +'<div class="pi-hd-s">alavancas priorizadas pelo valor que ainda falta capturar até 2027</div></div>'
     +'<div class="pi-card pi-scroll" style="border:none;background:none"><table class="lv">'
     +'<tr><th style="width:34%">Alavanca</th><th style="width:34%">Falta até 2027 · potencial</th>'
-    +'<th>Produtos que a carregam</th></tr>';
+    +'<th>Frentes responsáveis</th></tr>';
 
   rows.forEach(function(r,i){
     const chips=r.donos.map(function(x){
-      return '<span class="pi-lev">'+cxEsc(CV_SHORT[x.ck]||x.ck)+' <b>'+x.pct+'%</b></span>';
+      return '<span class="pi-lev">'+cxEsc(CV_SHORT[x.ck]||x.ck)+'</span>';
     });
     const w = r.pot>0 ? Math.min(100, r.falta/r.pot*100) : 0;
     h+='<tr><td><div style="display:flex;align-items:center;gap:14px">'
@@ -9013,11 +9132,120 @@ function cxPLRHTML(keys){
   return h;
 }
 
+// ── Resumo da Captura de Valor (Visão Geral) ──
+// Três cards: capturado 2025, planejado 2026 (acumulado) e potencial acumulado
+// até 2030. Cada card lê primeiro em R$/UH — unidade oficial de apuração da
+// planilha — e traz o total absoluto logo abaixo.
+// Números SEMPRE derivados de CV_LEVERS (mesma fonte da aba Captura de Valor):
+// nada aqui é digitado, então qualquer revisão da matriz reflete sozinha.
+// Convenção do board: o número principal inclui as capturas financeiras
+// derivadas; a leitura sem custo financeiro aparece na linha de apoio.
+// Número-título: R$/UH arredondado ao inteiro (a casa decimal polui a leitura
+// de longe). O detalhe por captura, na tabela abaixo, mantém a casa da planilha.
+function cxCapUH(mm){ return Math.round(mm*1e6/CV_UH_BASE).toLocaleString('pt-BR'); }
+function cxResumoCapturaHTML(){
+  const tot=CV_TOTAL_COM_FIN/1e6,      totS=CV_TOTAL_SEM_FIN/1e6;
+  const c25=CV_CAP2025_COM_FIN/1e6,    c25S=CV_CAP2025_SEM_FIN/1e6;
+  const m26=CV_META2026_COM_FIN/1e6,   m26S=CV_META2026_SEM_FIN/1e6;
+  const meta25=tot*0.15;
+  const pct25=meta25>0?Math.round(c25/meta25*100):0;
+  const card=function(cls,lbl,mm,sem,sub){
+    return '<div class="cx-kpi '+cls+'">'
+      +'<div class="cx-kpi-l">'+lbl+'</div>'
+      +'<div class="cx-kpi-v '+cls+'">R$ '+cxCapUH(mm)+'<span class="cxv-u">/UH</span></div>'
+      +'<div class="cxv-tot">R$ '+cvFmtM(mm*1e6)+'M <span>no total</span></div>'
+      +'<div class="cx-kpi-s">'+sub+' · R$ '+cxCapUH(sem)+'/UH s/ custo financeiro</div>'
+      +'</div>';
+  };
+  return '<div class="cx-kpis cxv3">'
+    + card('v','Capturado em 2025',            c25, c25S, pct25+'% da meta do ano (15% do potencial)')
+    + card('o','Planejado para 2026 · acumulado', m26, m26S, '40% do potencial mapeado')
+    + card('a','Potencial acumulado até 2030', tot, totS, Object.keys(CV_LEVERS).length+' capturas mapeadas')
+    +'</div>';
+}
+
+// ── Onde o valor está (Visão Geral) ──
+// Uma linha por captura da matriz oficial: quais produtos a carregam (com a %
+// da alocação oficial) e o potencial acumulado até 2030, em R$/UH e no total.
+// Produtos ocultos no Modo Apresentação (cx_hide) não aparecem como chip —
+// mesma regra do infográfico da jornada; o potencial da captura não muda.
+function cxCVProdKeys(ck,keys){
+  return keys.filter(function(k){ return PI_CV_KEY[k]===ck; });
+}
+function cxValorHTML(keys){
+  const rows=Object.keys(CV_LEVERS).map(function(lk){
+    const L=CV_LEVERS[lk];
+    const donos=CV_KEYS.map(function(ck){ return {ck:ck, pct:(ALAV_PCT[lk]&&ALAV_PCT[lk][ck])||0}; })
+      .filter(function(x){ return x.pct>0; })
+      .sort(function(a,b){ return b.pct-a.pct; });
+    return {k:lk, nm:ALAVANCAS[lk], mm:L.fin/1e6, uh:L.uh, bloco:L.bloco||'', nat:L.natureza||'',
+            c25:L.cap2025_uh, donos:donos};
+  }).sort(function(a,b){
+    // As duas capturas financeiras derivadas (custo de capital e desp. financeira)
+    // seguem critério distinto das operacionais — vão sempre no fim da lista,
+    // independentemente do valor; entre si e entre as demais, ordem por potencial.
+    const fa=CV_FIN_KEYS.indexOf(a.k)>=0?1:0, fb=CV_FIN_KEYS.indexOf(b.k)>=0?1:0;
+    return (fa-fb)||(b.mm-a.mm);
+  });
+  const totMM=rows.reduce(function(a,r){ return a+r.mm; },0);
+  const totC25=rows.reduce(function(a,r){ return a+(r.c25||0); },0);
+
+  // Coluna "Capturado · potencial": mesmo formato da aba Planejamento Estratégico
+  // — número em destaque, barra de progresso e o potencial como referência ao
+  // lado. Aqui a barra mostra o que JÁ foi capturado dentro do potencial total.
+  const val=function(capUH,potUH){
+    const c=capUH||0;
+    const w=potUH>0?Math.min(100,c/potUH*100):0;
+    const capTxt=c>0
+      ? '<b>R$ '+cvFmtUH(c)+'<i> /UH</i></b><s>R$ '+cvFmtM(c*CV_UH_BASE)+'M</s>'
+      : '<b class="nil">—</b><s>nada apurado ainda</s>';
+    return '<div class="cxv-v"><div class="cxv-v-l">'+capTxt
+      +'<div class="cxv-bar"><i style="width:'+w.toFixed(1)+'%"></i></div></div>'
+      +'<div class="cxv-pot">Potencial<br><b>R$ '+cvFmtUH(potUH)+' /UH</b><br>R$ '+cvFmtM(potUH*CV_UH_BASE)+'M</div></div>';
+  };
+
+  let h='<div class="cx-card" style="margin-top:22px"><div class="cx-card-t">◧ Onde o valor está</div>'
+    +'<div style="font-size:12px;color:var(--t3);margin:-8px 0 14px">Cada captura da matriz oficial, as frentes responsáveis e quanto do potencial já foi capturado. Base de apuração: '+(CV_UH_BASE/1000)+' mil UH.</div>'
+    +'<table class="cxv-tbl">'
+    +'<tr><th style="width:27%">Captura</th>'
+    +'<th style="width:34%">Capturado · potencial</th>'
+    +'<th>Frentes responsáveis</th></tr>';
+
+  rows.forEach(function(r,i){
+    const chips=r.donos.map(function(x){
+      const pk=cxCVProdKeys(x.ck,keys);
+      if(!pk.length) return '';
+      // Rótulo curto oficial da coluna da Captura de Valor (mesmo usado na aba
+      // Planejamento Estratégico); o tooltip abre os produtos que a compõem.
+      const lbl=CV_SHORT[x.ck]||PRODS[pk[0]].nm;
+      const full=pk.map(function(k){ return PRODS[k].nm; }).join(' · ');
+      const idx=keys.indexOf(pk[0]);
+      return '<span class="cxv-chip on" onclick="cxGo('+(idx+1)+')" title="'+cxEsc(full)+' — abrir">'+cxEsc(lbl)+'</span>';
+    }).filter(function(s){ return s!==''; });
+    h+='<tr><td><div style="display:flex;align-items:flex-start;gap:10px">'
+      +'<div class="cxv-n">'+(i+1)+'</div>'
+      +'<div style="min-width:0"><div class="cxv-nm">'+cxEsc(r.nm)+'</div>'
+      +'<div class="cxv-tag">'+cxEsc(r.bloco)+(r.nat?' · '+cxEsc(r.nat):'')+'</div>'
+      +'</div></div></td>'
+      +'<td>'+val(r.c25,r.uh)+'</td>'
+      +'<td><div class="cxv-chips">'+(chips.length?chips.join(''):'<span style="font-size:12px;color:var(--t3)">—</span>')+'</div></td></tr>';
+  });
+
+  h+='<tr class="cxv-sum"><td><div class="cxv-sum-l">Total das capturas mapeadas</div></td>'
+    +'<td>'+val(totC25,Math.round(totMM*1e6/CV_UH_BASE))+'</td>'
+    +'<td></td></tr>'
+    +'</table></div>';
+  return h;
+}
+
 function cxPageCapa(keys){
-  // Visão Geral: infográfico interativo da jornada + metas PLR da área (OKRs completos ficam só na página do produto)
+  // Visão Geral: resumo da captura de valor → onde o valor está → infográfico
+  // interativo da jornada → metas PLR da área (OKRs completos ficam só na página do produto)
   let h='<div class="cx-pg-ttl">Visão Geral do Portfólio</div>'
     +'<div class="cx-pg-sub">Ecossistema integrado de sistemas e iniciativas que conecta dados, processos e decisões ao longo de toda a Jornada da Produção.</div>';
-  h+='<div class="cx-card"><div class="cx-card-t">🗺️ Jornada Integrada da Produção</div>'
+  h+=cxResumoCapturaHTML();
+  h+=cxValorHTML(keys);
+  h+='<div class="cx-card" style="margin-top:22px"><div class="cx-card-t">🗺️ Jornada Integrada da Produção</div>'
     +cxJourneyHTML(keys)+cxOrphanHTML(keys)+'</div>';
   h+=cxPLRHTML(keys);
   return h;
