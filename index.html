@@ -1369,10 +1369,19 @@ iframe.cx-media{border:1.5px solid var(--bd);}
     // ── Load all data from Firestore on startup ──
     async function loadFromFirestore() {
       if (window.setSyncStatus) window.setSyncStatus('loading');
+      // Estado do banco tal como esta aba o leu. Serve de referência para a
+      // mesclagem na hora de gravar (fbSave): sem ela não há como distinguir
+      // "campo que EU alterei" de "campo que outra pessoa alterou depois".
+      window._fbBase = {};
+      window._fbLoaded = false;
+      const _base = (coll, id, data) => {
+        try { window._fbBase[coll + '/' + id] = JSON.parse(JSON.stringify(data)); } catch(e) {}
+      };
       try {
         // Load PRODS overrides
         const prodSnap = await getDocs(collection(db, 'produtos'));
         prodSnap.forEach(d => {
+          _base('produtos', d.id, d.data());
           if (window.PRODS && window.PRODS[d.id]) {
             Object.assign(window.PRODS[d.id], d.data());
           }
@@ -1402,11 +1411,13 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         // Load RDMAP overrides
         const rdSnap = await getDocs(collection(db, 'rdmap'));
         rdSnap.forEach(d => {
+          _base('rdmap', d.id, d.data());
           if (window.RDMAP) window.RDMAP[d.id] = d.data();
         });
         // Load KR_DATA overrides (stored flat, need to unflatten)
         const krSnap = await getDocs(collection(db, 'kr_data'));
         krSnap.forEach(d => {
+          _base('kr_data', d.id, d.data());
           if (window.KR_DATA && window.KR_DATA[d.id]) {
             // unflattenKRData is in main script, accessible via window
             if (typeof unflattenKRData === 'function') {
@@ -1417,6 +1428,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         // Load CV_EVO overrides (apuração mensal 2026 por alavanca)
         const cvEvoSnap = await getDocs(collection(db, 'cv_evo'));
         cvEvoSnap.forEach(d => {
+          _base('cv_evo', d.id, d.data());
           if (window.CV_EVO && window.CV_EVO[d.id]) {
             const v = d.data();
             if (v && Array.isArray(v.r)) window.CV_EVO[d.id].r = v.r;
@@ -1426,6 +1438,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         const cvPctSnap = await getDocs(collection(db, 'cv_pct'));
         let cvPctChanged = false;
         cvPctSnap.forEach(d => {
+          _base('cv_pct', d.id, d.data());
           if (window.ALAV_PCT && window.ALAV_PCT[d.id]) {
             Object.assign(window.ALAV_PCT[d.id], d.data());
             cvPctChanged = true;
@@ -1435,6 +1448,9 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           if (typeof window.recomputeCVDerivedPct === 'function') window.recomputeCVDerivedPct();
           if (typeof window.recomputeCVPot === 'function') window.recomputeCVPot();
         }
+        // Só a partir daqui a memória reflete o banco: as gravações ficam
+        // liberadas (ver a trava no início de fbSave).
+        window._fbLoaded = true;
         if (window.setSyncStatus) window.setSyncStatus('ok');
         // Corrige nomes legados persistidos (ex.: "DAEane" → "Daeane") e re-salva docs alterados
         if (typeof window.fixLegacyNames === 'function') window.fixLegacyNames();
@@ -1449,7 +1465,10 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         if (window._mdmResumo && window.aplicarResumoMDM) window.aplicarResumoMDM(window._mdmResumo);
       } catch(e) {
         console.error('Firebase load error:', e);
-        if (window.setSyncStatus) window.setSyncStatus('error');
+        // Leitura incompleta: a memória ainda contém o conteúdo padrão do HTML.
+        // Mantém as gravações bloqueadas para não sobrescrever o banco.
+        window._fbLoaded = false;
+        if (window.setSyncStatus) window.setSyncStatus('noload');
       }
     }
 
@@ -7653,6 +7672,8 @@ function setSyncStatus(state) {
     saving:  {i:'⏳', t:'Salvando...',   c:'#FFB719'},
     loading: {i:'⏳', t:'Carregando...', c:'#FFB719'},
     error:   {i:'⚠',  t:'Erro ao salvar',c:'#FF8B22'},
+    // Leitura inicial do banco falhou: edição bloqueada (ver fbSave)
+    noload:  {i:'⛔', t:'Dados não carregados — recarregue', c:'#FF8B22'},
   };
   const s = states[state] || states.ok;
   icon.textContent = s.i;
@@ -7827,6 +7848,131 @@ function escapeHtmlLog(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// ══════════════════════════════════════════
+//  GRAVAÇÃO SEGURA (anti-sobrescrita)
+// ══════════════════════════════════════════
+// Contexto: cada produto é UM documento e a gravação sempre envia o objeto
+// inteiro. Sem as proteções abaixo, uma aba que não leu o banco (ou que o leu
+// horas antes) apagava tudo que havia sido salvo depois. Três camadas:
+//   1. trava  — não grava enquanto a leitura inicial não tiver concluído;
+//   2. mescla — relê o doc e junta campo a campo antes de gravar;
+//   3. backup — guarda a versão anterior na coleção `versoes`.
+
+// Comparação profunda (arrays e objetos aninhados de OKR/roadmap/KR)
+function _jipDeepEq(a, b) {
+  if (a === b) return true;
+  if (a === null || b === null || typeof a !== 'object' || typeof b !== 'object') return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const ka = Object.keys(a), kb = Object.keys(b);
+  if (ka.length !== kb.length) return false;
+  for (let i = 0; i < ka.length; i++) {
+    if (!Object.prototype.hasOwnProperty.call(b, ka[i])) return false;
+    if (!_jipDeepEq(a[ka[i]], b[ka[i]])) return false;
+  }
+  return true;
+}
+
+// Mescla campo a campo. base = o que ESTA aba leu do banco; remote = o que está
+// no banco agora; local = o que a aba quer gravar.
+//   • ninguém mexeu no campo lá  → vale o local (edição desta aba)
+//   • outra pessoa mexeu e a aba não → preserva o do banco (era o que se perdia)
+//   • os dois mexeram             → vale o local, mas registra o conflito
+function _jipMerge(base, remote, local) {
+  const out = {}, conflitos = [], preservados = [];
+  const has = (o, k) => !!o && Object.prototype.hasOwnProperty.call(o, k);
+  const keys = {};
+  Object.keys(remote || {}).forEach(k => { keys[k] = 1; });
+  Object.keys(local  || {}).forEach(k => { keys[k] = 1; });
+  Object.keys(keys).forEach(k => {
+    const lHas = has(local, k), rHas = has(remote, k), bHas = has(base, k);
+    if (!base) { // sem referência: local manda, mas nunca apaga campo alheio
+      if (lHas) out[k] = local[k]; else if (rHas) out[k] = remote[k];
+      return;
+    }
+    const remoteMudou = !(bHas === rHas && (!rHas || _jipDeepEq(base[k], remote[k])));
+    const localMudou  = !(bHas === lHas && (!lHas || _jipDeepEq(base[k], local[k])));
+    if (!remoteMudou) { if (lHas) out[k] = local[k]; return; }        // só a aba mexeu (ou ninguém)
+    if (!localMudou)  { if (rHas) { out[k] = remote[k]; preservados.push(k); } return; } // só o banco mexeu
+    if (lHas) out[k] = local[k];                                      // conflito real
+    conflitos.push(k);
+  });
+  return { data: out, conflitos: conflitos, preservados: preservados };
+}
+
+// Reflete na memória o que realmente foi gravado, para a tela não continuar
+// exibindo um valor que a mesclagem descartou.
+function _jipAplicaNaMemoria(collName, docId, data) {
+  try {
+    if (collName === 'produtos' && window.PRODS && PRODS[docId]) Object.assign(PRODS[docId], data);
+    else if (collName === 'rdmap' && window.RDMAP) RDMAP[docId] = JSON.parse(JSON.stringify(data));
+    else if (collName === 'kr_data' && window.KR_DATA && KR_DATA[docId] && typeof unflattenKRData === 'function') {
+      KR_DATA[docId] = unflattenKRData(data, KR_DATA[docId]);
+    }
+    else if (collName === 'cv_evo' && window.CV_EVO && CV_EVO[docId] && Array.isArray(data.r)) CV_EVO[docId].r = data.r;
+    else if (collName === 'cv_pct' && window.ALAV_PCT && ALAV_PCT[docId]) Object.assign(ALAV_PCT[docId], data);
+  } catch(e) { console.warn('_jipAplicaNaMemoria:', e); }
+}
+
+// Guarda a versão ANTERIOR do documento antes de sobrescrevê-la. O conteúdo vai
+// serializado em `dados` (string) — simples de restaurar e imune ao limite do
+// Firestore para arrays aninhados.
+async function _jipSalvaVersao(collName, docId, anterior) {
+  if (!anterior) return;
+  try {
+    const clone = JSON.parse(JSON.stringify(anterior));
+    if (typeof clone.midia === 'string' && clone.midia.indexOf('data:image') === 0) clone.midia = '(imagem não incluída no backup)';
+    const raw = JSON.stringify(clone);
+    if (raw.length > 700000) { console.warn('[JIP] versão anterior grande demais para backup:', collName, docId); return; }
+    const id = collName + '__' + docId + '__' + Date.now().toString(36);
+    await window._fsSetDoc(window._fsDoc(window._db, 'versoes', id), {
+      coll: collName, docId: docId, dados: raw,
+      email: getEditorEmail() || '(não identificado)',
+      ts: Date.now(), tsISO: new Date().toISOString()
+    });
+  } catch(e) {
+    console.warn('[JIP] backup de versão não gravado (verifique as regras do Firestore para a coleção "versoes"):', e);
+  }
+}
+
+// Recuperação: lista as versões guardadas de um documento (mais recentes antes).
+// Uso no console:  await jipVersoes('obra360')
+window.jipVersoes = async function(docId, collName) {
+  const coll = collName || 'produtos';
+  const q = window._fsQuery(window._fsColl(window._db, 'versoes'), window._fsOrderBy('ts', 'desc'), window._fsLimit(400));
+  const snap = await window._fsGetDocs(q);
+  const out = [];
+  snap.forEach(d => {
+    const v = d.data();
+    if (v && v.coll === coll && v.docId === docId) {
+      out.push({ id: d.id, quando: new Date(v.ts).toLocaleString('pt-BR'), por: v.email, tamanho: (v.dados || '').length });
+    }
+  });
+  console.table(out);
+  return out;
+};
+// Restaura uma versão listada acima:  await jipRestaurar('produtos__obra360__m1abcd')
+window.jipRestaurar = async function(versaoId) {
+  const snap = await window._fsGetDoc(window._fsDoc(window._db, 'versoes', versaoId));
+  if (!snap || typeof snap.exists !== 'function' || !snap.exists()) { console.error('Versão não encontrada:', versaoId); return false; }
+  const v = snap.data();
+  const dados = JSON.parse(v.dados);
+  await window._fsSetDoc(window._fsDoc(window._db, v.coll, v.docId), dados);
+  if (!window._fbBase) window._fbBase = {};
+  window._fbBase[v.coll + '/' + v.docId] = JSON.parse(JSON.stringify(dados));
+  _jipAplicaNaMemoria(v.coll, v.docId, dados);
+  console.info('Versão de ' + new Date(v.ts).toLocaleString('pt-BR') + ' restaurada em ' + v.coll + '/' + v.docId + '. Atualize a página (F5).');
+  return true;
+};
+
+let _jipAvisoTravaEm = 0;
+function _jipAvisaTrava() {
+  setSyncStatus('noload');
+  const agora = Date.now();
+  if (agora - _jipAvisoTravaEm < 20000) return; // não repete o alerta a cada campo
+  _jipAvisoTravaEm = agora;
+  alert('⛔ Os dados do banco não foram carregados nesta sessão, então a edição está bloqueada para não apagar o que já estava salvo.\n\nAtualize a página (F5) e confira se o topo mostra "Sincronizado" antes de editar.');
+}
+
 async function fbSave(collName, docId, data) {
   // Captura detalhe/supressão de forma síncrona (fbSave é async)
   const _logInfo = _lastEditDetail; _lastEditDetail = null;
@@ -7842,10 +7988,40 @@ async function fbSave(collName, docId, data) {
     setSyncStatus('error');
     return;
   }
+  // ── Camada 1: trava de carregamento ──
+  // Aguarda a leitura inicial (dispara 800 ms após o load e leva mais um tempo).
+  if (!window._fbLoaded && collName !== 'audit_log') {
+    let esperas = 0;
+    while (!window._fbLoaded && esperas < 100) { await new Promise(r => setTimeout(r, 100)); esperas++; }
+    if (!window._fbLoaded) { _jipAvisaTrava(); return false; }
+  }
   setSyncStatus('saving');
+  const _path = collName + '/' + docId;
   try {
-    await window._fsSetDoc(window._fsDoc(window._db, collName, docId), data);
+    let aGravar = data, anterior = null;
+    // ── Camada 2: relê e mescla ──
+    if (collName !== 'audit_log') {
+      let remoto = null;
+      try {
+        const snap = await window._fsGetDoc(window._fsDoc(window._db, collName, docId));
+        if (snap && typeof snap.exists === 'function' && snap.exists()) remoto = snap.data();
+      } catch(e) { console.warn('[JIP] falha ao reler ' + _path + ' — gravando sem mesclar:', e); }
+      if (remoto) {
+        anterior = remoto;
+        const m = _jipMerge(window._fbBase ? window._fbBase[_path] : null, remoto, data);
+        aGravar = m.data;
+        if (m.preservados.length) console.info('[JIP] campos preservados de outra edição em ' + _path + ':', m.preservados.join(', '));
+        if (m.conflitos.length)  console.warn('[JIP] conflito de edição em ' + _path + ' (prevaleceu esta tela):', m.conflitos.join(', '));
+      }
+    }
+    await window._fsSetDoc(window._fsDoc(window._db, collName, docId), aGravar);
+    // A nova referência desta aba é exatamente o que acabou de ser gravado
+    if (!window._fbBase) window._fbBase = {};
+    try { window._fbBase[_path] = JSON.parse(JSON.stringify(aGravar)); } catch(e) {}
+    if (aGravar !== data) _jipAplicaNaMemoria(collName, docId, aGravar);
     setSyncStatus('ok');
+    // ── Camada 3: backup da versão anterior (não bloqueia a gravação) ──
+    if (collName !== 'audit_log') _jipSalvaVersao(collName, docId, anterior);
     // Registra no histórico (quem/quando/o quê)
     if (collName !== 'audit_log' && !_logSuppress) {
       logEdit(collName, docId, _logInfo ? _logInfo.action : 'editou', _logInfo ? _logInfo.detail : '');
@@ -8619,6 +8795,9 @@ function handleImportFile(input) {
 
 function savePbField(key,field,value){
   if(!PRODS[key])return;
+  // Sair do campo sem alterar nada não deve disparar gravação (regravava o
+  // produto inteiro à toa, ampliando o risco de sobrescrita)
+  const _at=PRODS[key][field]; if(String(_at==null?'':_at)===String(value==null?'':value))return;
   if(!requireEditor(()=>savePbField(key,field,value)))return;
   PRODS[key][field]=value;
   setEditDetail('editou campo', field);
@@ -8629,6 +8808,9 @@ function savePbField(key,field,value){
 // plano_acao (já incorporado ao texto exibido) para não duplicar na próxima renderização.
 function savePbRiscoPlano(key,value){
   if(!PRODS[key])return;
+  // Sem alteração (e sem legado a migrar): não grava
+  const _p=PRODS[key], _legado=!!(_p.plano_acao&&_p.plano_acao.trim());
+  if(!_legado&&String(_p.riscos_txt==null?'':_p.riscos_txt)===String(value==null?'':value))return;
   if(!requireEditor(()=>savePbRiscoPlano(key,value)))return;
   PRODS[key].riscos_txt=value;
   PRODS[key].plano_acao='';
