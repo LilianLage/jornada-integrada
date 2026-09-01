@@ -8948,6 +8948,15 @@ let cxM = null;
 let cxShowHidden = false;
 
 function cxEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// Negrito leve nos campos de texto livre (Destaques e Riscos + Plano de Ação):
+// *palavra* (ou **palavra**) vira negrito no Modo Apresentação. Escapa PRIMEIRO
+// e só depois converte os asteriscos, para que o conteúdo do time nunca consiga
+// injetar HTML. Asterisco solto na linha fica como está.
+function cxEscNeg(s){
+  return cxEsc(s)
+    .replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*\n]+)\*/g,'<strong>$1</strong>');
+}
 function cxMedia(url){
   if(!url) return '';
   const u=String(url).trim();
@@ -9931,7 +9940,7 @@ function cxPageProduto(k){
   const rtxt=(p.riscos_txt||p.notas_riscos||'').trim();
   if(rtxt){
     rtxt.split(/\n+/).forEach(function(ln){
-      if(ln.trim()) rsh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--o)">●</span><div>'+cxEsc(ln.trim())+'</div></div>';
+      if(ln.trim()) rsh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--o)">●</span><div>'+cxEscNeg(ln.trim())+'</div></div>';
     });
   }
 
@@ -9940,7 +9949,7 @@ function cxPageProduto(k){
   const dtxt=(p.destaques||'').trim();
   if(dtxt){
     dtxt.split(/\n+/).forEach(function(ln){
-      if(ln.trim()) dsh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--gm);font-weight:800">★</span><div>'+cxEsc(ln.trim())+'</div></div>';
+      if(ln.trim()) dsh+='<div class="cx-li" style="padding:6px 0"><span class="cx-li-ic" style="color:var(--gm);font-weight:800">★</span><div>'+cxEscNeg(ln.trim())+'</div></div>';
     });
   }
 
