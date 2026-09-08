@@ -1409,11 +1409,18 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           });
         } catch(e) { console.warn('produto_indicadores load:', e); }
         // Load RDMAP overrides
+        // Registra QUAIS docs de roadmap vieram do banco nesta leitura. Sem isso
+        // não há como distinguir "produto sem doc" de "doc que a leitura nao
+        // trouxe" — e a migracao automatica acabava gravando a semente do HTML
+        // por cima do banco, em todos os produtos de uma vez.
+        window._rdLoadedIds = new Set();
         const rdSnap = await getDocs(collection(db, 'rdmap'));
         rdSnap.forEach(d => {
           _base('rdmap', d.id, d.data());
+          window._rdLoadedIds.add(d.id);
           if (window.RDMAP) window.RDMAP[d.id] = d.data();
         });
+        window._rdLoadOk = true;
         // Load KR_DATA overrides (stored flat, need to unflatten)
         const krSnap = await getDocs(collection(db, 'kr_data'));
         krSnap.forEach(d => {
@@ -8512,9 +8519,20 @@ const Q_LAST_MONTH = {'1T':'MAR','2T':'JUN','3T':'SET','4T':'DEZ'};
 function rdMigrateQToMonths(qKey) {
   const lastMonth = Q_LAST_MONTH[qKey];
   if (!lastMonth) return;
+  // ── Trava anti-semente ──
+  // Esta rotina grava em TODOS os produtos de uma vez. Se a leitura do banco
+  // falhou ou veio incompleta (sem lançar erro), a memória ainda contém o
+  // roadmap semente do HTML — e gravar aqui apagaria o backlog real de todo o
+  // portfólio. Só migra produto cujo doc realmente veio do Firestore.
+  const carregados = window._rdLoadedIds;
+  if (!window._rdLoadOk || !carregados || !carregados.size) {
+    console.warn('[JIP] migração de trimestre abortada: a leitura da coleção rdmap não trouxe documentos nesta sessão.');
+    return;
+  }
   _suppressLog = true; // migração não é edição
   Object.keys(PRODS).forEach(prodKey => {
     if (!RDMAP[prodKey]) return;
+    if (!carregados.has(prodKey)) return; // doc não veio na leitura: memória é a semente do HTML
     const items = (RDMAP[prodKey][qKey] || []).slice();
     if (!items.length) return; // already distributed to months — leave as is
     if (!RDMAP[prodKey][lastMonth]) RDMAP[prodKey][lastMonth] = [];
