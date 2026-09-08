@@ -7919,7 +7919,14 @@ function _jipMerge(base, remote, local) {
     }
     const remoteMudou = !(bHas === rHas && (!rHas || _jipDeepEq(base[k], remote[k])));
     const localMudou  = !(bHas === lHas && (!lHas || _jipDeepEq(base[k], local[k])));
-    if (!remoteMudou) { if (lHas) out[k] = local[k]; return; }        // só a aba mexeu (ou ninguém)
+    if (!remoteMudou) {                                               // só a aba mexeu (ou ninguém)
+      if (lHas) out[k] = local[k];
+      // Chave que existe no banco e não existe no objeto desta aba NÃO é
+      // descartada: era assim que um período inteiro do roadmap (ex.: BL27)
+      // sumia do Firestore quando a tela gravava um objeto empobrecido.
+      else if (rHas) out[k] = remote[k];
+      return;
+    }
     if (!localMudou)  { if (rHas) { out[k] = remote[k]; preservados.push(k); } return; } // só o banco mexeu
     if (lHas) out[k] = local[k];                                      // conflito real
     conflitos.push(k);
