@@ -170,6 +170,7 @@ button,input,select,textarea{font-family:inherit;}
 .phd-etapa.est{color:var(--est);}
 .phd-etapa.pre{color:var(--pre);}
 .phd-etapa.obra{color:var(--obra);}
+.phd-etapa.pos{color:var(--pos);}
 .phd-people{font-size:10px;color:var(--t2);font-weight:500;}
 .phd-people small{display:block;font-size:9px;color:var(--t3);}
 .prog-wrap{display:flex;align-items:center;gap:7px;}
@@ -479,6 +480,7 @@ button,input,select,textarea{font-family:inherit;}
 .rdmap-prod-name .rd-etapa.est{color:var(--gy);}
 .rdmap-prod-name .rd-etapa.pre{color:var(--o);}
 .rdmap-prod-name .rd-etapa.obra{color:var(--g);}
+.rdmap-prod-name .rd-etapa.pos{color:var(--pos);}
 .rdmap-prod-name .rd-gestor{margin-top:4px;display:flex;gap:3px;}
 /* Quarter cells */
 .rdmap-qcell{padding:8px 10px;border-right:1px solid var(--bd);vertical-align:top;min-width:140px;}
@@ -692,6 +694,7 @@ td.rd-drop-cell{background:var(--gb)!important;outline:2px dashed var(--gm);outl
 .port-etapa-bar.est{background:var(--est);}
 .port-etapa-bar.pre{background:var(--pre);}
 .port-etapa-bar.obra{background:var(--obra);}
+.port-etapa-bar.pos{background:var(--pos);}
 .port-etapa-label{
   writing-mode:vertical-rl;
   transform:rotate(180deg);
@@ -1810,6 +1813,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <label class="msdd-opt"><input type="checkbox" value="est" data-lbl="Estratégia" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--est)"></span>Estratégia</label>
         <label class="msdd-opt"><input type="checkbox" value="pre" data-lbl="Pré-Obra" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--pre)"></span>Pré-Obra</label>
         <label class="msdd-opt"><input type="checkbox" value="obra" data-lbl="Obra" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--obra)"></span>Obra</label>
+        <label class="msdd-opt"><input type="checkbox" value="pos" data-lbl="Pós-Obra" onchange="msddChange('port-etapa')"><span class="msdd-dot" style="background:var(--pos)"></span>Pós-Obra</label>
         <button type="button" class="msdd-clr" onclick="msddClear('port-etapa', event)">Limpar</button>
       </div>
     </div>
@@ -2001,6 +2005,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
           <label class="msdd-opt"><input type="checkbox" value="est" data-lbl="Estratégia" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--est)"></span>Estratégia</label>
           <label class="msdd-opt"><input type="checkbox" value="pre" data-lbl="Pré-Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--pre)"></span>Pré-Obra</label>
           <label class="msdd-opt"><input type="checkbox" value="obra" data-lbl="Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--obra)"></span>Obra</label>
+          <label class="msdd-opt"><input type="checkbox" value="pos" data-lbl="Pós-Obra" onchange="msddChange('rd-etapa')"><span class="msdd-dot" style="background:var(--pos)"></span>Pós-Obra</label>
           <button type="button" class="msdd-clr" onclick="msddClear('rd-etapa', event)">Limpar</button>
         </div>
       </div>
@@ -2202,7 +2207,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
         <div class="fg"><label>Gestor</label><select id="ep-g"><option value="l">Lilian Lage</option><option value="m">Marcos Costa</option><option value="lm">Ambos</option></select></div>
       </div>
       <div class="fgrow">
-        <div class="fg"><label>Etapa</label><select id="ep-e"><option value="est">Estratégia</option><option value="pre">Pré-Obra</option><option value="obra">Obra</option></select></div>
+        <div class="fg"><label>Etapa</label><select id="ep-e"><option value="est">Estratégia</option><option value="pre">Pré-Obra</option><option value="obra">Obra</option><option value="pos">Pós-Obra</option></select></div>
         <div class="fg"><label>Status</label><select id="ep-s"><option value="sv">No prazo</option><option value="so">Atenção / Atenção</option><option value="sg">Acompanhar</option></select></div>
       </div>
       <div class="fg"><label>Descrição</label><textarea id="ep-desc" rows="2" style="resize:vertical"></textarea></div>
@@ -2411,7 +2416,7 @@ const PRODS = {
     rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
   },
   jornadava: {
-    nm:'Jornada VA', etapa:'pre', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    nm:'Jornada VA', etapa:'pos', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
     pot_alav:{},
     desc:'Jornada VA. Escopo em definição.',
     ambicoes:[], alavancas:[],
@@ -2421,7 +2426,7 @@ const PRODS = {
     rd:{done:[],doing:[],todo:[]}
   },
   toanovaera: {
-    nm:'TOA Nova Era', etapa:'pre', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
+    nm:'TOA Nova Era', etapa:'pos', gestor:'m', po:'A definir', status:'sg', pot:'A definir',
     pot_alav:{},
     desc:'TOA Nova Era. Escopo em definição.',
     ambicoes:[], alavancas:[],
@@ -2825,7 +2830,7 @@ function piMarcos(key, pers, incSemTipo){
   return out;
 }
 
-const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra'};
+const ET_LABEL = {est:'Estratégia',pre:'Pré-Obra',obra:'Obra',pos:'Pós-Obra'};
 const ST_LABEL = {sv:'No prazo',so:'Atenção',sg:'Acompanhar'};
 
 // ── JIP: agrupamento por FASE (dimensão ortogonal à etapa) ──
@@ -3654,6 +3659,7 @@ function buildPort(){
     {key:'est', label:'Estratégia', col:'var(--est)'},
     {key:'pre', label:'Pré-Obra',   col:'var(--pre)'},
     {key:'obra',label:'Obra',       col:'var(--obra)'},
+    {key:'pos', label:'Pós-Obra',   col:'var(--pos)'},
   ];
 
   // Agrupador primário: nível de responsabilidade (estratégia da área); etapa vira o agrupador interno
@@ -3825,7 +3831,9 @@ function buildPort(){
   });
   }); // fim RESP_ORDER
 
-  // Pós-Obra placeholder
+  // Pós-Obra: o aviso de "em mapeamento" só faz sentido enquanto nenhum produto
+  // estiver classificado nessa etapa — havendo produto, ele já aparece no grupo acima.
+  if(!Object.keys(PRODS).some(kk=>PRODS[kk].etapa==='pos'))
   grid.innerHTML+=`
     <div class="port-etapa-group" id="peg-pos">
       <div class="port-etapa-row">
@@ -4874,7 +4882,7 @@ function applyPortFilt() {
     c.style.display = (gOk && sOk && eOk && fOk && aOk) ? '' : 'none';
   });
   // Hide each etapa group whose cards are all hidden (agora pode haver um por nível de responsabilidade)
-  ['est','pre','obra'].forEach(ek => {
+  ['est','pre','obra','pos'].forEach(ek => {
     document.querySelectorAll('.peg-et-' + ek).forEach(grp => {
       const cards = grp.querySelectorAll('.port-card');
       const allHidden = cards.length > 0 && [...cards].every(c => c.style.display === 'none');
@@ -6432,7 +6440,6 @@ function renderRdmap() {
     let respBody = '';
   etapaGroups.forEach(({key:etapa, label, col}) => {
     if (rdEtapaHidden(etapa)) return;
-    if (etapa==='pos') return; // placeholder emitido uma vez, ao final
     const allProds = Object.entries(PRODS).filter(([kk,p])=>p.etapa===etapa && prodResp(kk)===rk);
     if (!allProds.length) return;
     const visProds = allProds.filter(([k,p])=>isVisible(p,k));
@@ -6467,6 +6474,8 @@ function renderRdmap() {
       tbodyHtml += `<tr><td colspan="15" style="padding:9px 16px;background:var(--wh);border-bottom:2px solid ${RESP_COL[rk]};font-size:10px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:${RESP_COL[rk]}">${RESP_LABEL[rk]}</td></tr>` + respBody;
     }
   });
+  // Rodapé "em mapeamento" some assim que existir produto classificado em Pós-Obra
+  if(!Object.keys(PRODS).some(kk=>PRODS[kk].etapa==='pos'))
   tbodyHtml += `<tr><td colspan="15" style="padding:10px 16px;font-size:10px;color:var(--t3);font-style:italic;background:var(--gyb)">
         <b style="color:var(--pos)">Pós-Obra</b> &nbsp;🚧 Em mapeamento
       </td></tr>`;
