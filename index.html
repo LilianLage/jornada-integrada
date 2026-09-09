@@ -6170,7 +6170,7 @@ function rdDrop(ev){
   if(mesmaCelula && destIdx > src.idx) destIdx--;
   if(!RDMAP[src.pk][destPer]) RDMAP[src.pk][destPer] = [];
   RDMAP[src.pk][destPer].splice(destIdx, 0, item);
-  if(!origem.length) delete RDMAP[src.pk][src.per];
+  if(!origem.length) RDMAP[src.pk][src.per]=[]; // ver deleteMarco: chave removida volta na mescla
 
   setEditDetail(
     mesmaCelula ? 'reordenou (arrastar)' : 'moveu de período (arrastar)',
@@ -6213,7 +6213,11 @@ function deleteMarco(prodKey, period, idx) {
   const removed = RDMAP[prodKey][period][idx];
   setEditDetail('removeu entrega', `${rdLbl(period)}: "${removed ? removed.txt : ''}"`);
   RDMAP[prodKey][period].splice(idx, 1);
-  if (RDMAP[prodKey][period].length === 0) delete RDMAP[prodKey][period];
+  // Período que ficou sem entregas vira array VAZIO — a chave não é removida.
+  // A mescla anti-sobrescrita (_jipMerge) preserva do banco toda chave ausente
+  // no objeto desta aba; removê-la aqui fazia a entrega apagada voltar na
+  // gravação seguinte. Mesma convenção já usada em rdMigrateQToMonths.
+  if (RDMAP[prodKey][period].length === 0) RDMAP[prodKey][period] = [];
   fbSaveRdmap(prodKey);
   renderRdmap();
 }
@@ -6694,7 +6698,7 @@ function saveGanttEdit(){
     const arr=RDMAP[gntEdit.prodKey][srcKey];
     if(arr){
       arr.splice(gntEdit.idx,1);
-      if(arr.length===0) delete RDMAP[gntEdit.prodKey][srcKey];
+      if(arr.length===0) RDMAP[gntEdit.prodKey][srcKey]=[]; // ver deleteMarco: chave removida volta na mescla
     }
     if(!RDMAP[gntEdit.prodKey][destKey]) RDMAP[gntEdit.prodKey][destKey]=[];
     RDMAP[gntEdit.prodKey][destKey].push(m);
