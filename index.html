@@ -1125,10 +1125,31 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .pi-bn-v{font-size:44px;font-weight:800;line-height:1.05;letter-spacing:-1.6px;}
 .pi-bn-uh{font-size:15px;color:var(--t3);font-weight:700;margin-top:2px;letter-spacing:.2px;}
 .pi-bn-s{font-size:16px;color:var(--t2);font-weight:600;margin-top:3px;}
+/* Rótulo do total, ancorado sobre a régua: a barra inteira vale esse valor. */
+.pi-thd{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px;padding-bottom:7px;border-bottom:1.5px solid var(--bd);}
+.pi-thd>span{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);}
+.pi-thd>div{display:flex;align-items:baseline;gap:10px;}
+.pi-thd b{font-size:27px;font-weight:800;letter-spacing:-.9px;color:var(--tx);line-height:1;}
+.pi-thd i{font-style:normal;font-size:16px;font-weight:700;color:var(--t3);}
 .pi-therm{display:flex;height:46px;border-radius:8px;overflow:hidden;}
 .pi-therm>div{display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;white-space:nowrap;}
 .pi-tlg{display:flex;margin-top:8px;font-size:15px;font-weight:700;color:var(--t3);}
 .pi-lead{font-size:20px;color:var(--tx);line-height:1.5;margin-top:18px;padding-top:16px;border-top:1px solid var(--bd);}
+/* Faixa "O que essa estrutura custa hoje" — leitura de esforço logo abaixo da
+   curva de compromisso. Fundo verde escuro para separar do bloco de captura. */
+.pi-esf{background:linear-gradient(115deg,#00301b 0%,var(--g) 62%,#0a5c36 100%);color:#fff;border-radius:var(--r);padding:20px 26px 18px;margin-bottom:14px;}
+.pi-esf-hd{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.pi-esf-t{font-size:22px;font-weight:800;letter-spacing:-.4px;}
+.pi-esf-s{font-size:16px;font-weight:600;color:rgba(255,255,255,.68);}
+.pi-esf-g{display:flex;gap:26px;flex-wrap:wrap;}
+.pi-esf-g>div{flex:1;min-width:150px;padding-left:18px;border-left:2px solid rgba(255,255,255,.20);}
+.pi-esf-g>div:first-child{padding-left:0;border-left:0;}
+.pi-esf-g>div.hl{border-left-color:var(--o);}
+.pi-esf-g span{display:block;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:rgba(255,255,255,.62);}
+.pi-esf-g b{display:block;font-size:40px;font-weight:800;letter-spacing:-1.5px;line-height:1.08;margin-top:4px;}
+.pi-esf-g>div.hl b{color:#ffc48a;}
+.pi-esf-g i{display:block;font-style:normal;font-size:15px;font-weight:600;color:rgba(255,255,255,.66);margin-top:3px;}
+.pi-esf-n{font-size:14.5px;font-weight:600;line-height:1.45;color:rgba(255,255,255,.62);margin-top:16px;padding-top:13px;border-top:1px solid rgba(255,255,255,.18);}
 /* Agrupamento e totais */
 .pi-grp td{background:#f8fafc!important;padding:11px 15px!important;border-top:2px solid var(--bd)!important;}
 .pi-grp-t{font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
@@ -1179,6 +1200,19 @@ iframe.cx-media{border:1.5px solid var(--bd);}
 .frc-val small{font-size:26px;letter-spacing:-.6px;}
 .frc-sub{font-size:16px;color:rgba(255,255,255,.72);font-weight:600;margin-top:5px;}
 .frc-role{font-size:26px;font-weight:800;letter-spacing:-.5px;margin-top:auto;padding-top:26px;line-height:1.2;}
+/* Bloco de esforço (estrutura + custo/mês) — fonte: Priorização Produção 2027.
+   Fica na coluna de identidade, logo abaixo do valor em jogo: a leitura
+   executiva do cartão passa a ser retorno acima, esforço abaixo. */
+.frc-esf{margin-top:16px;background:rgba(255,255,255,.10);border:1.5px solid rgba(255,255,255,.22);border-radius:14px;padding:12px 14px 13px;}
+.frc-esf-h{display:flex;align-items:baseline;gap:8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.62);margin-bottom:10px;}
+.frc-esf-h em{font-style:normal;font-size:11px;font-weight:700;letter-spacing:.3px;text-transform:none;color:rgba(255,255,255,.52);margin-left:auto;text-align:right;}
+.frc-esf-g{display:flex;gap:14px;}
+.frc-esf-g>div{flex:1;min-width:0;}
+.frc-esf-g>div+div{border-left:1.5px solid rgba(255,255,255,.18);padding-left:14px;}
+.frc-esf-g span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:rgba(255,255,255,.60);}
+.frc-esf-g b{display:block;font-size:23px;font-weight:800;letter-spacing:-.7px;line-height:1.15;margin-top:3px;color:#fff;}
+.frc-esf-g i{display:block;font-style:normal;font-size:14px;font-weight:700;color:rgba(255,255,255,.72);margin-top:1px;}
+.frc-esf-n{font-size:12.5px;font-weight:600;line-height:1.35;color:rgba(255,255,255,.62);margin-top:10px;padding-top:9px;border-top:1.5px solid rgba(255,255,255,.16);}
 .frc-btn{margin-top:18px;align-self:flex-start;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.28);color:#fff;font-family:inherit;font-size:15px;font-weight:800;border-radius:30px;padding:8px 18px;cursor:pointer;}
 .frc-btn:hover{background:rgba(255,255,255,.24);}
 .frc-col{padding:22px 24px;border-left:1.5px solid var(--bd);min-width:0;}
@@ -1707,7 +1741,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div class="pc pv" data-g="m" onclick="openEdit('simurb')"><div class="pc-nm">SIMURB</div><div class="pc-sq">Brenda</div><div class="pc-tags"><span class="tg tm">Marcos</span></div><div class="pc-ft"><div class="sp"><span class="sd sv"></span>No prazo</div><span class="pb">Habilitador</span></div></div>
     </div>
     <div class="kc pre" id="kc-pre">
-      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">7</div></div>
+      <div class="kc-hd"><div class="kc-ttl">📐 Pré-Obra</div><div class="kc-n" id="cnt-pre">8</div></div>
       <div class="pc po" data-g="l" onclick="openEdit('compilador')"><div class="pc-nm">Compilador BIM</div><div class="pc-sq">Larissa</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Atenção</div><span class="pb">R$ 40M</span></div></div>
       <div class="pc po" data-g="l" onclick="openEdit('lego')"><div class="pc-nm">Sistema LEGO</div><div class="pc-sq">Ana Luiza</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd so"></span>Prioridade redefinida</div><span class="pb">Estratégico</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('mdm')"><div class="pc-nm">MDM – Dados Mestres</div><div class="pc-sq">André Carvalhais</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Aceleração urgente</div><span class="pb">Habilitador</span></div></div>
@@ -1715,6 +1749,7 @@ iframe.cx-media{border:1.5px solid var(--bd);}
       <div class="pc pg" data-g="l" onclick="openEdit('comex')"><div class="pc-nm">Comex</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('cd')"><div class="pc-nm">CD</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
       <div class="pc pg" data-g="l" onclick="openEdit('reformatrib')"><div class="pc-nm">Reforma Tributária</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
+      <div class="pc pg" data-g="l" onclick="openEdit('migproject')"><div class="pc-nm">Migração do Project</div><div class="pc-sq">A definir</div><div class="pc-tags"><span class="tg tl">Lilian</span></div><div class="pc-ft"><div class="sp"><span class="sd sg"></span>Em definição</div><span class="pb">A definir</span></div></div>
     </div>
     <div class="kc obra" id="kc-obra">
       <div class="kc-hd"><div class="kc-ttl">🏗️ Obra</div><div class="kc-n" id="cnt-obra">8</div></div>
@@ -2395,6 +2430,16 @@ const PRODS = {
            krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
     rd:{done:[],doing:[],todo:[]}
   },
+  migproject: {
+    nm:'Migração do Project', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
+    pot_alav:{},
+    desc:'Migração da base de cronogramas do MS Project. Imposição da Microsoft com data-limite — acompanhado por monitoramento estratégico, sem PO dedicado no time.',
+    ambicoes:[], alavancas:[],
+    riscos:[], notas:[],
+    okrs:[{ttl:'A definir com a área dona',
+           krs:[{lbl:'KR1: a definir',atual:0,meta:'—',real:'—',c:'g'}]}],
+    rd:{done:[],doing:[],todo:['Mapeamento de grandes marcos (3T26)']}
+  },
   comex: {
     nm:'Comex', etapa:'pre', gestor:'l', po:'A definir', status:'sg', pot:'A definir',
     pot_alav:{},
@@ -2540,6 +2585,7 @@ const GOV_SEED = {
   inbound:      {gov_sl:'Helder',        gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
   cd:           {gov_sl:'Iriam',         gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
   reformatrib:  {gov_sl:'Lidiana',       gov_sr:'S/R',          gov_acao:'Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
+  migproject:   {gov_sl:'Rodrigo',       gov_sr:'S/R',          gov_acao:'Sem PO dedicado no time: SL acumula com o MDM. Designar ponto focal na gestão (5% de dedicação, conforme monitoramento estratégico).'},
   radar:        {gov_sl:'Giuseppe',      gov_sr:'Sênior',       gov_acao:'Focal já designada; formalizar a dedicação no modelo.'},
   hubformas:    {gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Manter o SL único: as três iniciativas de industrialização compartilham tecnologia e fornecedores, e separá-las fragmentaria o conhecimento. Risco aceito enquanto seguem em monitoramento; designar ponto focal na gestão e reavaliar se alguma evoluir para gestão direta.'},
   usinaconcreto:{gov_sl:'Lucas Freitas', gov_sr:'S/R',          gov_acao:'Manter o SL único: as três iniciativas de industrialização compartilham tecnologia e fornecedores, e separá-las fragmentaria o conhecimento. Risco aceito enquanto seguem em monitoramento; designar ponto focal na gestão e reavaliar se alguma evoluir para gestão direta.'},
@@ -2804,7 +2850,7 @@ const RESP_DEFAULT = {
   mdm:'comp', nexus:'comp', simurb:'comp',
   inbound:'mon', comex:'mon', cd:'mon', reformatrib:'mon',
   radar:'mon', usinaconcreto:'mon', fabricakits:'mon', hubformas:'mon',
-  jornadava:'mon', toanovaera:'mon'
+  jornadava:'mon', toanovaera:'mon', migproject:'mon'
 };
 // Produto sem modelo de gestão definido (nem no cadastro, nem em RESP_DEFAULT) vira
 // "monitoramento estratégico" por padrão — pedido da Lilian, política mais conservadora
@@ -4197,7 +4243,7 @@ function buildGovCap(){
   if(!box) return;
   const keys=piKeys();
   // Ordem da narrativa: o compromisso → onde o valor está → quem entrega o quê
-  box.innerHTML = piNavHtml() + piTopHtml() + piBandHtml() + piLeversHtml(keys)
+  box.innerHTML = piNavHtml() + piTopHtml() + piBandHtml() + piEsfBandHtml(keys) + piLeversHtml(keys)
                 + piPedidoHtml(keys) + piGovSectionHtml();
   govCapApply();
   piNavAtivar();
@@ -4259,6 +4305,11 @@ function piBandHtml(){
     + bn('2026 · falta capturar', piFmtM(falta26), falta26, 'var(--o)', 'meta acumulada '+piFmtM(m26)+' (40%)')
     + bn('2027 · incremento exigido', piFmtM(inc27), inc27, 'var(--o)', 'meta acumulada '+piFmtM(m27)+' (65%)')
     +'</div>'
+    // A régua vale 100% do potencial mapeado, mas esse total nunca aparecia
+    // escrito. Fica ancorado imediatamente acima dela, com o valor por UH ao
+    // lado: é a referência que dá escala às quatro faixas abaixo.
+    +'<div class="pi-thd"><span>Potencial total mapeado</span>'
+    +'<div><b>'+piFmtM(total)+'</b><i>'+cvFmtUH(total*1e6/CV_UH_BASE)+' R$/UH</i></div></div>'
     +'<div class="pi-therm">'
     + seg(cap25,'var(--g)','Capturado em 2025')
     + seg(falta26,'var(--o)','A capturar ainda em 2026')
@@ -4274,6 +4325,38 @@ function piBandHtml(){
     +'<div class="pi-lead">A curva muda de patamar: <b>2026 exige '+razao.toFixed(1).replace('.',',')+'× o que capturamos em 2025</b>, e 2027 pede outro tanto — '
     +'com uma estrutura dimensionada para a curva de 2025. É esse degrau que o planejamento abaixo endereça. '
     +'<span style="color:var(--t3);font-size:16px">Base de apuração: '+(CV_UH_BASE/1000)+' mil UH.</span></div>'
+    +'</div>';
+}
+
+// ── 1b. O QUE ESSA CURVA CUSTA HOJE ───────────────────────────────────────
+// Vem logo depois da curva de compromisso porque responde à frase que a fecha:
+// a estrutura está dimensionada para 2025. Aqui está, em quatro números, o
+// tamanho e o custo dessa estrutura no recorte selecionado. Fonte única:
+// Priorização Produção 2027 — nada é estimado.
+function piEsfBandHtml(keys){
+  const t=piEsforcoTotais(keys);
+  if(!t.squads) return '';
+  const rs=function(v){ return 'R$ '+Math.round(v).toLocaleString('pt-BR'); };
+  const ano=t.cst*12;
+  const cel=function(l,v,s,hl){
+    return '<div'+(hl?' class="hl"':'')+'><span>'+l+'</span><b>'+v+'</b>'
+      +(s?'<i>'+s+'</i>':'')+'</div>';
+  };
+  let nota='Fonte: Priorização Produção 2027 · estrutura e custo do time de TI, transcritos do documento — não inclui o time de negócio.';
+  if(t.compart) nota+=' '+t.compart+' squad'+(t.compart>1?'s são compartilhadas':' é compartilhada')
+    +' entre frentes e entra'+(t.compart>1?'m':'')+' uma única vez no total.';
+  if(t.semDado.length) nota+=' Sem estrutura no documento: '+t.semDado.join(' · ')+'.';
+
+  return '<div class="pi-esf" id="sec-esforco">'
+    +'<div class="pi-esf-hd"><div class="pi-esf-t">O que essa estrutura custa hoje</div>'
+    +'<div class="pi-esf-s">'+t.frentes+' frente'+(t.frentes>1?'s':'')+' do recorte com estrutura dimensionada</div></div>'
+    +'<div class="pi-esf-g">'
+    + cel('Squads', String(t.squads), 'estruturas distintas')
+    + cel('Pessoas', String(t.pes), 'alocadas nas squads')
+    + cel('FTE dedicado', t.fte.toFixed(1).replace('.',','), 'dedicação efetiva')
+    + cel('Custo / mês', rs(t.cst), rs(ano)+' no ano', true)
+    +'</div>'
+    +'<div class="pi-esf-n">'+cxEsc(nota)+'</div>'
     +'</div>';
 }
 
@@ -4376,6 +4459,78 @@ function piInsightSugerido(k){
   return txt;
 }
 
+// ── ESFORÇO POR FRENTE — estrutura e custo/mês ────────────────────────────
+// Origem única: apresentação "Priorização Produção 2027" (Plano Estratégico ·
+// Eco de Produção). Nada aqui é calculado ou estimado — os valores são
+// transcritos linha a linha do documento. Frentes sem linha no documento
+// simplesmente não exibem o bloco (não se preenche lacuna com estimativa).
+//   sq    rótulo da squad/iniciativa como consta no documento
+//   sqid  identificador da squad — frentes que dividem a mesma squad repetem o
+//         sqid, e o totalizador do topo conta essa estrutura uma única vez
+//   pes   pessoas na estrutura   fte   FTE dedicado
+//   cst   custo/mês              n     mesmo custo em número, para os totais
+//   nota  observação da própria linha do documento
+const PI_ESF_COMP = 'Estrutura única da squad — a mesma linha do documento cobre mais de uma frente (não somar duas vezes).';
+const PI_ESFORCO = {
+  // Categoria A — avaliação de prioridades
+  eco:        {sq:'ECO PAM', sqid:'ecopam',  pes:8,  fte:'6,5', cst:'R$ 254.506', n:254506, nota:PI_ESF_COMP},
+  pam:        {sq:'ECO PAM', sqid:'ecopam',  pes:8,  fte:'6,5', cst:'R$ 254.506', n:254506, nota:PI_ESF_COMP},
+  ze:         {sq:'IA Gen',  sqid:'iagen',   pes:3,  fte:'2,3', cst:'R$ 43.690',  n:43690,  nota:PI_ESF_COMP},
+  daeans:     {sq:'IA Gen',  sqid:'iagen',   pes:3,  fte:'2,3', cst:'R$ 43.690',  n:43690,  nota:PI_ESF_COMP},
+  sincroniza: {sq:'Esteira Corporativa', sqid:'esteira', pes:7,  fte:'6,5', cst:'R$ 188.462', n:188462},
+  obra360:    {sq:'Planej. e Execução',  sqid:'planexec', pes:10, fte:'9,5', cst:'R$ 226.135', n:226135},
+  prateleira: {sq:'Mão de Obra', sqid:'mo',  pes:6,  fte:'6,0', cst:'R$ 185.231', n:185231, nota:PI_ESF_COMP},
+  catracas:   {sq:'Mão de Obra', sqid:'mo',  pes:6,  fte:'6,0', cst:'R$ 185.231', n:185231, nota:PI_ESF_COMP},
+  compilador: {sq:'Prod. e Projetos', sqid:'pp_bim',  pes:4, fte:'3,5', cst:'R$ 193.557', n:193557},
+  smp:        {sq:'CheckList',        sqid:'checklist', pes:4, fte:'3,3', cst:'R$ 130.764', n:130764},
+  lego:       {sq:'Prod. e Projetos', sqid:'pp_lego', pes:4, fte:'3,3', cst:'R$ 147.214', n:147214},
+  hubformas:  {sq:'Hub de Formas · SIGA / SIGA-ME', sqid:'hubformas', pes:6, fte:'5,5', cst:'R$ 142.654', n:142654,
+               nota:'Frente Offsite (Consórcio LPJ + MRV) entra sem custo/mês — investimento comprometido de R$ 632.159.'},
+  radar:      {sq:'Radar · FUP Suprimentos', sqid:'radar', pes:5, fte:'4,5', cst:'R$ 132.279', n:132279},
+  toanovaera: {sq:'Nova Era · Squad QPE', sqid:'novaera', pes:3, fte:'2,5', cst:'R$ 70.127', n:70127, nota:PI_ESF_COMP},
+  jornadava:  {sq:'Nova Era · Squad QPE', sqid:'novaera', pes:3, fte:'2,5', cst:'R$ 70.127', n:70127, nota:PI_ESF_COMP},
+  // Categoria B — captura mensurada, Offsite, estruturante e obrigações
+  comex:      {sq:'Importação e CD · Guanxì', sqid:'impcd', pes:7, fte:'5,0', cst:'R$ 139.443', n:139443, nota:PI_ESF_COMP},
+  cd:         {sq:'Importação e CD · Guanxì', sqid:'impcd', pes:7, fte:'5,0', cst:'R$ 139.443', n:139443, nota:PI_ESF_COMP},
+  usinaconcreto:{sq:'Offsite', sqid:'off_usina', pes:1, fte:'0,4', cst:'~R$ 0', n:0,
+               nota:'Offsite em encerramento — investimento comprometido de R$ 913.920.'},
+  fabricakits:{sq:'Offsite', sqid:'off_kits',  pes:1, fte:'0,3', cst:'~R$ 0', n:0,
+               nota:'Offsite em encerramento — investimento comprometido de R$ 807.360.'},
+  novaeap:    {sq:'Estruturante',    sqid:'novaeap',  pes:4, fte:'3,0', cst:'R$ 102.294', n:102294},
+  migproject: {sq:'Obrigação · imposição Microsoft', sqid:'migproject', pes:3, fte:'2,5', cst:'R$ 43.240', n:43240},
+  inbound:    {sq:'Obrigação legal', sqid:'inbound',  pes:4, fte:'2,1', cst:'R$ 199.264', n:199264},
+  reformatrib:{sq:'Obrigação legal', sqid:'reformat', pes:5, fte:'3,0', cst:'R$ 112.571', n:112571}
+};
+
+// ── Totais do recorte, com squad compartilhada contada uma única vez ───────
+function piEsforcoTotais(keys){
+  const vistos={}, comp={};
+  let pes=0, fte=0, cst=0, nq=0, cob=0;
+  const semDado=[];
+  keys.forEach(function(k){
+    const e=PI_ESFORCO[k];
+    if(!e){ if(PRODS[k]) semDado.push(PRODS[k].nm); return; }
+    cob++;
+    if(vistos[e.sqid]){ comp[e.sqid]=true; return; }
+    vistos[e.sqid]=true; nq++;
+    pes+=e.pes; fte+=parseFloat(String(e.fte).replace(',','.'))||0; cst+=e.n;
+  });
+  return {pes:pes, fte:fte, cst:cst, squads:nq, frentes:cob,
+          compart:Object.keys(comp).length, semDado:semDado};
+}
+function piEsforcoHtml(k){
+  const e = PI_ESFORCO[k];
+  if(!e) return '';
+  return '<div class="frc-esf">'
+    +'<div class="frc-esf-h">Esforço<em>'+cxEsc(e.sq)+'</em></div>'
+    +'<div class="frc-esf-g">'
+    +'<div><span>Estrutura</span><b>'+e.pes+' pes</b><i>'+cxEsc(e.fte)+' FTE</i></div>'
+    +'<div><span>Custo / mês</span><b>'+cxEsc(e.cst)+'</b></div>'
+    +'</div>'
+    +(e.nota?'<div class="frc-esf-n">'+cxEsc(e.nota)+'</div>':'')
+    +'</div>';
+}
+
 function piProdCard(k){
   const p=PRODS[k], v=piValor(k), jogo=piEmJogo(k);
   const temValor = (jogo!=null && jogo>0.05);
@@ -4391,6 +4546,7 @@ function piProdCard(k){
     id+='<div class="frc-role">'+PI_ROLE[piRoleOf(k)]+'</div>'
       +'<div class="frc-sub">sem captura financeira direta atribuída</div>';
   }
+  id+=piEsforcoHtml(k);
   id+='<button class="frc-btn" onclick="piOpenTese(\''+k+'\')">Resumo da frente</button></div>';
 
   // Coluna 2 — objetivo e cada KR descrito
